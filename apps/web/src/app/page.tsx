@@ -1,17 +1,24 @@
 'use client'
-import { MainNav } from "@/components/main-nav";
-import { UserNav } from "@/components/user-nav";
+import Sidebar from "@/components/sidebar";
+import MainNav from "@/components/main-nav";
+import UserNav from "@/components/user-nav";
+import Chat from "@/components/chat";
 
 export default function Home(): JSX.Element {
   return (
-    <main className="flex-col flex">
+    <main className="flex-col flex h-screen">
       <div className="border-b">
-        <div className="flex h-16 items-center px-4">
+        <div className="flex h-14 items-center px-4">
           <MainNav className="mx-6" />
           <div className="ml-auto flex items-center space-x-4">
             <UserNav />
           </div>
         </div>
+      </div>
+
+      <div className="relative flex h-full">
+        <Sidebar />
+        <Chat />
       </div>
     </main>
   );
