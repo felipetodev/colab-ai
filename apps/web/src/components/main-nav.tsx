@@ -3,7 +3,7 @@ import { HomeIcon, GearIcon } from "@radix-ui/react-icons"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
-export function MainNav({
+function MainNav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
@@ -20,13 +20,15 @@ export function MainNav({
       </Link>
 
 
-      <Button size="icon">
+      <Button className="w-8 h-8" size="icon">
         <HomeIcon className="h-5 w-5" />
       </Button>
 
-      <Button size="icon" variant='ghost'>
+      <Button className="w-8 h-8" size="icon" variant='ghost'>
         <GearIcon className="h-5 w-5" />
       </Button>
     </nav>
   )
 }
+
+export default MainNav
