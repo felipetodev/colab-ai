@@ -3,6 +3,7 @@ import { ChatBubbleIcon, Pencil1Icon, PersonIcon, ViewVerticalIcon, PlusIcon, Ar
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import ChatConversation from "./chat-conversation"
 
 function Sidebar() {
   return (
@@ -47,7 +48,7 @@ function Sidebar() {
       </div>
       {/* Chats List */}
       <div className="h-full rounded-md border mb-2">
-        Chats
+        <ChatConversation />
       </div>
     </aside>
   )
