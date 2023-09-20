@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { HomeIcon, GearIcon } from "@radix-ui/react-icons"
+import { HomeIcon, SettingsIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
@@ -25,7 +25,7 @@ function MainNav({
       </Button>
 
       <Button className="w-8 h-8" size="icon" variant='ghost'>
-        <GearIcon className="h-5 w-5" />
+        <SettingsIcon className="h-5 w-5" />
       </Button>
     </nav>
   )
