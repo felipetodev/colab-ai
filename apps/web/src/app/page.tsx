@@ -6,7 +6,7 @@ import Chat from "@/components/chat";
 
 export default function Home(): JSX.Element {
   return (
-    <main className="flex-col flex h-screen min-w-[1280px]">
+    <main className="flex-col flex h-screen min-w-[1280px] overflow-hidden">
       <div className="border-b">
         <div className="flex h-14 items-center px-4">
           <MainNav className="mx-6" />
@@ -16,7 +16,7 @@ export default function Home(): JSX.Element {
         </div>
       </div>
 
-      <div className="relative flex h-full">
+      <div className="relative flex h-full overflow-hidden">
         <Sidebar />
         <Chat />
       </div>
