@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+import { StopCircle } from "lucide-react"
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 
@@ -25,6 +26,11 @@ function ChatInput({
   }, [])
   return (
     <div className="sticky bg-transparent bottom-6 w-full z-50 pt-8">
+      {isLoading ? <div className="flex justify-center items-center w-full h-12">
+          <Button onClick={stop} size='sm' variant='outline'>
+            <StopCircle className="w-4 h-4 mr-2" /> Stop generating
+          </Button>
+        </div> : null}
       <div className="bg-background max-w-2xl mx-auto rounded-lg p-2 shadow-lg shadow-black/40">
         <form className="relative flex" onSubmit={handleSubmit}>
           <Input
