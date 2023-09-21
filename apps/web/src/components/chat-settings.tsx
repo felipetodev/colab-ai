@@ -12,7 +12,7 @@ import { Button } from "./ui/button"
 function ChatSettings() {
   const [isOpen, setIsOpen] = useState(false)
   return (
-    <div className="bg-background max-w-2xl mx-auto border rounded-lg mt-20 shadow-lg shadow-black/40">
+    <div className="bg-background w-full max-w-2xl mx-auto border rounded-lg mt-20 shadow-lg shadow-black/40">
       <div className="flex flex-col items-center justify-center">
         <header className="flex w-full justify-center pt-6">
           <h1 className="text-xl font-semibold">Chat Settings</h1>
