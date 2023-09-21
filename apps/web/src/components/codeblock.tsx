@@ -98,7 +98,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
         <span className="text-xs lowercase">{language}</span>
         <div className="flex items-center space-x-1">
           <Button
-            className="hover:bg-zinc-800 focus-visible:ring-1 focus-visible:ring-slate-700 focus-visible:ring-offset-0"
+            className="h-7 w-7 hover:bg-zinc-800 focus-visible:ring-1 focus-visible:ring-slate-700 focus-visible:ring-offset-0"
             onClick={downloadAsFile}
             size="icon"
             variant="ghost"
@@ -107,7 +107,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
             <span className="sr-only">Download</span>
           </Button>
           <Button
-            className="text-xs hover:bg-zinc-800 focus-visible:ring-1 focus-visible:ring-slate-700 focus-visible:ring-offset-0"
+            className="h-7 w-7 text-xs hover:bg-zinc-800 focus-visible:ring-1 focus-visible:ring-slate-700 focus-visible:ring-offset-0"
             onClick={onCopy}
             size="icon"
             variant="ghost"
