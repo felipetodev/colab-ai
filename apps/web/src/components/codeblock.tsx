@@ -8,7 +8,7 @@
 import type { FC } from 'react';
 import { memo } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { coldarkDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
+import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { Check, CopyIcon, DownloadIcon } from "lucide-react"
 import { Button } from '@/components/ui/button'
 import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard'
@@ -133,7 +133,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
         }}
         language={language}
         showLineNumbers
-        style={coldarkDark}
+        style={oneDark}
       >
         {value}
       </SyntaxHighlighter>
