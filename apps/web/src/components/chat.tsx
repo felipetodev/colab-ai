@@ -31,7 +31,7 @@ function Chat({
           {messages.length === 0 ? (
             <ChatSettings />
           ) : (
-            <header className="sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
+            <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
               <div className="flex items-center space-x-2">
                 <h1>New Chat</h1>
                 <Button className="w-8 h-8" size='icon' variant='ghost'>
