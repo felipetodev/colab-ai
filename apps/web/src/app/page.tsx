@@ -6,7 +6,14 @@ import UserNav from "@/components/user-nav";
 import Chat from "@/components/chat";
 
 export default function Home(): JSX.Element {
-  const { messages, input, stop, handleInputChange, handleSubmit, isLoading } = useChat();
+  const { messages, input, stop, setInput, append, isLoading } = useChat({
+    onResponse(response) {
+      if (response.status === 401) {
+        // eslint-disable-next-line no-alert
+        alert(response.statusText)
+      }
+    }
+  });
   return (
     <main className="flex-col flex h-screen min-w-[1280px] overflow-hidden">
       <div className="border-b">
@@ -21,11 +28,12 @@ export default function Home(): JSX.Element {
       <div className="relative flex h-full overflow-hidden">
         <Sidebar />
         <Chat
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
+          append={append}
+          id={crypto.randomUUID()}
           input={input}
           isLoading={isLoading}
           messages={messages}
+          setInput={setInput}
           stop={stop}
         />
       </div>

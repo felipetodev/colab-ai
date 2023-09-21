@@ -1,27 +1,32 @@
 import { Settings } from "lucide-react"
-import type { Message } from "ai/react"
+import type { UseChatHelpers } from "ai/react"
 import ChatInput from "./chat-input"
 import ChatMessages from "./chat-messages"
 import { Button } from "./ui/button"
 import ChatSettings from "./chat-settings"
 import ChatScrollAnchor from "./chat-scroll-anchor"
 
-type Props = {
-  stop: () => void
-  messages: Message[]
-  isLoading: boolean
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
-  input: string
+interface Props
+  extends Pick<
+    UseChatHelpers,
+    | 'append'
+    | 'isLoading'
+    | 'messages'
+    | 'stop'
+    | 'input'
+    | 'setInput'
+  > {
+  id?: string
 }
 
 function Chat({
-  stop,
-  isLoading,
-  messages,
-  handleInputChange,
-  handleSubmit,
+  id,
   input,
+  messages,
+  isLoading,
+  append,
+  stop,
+  setInput
 }: Props) {
   return (
     <div className="relative flex flex-col justify-between bg-zinc-400 dark:bg-zinc-900 w-full h-full">
@@ -53,10 +58,16 @@ function Chat({
 
         </div>
         <ChatInput
-          handleInputChange={handleInputChange}
-          handleSubmit={handleSubmit}
           input={input}
           isLoading={isLoading}
+          onSubmit={async (value) => {
+              await append({
+                id,
+                content: value,
+                role: 'user'
+              })
+            }}
+          setInput={setInput}
           stop={stop}
         />
       </div>
