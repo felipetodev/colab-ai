@@ -2,8 +2,11 @@ module.exports = {
   extends: ["custom/next"],
   rules: {
     "eslint-comments/require-description": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
     "react/no-unstable-nested-components": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/no-unnecessary-condition": "off",
