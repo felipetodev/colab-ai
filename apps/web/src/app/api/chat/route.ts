@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server';
-import type { Message as VercelChatMessage} from 'ai';
+import type { Message as VercelChatMessage } from 'ai';
 import { StreamingTextResponse } from 'ai';
 import { ChatOpenAI } from 'langchain/chat_models/openai';
 import { BytesOutputParser } from 'langchain/schema/output_parser';
@@ -12,10 +12,10 @@ const formatMessage = (message: VercelChatMessage) => {
 };
 
 const TEMPLATE = `You are a helpful, friendly AI assistant.
- 
+
 Current conversation:
 {chat_history}
- 
+
 User: {input}
 AI:`;
 
