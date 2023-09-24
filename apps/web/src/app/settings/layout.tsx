@@ -1,7 +1,9 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator"
-import MainNav from "@/components/main-nav"
 import { Button } from "@/components/ui/button"
 import { SidebarNav } from "./components/sidebar-nav"
 
@@ -28,10 +30,16 @@ interface SettingsLayoutProps {
   children: React.ReactNode
 }
 
-export default function SettingsLayout({ children }: SettingsLayoutProps) {
+export default async function SettingsLayout({ children }: SettingsLayoutProps) {
+  const supabase = createServerComponentClient({ cookies })
+  const { data: { session } } = await supabase.auth.getSession()
+
+  if (!session) {
+    redirect('/')
+  }
+
   return (
     <>
-      <MainNav className="mx-6" />
       <div className="md:hidden">
         <Image
           alt="Forms"
