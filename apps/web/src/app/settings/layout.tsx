@@ -67,9 +67,11 @@ export default async function SettingsLayout({ children }: SettingsLayoutProps) 
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
           <aside className="-mx-4 lg:w-1/5">
             <SidebarNav items={sidebarNavItems} />
-            <Button className="mt-3" variant='destructive'>
-              Delete project
-            </Button>
+            <div className="mt-3 cursor-not-allowed">
+              <Button disabled variant='destructive'>
+                Delete project
+              </Button>
+            </div>
           </aside>
           <div className="flex-1 lg:max-w-2xl">
             {children}
