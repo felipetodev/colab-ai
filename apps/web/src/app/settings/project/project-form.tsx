@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -27,16 +28,11 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-export function ProjectForm() {
+export function ProjectForm({ defaultValues }: { defaultValues: ProfileFormValues }) {
+  const router = useRouter()
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: {
-      openaiKey: "",
-      openaiOrg: "",
-      pineconeApiKey: "",
-      pineconeEnvironment: "",
-      pineconeIndex: "",
-    },
+    defaultValues,
     mode: "onChange",
   })
 
@@ -45,6 +41,8 @@ export function ProjectForm() {
       method: "PUT",
       body: JSON.stringify(data)
     });
+
+    router.refresh()
   }
 
   return (
