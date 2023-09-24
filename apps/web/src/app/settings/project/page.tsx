@@ -1,3 +1,8 @@
+'use client'
+
+import { Separator } from "@/components/ui/separator";
+import { ProjectForm } from "./project-form";
+
 export default function ProjectSettings() {
   return (
     <main className="space-y-6">
@@ -6,10 +11,9 @@ export default function ProjectSettings() {
         <p className="text-sm text-muted-foreground">
           Data base settings, API keys, and other project-specific settings.
         </p>
-        <p className="mt-5 text-sm text-muted-foreground">
-          (Under construction) 🚧
-        </p>
       </div>
+      <Separator />
+      <ProjectForm />
     </main>
   );
 }
