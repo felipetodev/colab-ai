@@ -1,4 +1,5 @@
 import Link from "next/link"
+import type { Session } from "@supabase/supabase-js"
 import { Button } from "@/components/ui/button"
 import {
   Avatar,
@@ -16,23 +17,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-function UserNav() {
+type Props = {
+  username: Session['user']['user_metadata']['user_name']
+  avatarUrl: Session['user']['user_metadata']['avatar_url']
+  email: Session['user']['email']
+  handleSignOut: () => void
+}
+
+function UserNav({
+  username,
+  avatarUrl,
+  email,
+  handleSignOut
+}: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="relative h-8 w-8 rounded-full" variant="ghost">
           <Avatar className="h-8 w-8">
-            <AvatarImage alt="@shadcn" src="/felipetodev.png" />
-            <AvatarFallback>FE</AvatarFallback>
+            <AvatarImage alt={username} src={avatarUrl} />
+            <AvatarFallback className="uppercase">
+              {username.slice(0, 2)}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">felipetodev</p>
+            <p className="text-sm font-medium leading-none">{username}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              felipetodev@ui.com
+              {email}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -52,7 +67,7 @@ function UserNav() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={handleSignOut}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
