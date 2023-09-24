@@ -1,7 +1,6 @@
 'use client'
 import { useChat } from 'ai/react';
 import Sidebar from "@/components/sidebar";
-import MainNav from "@/components/main-nav";
 import Chat from "@/components/chat";
 
 export default function Home(): JSX.Element {
@@ -14,8 +13,7 @@ export default function Home(): JSX.Element {
     }
   });
   return (
-    <main className="flex-col flex h-screen min-w-[1280px] overflow-hidden">
-      <MainNav className="mx-6" />
+    <main className="flex-col flex h-[calc(100vh-57px)] min-w-[1280px] overflow-hidden">
       <div className="relative flex h-full overflow-hidden">
         <Sidebar />
         <Chat
