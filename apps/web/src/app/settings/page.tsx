@@ -2,9 +2,10 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Separator } from "@/components/ui/separator";
 import { ProfileForm } from "src/app/settings/components/profile-form";
+import type { Database } from "@/lib/types/database";
 
 export default async function Settings() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createServerComponentClient<Database>({ cookies });
   const { data: user } = await supabase
     .from('users')
     .select('username:user_name')
@@ -18,7 +19,7 @@ export default async function Settings() {
         </p>
       </div>
       <Separator />
-      <ProfileForm username={user?.[0].username} />
+      <ProfileForm username={user?.[0].username ?? ''} />
     </main>
   );
 }

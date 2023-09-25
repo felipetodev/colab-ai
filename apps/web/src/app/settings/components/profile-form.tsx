@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import type { User } from "@/lib/types/user"
 
 const profileFormSchema = z.object({
   username: z
@@ -41,7 +42,7 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-export function ProfileForm({ username }) {
+export function ProfileForm({ username }: { username: User['user_name'] }) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: { username: username ?? '' },

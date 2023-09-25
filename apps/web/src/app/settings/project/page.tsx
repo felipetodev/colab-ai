@@ -1,7 +1,7 @@
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Separator } from "@/components/ui/separator";
-import type { Database } from "@/lib/types";
+import type { Database } from "@/lib/types/database";
 import { ProjectForm } from "./project-form";
 
 export default async function ProjectSettings() {
