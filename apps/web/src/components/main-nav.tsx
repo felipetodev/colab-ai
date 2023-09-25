@@ -2,7 +2,7 @@ import Link from "next/link"
 import { HomeIcon, SettingsIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import UserNav from "./user-nav"
+import { AuthButtonServer } from "./auth-button-server"
 
 function MainNav({
   className,
@@ -32,7 +32,7 @@ function MainNav({
           </Button>
         </nav>
         <div className="ml-auto flex items-center space-x-4">
-          <UserNav />
+          <AuthButtonServer />
         </div>
       </div>
     </div>
