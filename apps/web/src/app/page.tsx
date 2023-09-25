@@ -1,31 +1,20 @@
-'use client'
-import { useChat } from 'ai/react';
-import Sidebar from "@/components/sidebar";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 import Chat from "@/components/chat";
+import { type Database } from "@/lib/types/database";
 
-export default function Home(): JSX.Element {
-  const { messages, input, stop, setInput, append, isLoading } = useChat({
-    onResponse(response) {
-      if (response.status === 401) {
-        // eslint-disable-next-line no-alert
-        alert(response.statusText)
-      }
-    }
-  });
+export default async function Home() {
+  const supabase = createServerComponentClient<Database>({ cookies })
+  const { data: chats } = await supabase
+    .from('chats')
+    .select('id, name, messages, folderId:folder_id')
+
   return (
     <main className="flex-col flex h-[calc(100vh-57px)] min-w-[1280px] overflow-hidden">
-      <div className="relative flex h-full overflow-hidden">
-        <Sidebar />
-        <Chat
-          append={append}
-          id={crypto.randomUUID()}
-          input={input}
-          isLoading={isLoading}
-          messages={messages}
-          setInput={setInput}
-          stop={stop}
-        />
-      </div>
+      <Chat
+        chats={chats ?? []}
+        id={crypto.randomUUID()}
+      />
     </main>
   );
 }
