@@ -8,7 +8,10 @@
       "env": [
         "OPENAI_API_KEY",
         "OPENAI_API_BASE",
-        "NODE_ENV"
+        "NODE_ENV",
+        "SUPABASE_PROJECT_URL",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SECRET_KEY"
       ]
     },
     "lint": {},
