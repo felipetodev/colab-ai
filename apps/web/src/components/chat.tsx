@@ -20,10 +20,15 @@ type Props = {
 
 function Chat({ chats }: Props) {
   const [gotMessages, setGotMessages] = useState(false);
-  const [selectedChat, setSelectedChat] = useState<Chat>(chats[0])
+  const [selectedChat, setSelectedChat] = useState<Chat>(chats[0] ?? {
+    messages: []
+  })
   const router = useRouter()
 
   const { messages, input, stop, setInput, append, isLoading, setMessages } = useChat({
+    body: {
+      chatId: selectedChat?.id,
+    },
     onFinish: () => setGotMessages(true),
   })
 
@@ -33,7 +38,7 @@ function Chat({ chats }: Props) {
 
   const handleSend = async (value: string) => {
     const newMessage: Message = {
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(), // use nanoId
       content: value,
       role: 'user'
     }
@@ -54,8 +59,8 @@ function Chat({ chats }: Props) {
       await fetch('/chats', {
         method: 'PUT',
         body: JSON.stringify({
-          id: selectedChat.id,
-          messages
+          ...selectedChat,
+          messages,
         }),
       })
     }
@@ -63,20 +68,33 @@ function Chat({ chats }: Props) {
   }, [gotMessages])
 
   const handleNewChat = async () => {
+    const newChat = {
+      id: crypto.randomUUID(),
+      name: 'New Chat',
+      messages: [],
+      folderId: null,
+      temperature: 0.2,
+      maxTokens: 2000,
+    }
     await fetch('/chats', {
       method: 'POST',
-      body: JSON.stringify({
-        id: crypto.randomUUID(),
-        name: 'New Chat',
-        messages: []
-      }),
+      body: JSON.stringify(newChat),
     })
+
+    setSelectedChat(newChat)
 
     router.refresh()
   }
 
   const handleSelectChat = (chat: Chat) => {
     setSelectedChat(chat)
+  }
+
+  const onUpdateSelectedChat = (e: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => {
+    setSelectedChat({
+      ...selectedChat,
+      [e.key]: e.value
+    })
   }
 
   return (
@@ -92,7 +110,10 @@ function Chat({ chats }: Props) {
           <div className="relative flex min-h-[calc(100vh-90px-60px)] w-full flex-col pb-8">
 
             {selectedChat.messages.length === 0 ? (
-              <ChatSettings />
+              <ChatSettings
+                onUpdateSelectedChat={onUpdateSelectedChat}
+                selectedChat={selectedChat}
+              />
             ) : (
               <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                 <div className="flex items-center space-x-2">

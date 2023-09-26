@@ -6,9 +6,10 @@ import { Slider } from "./ui/slider"
 
 interface TemperatureSelectorProps {
   defaultValue: SliderProps["defaultValue"]
+  onChange: (value: { key: string, value: any }) => void
 }
 
-function TemperatureSelector({ defaultValue }: TemperatureSelectorProps) {
+function TemperatureSelector({ defaultValue, onChange }: TemperatureSelectorProps) {
   const [value, setValue] = useState(defaultValue)
   return (
     <div className="w-full">
@@ -41,7 +42,11 @@ function TemperatureSelector({ defaultValue }: TemperatureSelectorProps) {
           defaultValue={value}
           id="temperature"
           max={1}
-          onValueChange={setValue}
+          onValueChange={(e) => {
+            const [temperature] = e as [number]
+            setValue(e)
+            onChange({ key: 'temperature', value: temperature })
+          }}
           step={0.1}
         />
       </div>
