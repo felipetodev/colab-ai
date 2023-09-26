@@ -16,5 +16,6 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unsafe-call": "off",
     "prefer-named-capture-group": "off",
+    "@typescript-eslint/no-explicit-any": "off",
   },
 };
