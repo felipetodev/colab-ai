@@ -1,9 +1,16 @@
+/* eslint-disable camelcase */
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import type { Chat } from "@/lib/types/chat";
 
 export async function POST(request: Request) {
-  const { id, name, messages } = await request.json();
+  const {
+    folderId: folder_id,
+    maxTokens: max_tokens,
+    ...restOfProps
+  } = await request.json() as Chat
+
   const supabase = createRouteHandlerClient({ cookies });
 
   const { data: { user } } = await supabase.auth.getUser()
@@ -11,19 +18,31 @@ export async function POST(request: Request) {
 
   const { data: chat } = await supabase
     .from("chats")
-    .insert({ id, name, messages, user_id: user.id })
+    .insert({ user_id: user.id, folder_id, max_tokens, ...restOfProps }) // send user_id: user.id from auth
 
   return NextResponse.json(chat);
 }
 
 export async function PUT(request: Request) {
-  const { messages, id } = await request.json();
+  const { id, folderId: _, maxTokens: max_tokens, ...restOfProps } = await request.json();
   const supabase = createRouteHandlerClient({ cookies });
 
   const { data: chat } = await supabase
     .from("chats")
-    .update({ messages })
+    .update({ ...max_tokens, ...restOfProps })
     .eq('id', id);
+
+  return NextResponse.json(chat);
+}
+
+export async function DELETE(request: Request) {
+  const { id } = await request.json();
+  const supabase = createRouteHandlerClient({ cookies });
+
+  const { data: chat } = await supabase
+    .from("chats")
+    .delete()
+    .eq('id', id)
 
   return NextResponse.json(chat);
 }
