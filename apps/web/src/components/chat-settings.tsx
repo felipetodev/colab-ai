@@ -69,6 +69,7 @@ function ChatSettings({ selectedChat, onUpdateSelectedChat }: Props) {
               onUpdateSelectedChat({ key: 'prompt', value: target.value })
             }}
             placeholder="Write your instructions here..."
+            value={selectedChat.prompt ?? ''}
           />
 
           <div className="w-full">
