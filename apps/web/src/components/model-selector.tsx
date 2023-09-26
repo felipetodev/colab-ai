@@ -23,14 +23,14 @@ export interface Preset {
   name: string
 }
 
-export const presets: Preset[] = [
+export const models: Preset[] = [
   {
     id: "9cb0e66a-9937-465d-a188-2c4c4ae2401f",
     name: "GPT-3.5-turbo",
   },
   {
     id: "61eb0e32-2391-4cd3-adc3-66efe09bc0b7",
-    name: "GPT-3.5-16k",
+    name: "GPT-3.5-turbo-16k",
   },
   {
     id: "a4e1fa51-f4ce-4e45-892c-224030a00bdd",
@@ -38,9 +38,13 @@ export const presets: Preset[] = [
   }
 ]
 
-function ModelSelector(props: PopoverProps) {
+interface Props extends PopoverProps {
+  onChange: (model: { key: string, value: any }) => void
+}
+
+function ModelSelector({ onChange, ...props }: Props) {
   const [open, setOpen] = React.useState(false)
-  const [selectedPreset, setSelectedPreset] = React.useState<Preset>()
+  const [selectedPreset, setSelectedPreset] = React.useState<Preset>(models[0])
 
   return (
     <Popover onOpenChange={setOpen} open={open} {...props}>
@@ -52,7 +56,7 @@ function ModelSelector(props: PopoverProps) {
           role="combobox"
           variant="outline"
         >
-          {selectedPreset ? selectedPreset.name : "Load a preset..."}
+          {selectedPreset ? selectedPreset.name : "Select a model..."}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -61,19 +65,20 @@ function ModelSelector(props: PopoverProps) {
           <CommandInput placeholder="Search models..." />
           <CommandEmpty>No presets found.</CommandEmpty>
           <CommandGroup heading="OpenAI Models">
-            {presets.map((preset) => (
+            {models.map((model) => (
               <CommandItem
-                key={preset.id}
+                key={model.id}
                 onSelect={() => {
-                  setSelectedPreset(preset)
+                  onChange({ key: "model", value: model.name.toLowerCase() })
+                  setSelectedPreset(model)
                   setOpen(false)
                 }}
               >
-                {preset.name}
+                {model.name}
                 <CheckIcon
                   className={cn(
                     "ml-auto h-4 w-4",
-                    selectedPreset?.id === preset.id
+                    selectedPreset?.id === model.id
                       ? "opacity-100"
                       : "opacity-0"
                   )}

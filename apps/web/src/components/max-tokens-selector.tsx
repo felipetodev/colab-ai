@@ -6,9 +6,10 @@ import { Slider } from "./ui/slider"
 
 interface MaxLengthSelectorProps {
   defaultValue: SliderProps["defaultValue"]
+  onChange: (value: { key: string, value: any }) => void
 }
 
-function MaxTokensSelector({ defaultValue }: MaxLengthSelectorProps) {
+function MaxTokensSelector({ defaultValue, onChange }: MaxLengthSelectorProps) {
   const [value, setValue] = useState(defaultValue)
   return (
     <div className="w-full">
@@ -41,7 +42,11 @@ function MaxTokensSelector({ defaultValue }: MaxLengthSelectorProps) {
           defaultValue={value}
           id="maxlength"
           max={4000}
-          onValueChange={setValue}
+          onValueChange={(e) => {
+            const [maxTokens] = e as [number]
+            setValue(e)
+            onChange({ key: 'maxTokens', value: maxTokens })
+          }}
           step={10}
         />
       </div>
