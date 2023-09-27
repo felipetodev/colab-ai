@@ -1,14 +1,23 @@
 'use client'
+
+import { useState } from "react"
 import { ViewVerticalIcon } from "@radix-ui/react-icons"
-import { Plus, Archive, MessageSquare, Pencil, User } from "lucide-react"
+import { Plus, Archive, MessageSquare, File, User } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { Chat } from "@/lib/types/chat"
 import ChatConversation from "./chat-conversation"
+import Agent from "./agent"
+import DocumentDialog from "./document-dialog"
+import DocumentFile from "./document-file"
+
+type TabsView = 'chat' | 'document' | 'agent'
 
 type Props = {
   chats: Chat[]
+  agents: Chat[]
+  documents: any
   selectedChat: Chat
   handleSelectChat: (chat: Chat) => void
   handleNewChat: () => void
@@ -16,28 +25,35 @@ type Props = {
 
 function Sidebar({
   chats,
+  agents,
+  documents,
   selectedChat,
   handleSelectChat,
   handleNewChat
 }: Props) {
+  const [view, setView] = useState<TabsView>('chat')
+
   return (
     <aside className="flex flex-col h-full border-r w-full max-w-sm px-4">
-      {/* Chat Type */}
       <div className="flex items-center h-fit w-full gap-x-2">
-        <Tabs className="flex-1" defaultValue="complete">
+        <Tabs
+          className="flex-1"
+          defaultValue={view}
+          onValueChange={(v: TabsView) => setView(v)}
+        >
           <div className="flex py-2">
             <TabsList className="w-full h-full">
-              <TabsTrigger className="w-full py-2.5" value="complete">
-                <span className="sr-only">Messages</span>
+              <TabsTrigger className="w-full py-2.5" title="Chats" value="chat">
+                <span className="sr-only">Chat</span>
                 <MessageSquare />
               </TabsTrigger>
-              <TabsTrigger className="w-full py-2.5" value="insert">
-                <span className="sr-only">Edit</span>
-                <Pencil />
-              </TabsTrigger>
-              <TabsTrigger className="w-full py-2.5" value="edit">
+              <TabsTrigger className="w-full py-2.5" title="Agents" value="agent">
                 <span className="sr-only">Agents</span>
                 <User />
+              </TabsTrigger>
+              <TabsTrigger className="w-full py-2.5" title="Documents" value="document">
+                <span className="sr-only">Documents</span>
+                <File />
               </TabsTrigger>
             </TabsList>
           </div>
@@ -49,10 +65,26 @@ function Sidebar({
 
       {/* Create Chat or Folder */}
       <div className="flex gap-x-2.5">
-        <Button className="gap-x-2 w-full font-semibold" onClick={handleNewChat}>
-          <Plus className="h-5 w-5" />
-          <span>New Chat</span>
-        </Button>
+        {view === 'chat' && (
+          <Button className="gap-x-2 w-full font-semibold" onClick={handleNewChat}>
+            <Plus className="h-5 w-5" />
+            <span>New Chat</span>
+          </Button>
+        )}
+        {view === 'agent' && (
+          <Button className="gap-x-2 w-full font-semibold">
+            <Plus className="h-5 w-5" />
+            <span>New Agent</span>
+          </Button>
+        )}
+        {view === 'document' && (
+          <DocumentDialog>
+            <Button className="gap-x-2 w-full font-semibold">
+              <Plus className="h-5 w-5" />
+              <span>Upload File</span>
+            </Button>
+          </DocumentDialog>
+        )}
         <Button>
           <Archive />
         </Button>
@@ -65,7 +97,7 @@ function Sidebar({
 
       {/* Chats List */}
       <div className="h-full rounded-md border mb-2">
-        {chats.map((chat) => (
+        {view === 'chat' && chats.map((chat) => (
           <ChatConversation
             id={chat.id}
             isSelected={selectedChat.id === chat.id}
@@ -75,6 +107,21 @@ function Sidebar({
           />
         ))}
 
+        {view === 'agent' && agents.map((agent) => (
+          <Agent
+            agent={agent}
+            isSelected={selectedChat.id === agent.id}
+            key={agent.id}
+          />
+        ))}
+
+        {view === 'document' && documents.map((document) => (
+          <DocumentFile
+            document={document}
+            isSelected={selectedChat.id === document.id}
+            key={document.id}
+          />
+        ))}
       </div>
     </aside>
   )
