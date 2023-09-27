@@ -16,9 +16,11 @@ import Sidebar from "./sidebar";
 type Props = {
   id: string
   chats: Chat[]
+  documents: any
+  agents: Chat[] // refact
 }
 
-function Chat({ chats }: Props) {
+function Chat({ chats, agents, documents }: Props) {
   const [gotMessages, setGotMessages] = useState(false);
   const [selectedChat, setSelectedChat] = useState<Chat>(chats[0] ?? {
     messages: []
@@ -100,7 +102,9 @@ function Chat({ chats }: Props) {
   return (
     <div className="relative flex h-full overflow-hidden">
       <Sidebar
-        chats={chats ?? []}
+        agents={agents}
+        chats={chats}
+        documents={documents}
         handleNewChat={handleNewChat}
         handleSelectChat={handleSelectChat}
         selectedChat={selectedChat}
