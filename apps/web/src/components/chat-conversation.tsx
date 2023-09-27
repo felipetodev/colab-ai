@@ -18,7 +18,7 @@ function ChatConversation({ id, name, isSelected, onClick }: Props) {
     <div
       aria-pressed={isSelected}
       className={cn(
-        'flex items-center p-1 m-2 rounded-md',
+        'flex items-center p-1 m-2 rounded-md hover:bg-secondary/40',
         isSelected && 'bg-secondary'
       )}
       onClick={onClick}
