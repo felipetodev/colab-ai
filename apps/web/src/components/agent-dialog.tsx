@@ -47,14 +47,17 @@ function AgentDialog({ agent, children }: Props) {
         <div className="flex flex-col gap-y-3">
           <div>
             <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="Agent Name" />
+            <Input id="name" placeholder="Agent Name" readOnly value={agent.name} />
           </div>
           <div>
             <Label htmlFor="upload">Choose document</Label>
+            <div className="text-destructive font-semibold">
+              HERE GOES THE FILE UPLOAD TO TRAIN THE AGENT
+            </div>
           </div>
           <div>
             <Label htmlFor="prompt">Prompt</Label>
-            <Textarea id="prompt" placeholder="Write your instructions here..." />
+            <Textarea className="h-40" id="prompt" placeholder="Write your instructions here..." readOnly value={agent.prompt} />
           </div>
 
           <div>
