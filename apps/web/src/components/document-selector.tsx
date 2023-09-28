@@ -1,5 +1,6 @@
 import * as React from "react"
 import { ChevronsUpDown } from "lucide-react"
+import type { DocumentProps } from "@/lib/types/document"
 import {
   Command,
   CommandEmpty,
@@ -14,8 +15,11 @@ import {
   PopoverTrigger,
 } from "./ui/popover"
 
-function DocumentSelector(props) {
-  const { documents } = props
+type Props = {
+  documents: DocumentProps[]
+}
+
+function DocumentSelector({ documents, ...props }: Props) {
   const [open, setOpen] = React.useState(false)
   const [selectedPreset, setSelectedPreset] = React.useState({ id: '', name: '' })
 

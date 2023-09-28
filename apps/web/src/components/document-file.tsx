@@ -1,10 +1,11 @@
 import { Settings, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { DocumentProps } from "@/lib/types/document";
 import { Button } from "./ui/button";
 import DocumentPreviewDialog from "./document-preview-dialog";
 
 type Props = {
-  document: any
+  document: DocumentProps
   isSelected: boolean
 }
 

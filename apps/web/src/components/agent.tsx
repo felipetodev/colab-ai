@@ -1,13 +1,14 @@
 import { User2, Settings } from "lucide-react"
-import type { Chat } from "@/lib/types/chat"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import type { AgentProps } from "@/lib/types/agent"
+import type { DocumentProps } from "@/lib/types/document"
 import AgentDialog from "./agent-dialog"
 
 type Props = {
-  agent: Chat
+  agent: AgentProps
   isSelected: boolean
-  documents: any
+  documents: DocumentProps[]
 }
 
 function Agent({ agent, documents, isSelected }: Props) {

@@ -11,7 +11,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
-import type { Chat } from "@/lib/types/chat"
+import type { AgentProps } from "@/lib/types/agent"
+import type { DocumentProps } from "@/lib/types/document"
 import { Button, buttonVariants } from "./ui/button"
 import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
@@ -22,8 +23,8 @@ import { Label } from "./ui/label"
 import DocumentSelector from "./document-selector"
 
 type Props = {
-  agent: Chat // refact this for AGENT type
-  documents: any
+  agent: AgentProps
+  documents: DocumentProps[]
   children: React.ReactNode
 }
 

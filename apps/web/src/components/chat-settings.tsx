@@ -2,7 +2,7 @@ import { useState } from "react"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
 import { ChevronRightIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import type { Chat } from "@/lib/types/chat"
+import type { ChatProps } from "@/lib/types/chat"
 import ModelSelector from "./model-selector"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card"
 import { Textarea } from "./ui/textarea"
@@ -11,7 +11,7 @@ import MaxTokensSelector from "./max-tokens-selector"
 import { Button } from "./ui/button"
 
 type Props = {
-  selectedChat: Chat
+  selectedChat: ChatProps
   onUpdateSelectedChat: (value: { key: string, value: any }) => void
 }
 

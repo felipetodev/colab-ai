@@ -6,7 +6,9 @@ import { Plus, Archive, MessageSquare, File, User } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import type { Chat } from "@/lib/types/chat"
+import type { ChatProps } from "@/lib/types/chat"
+import { type AgentProps } from "@/lib/types/agent"
+import type { DocumentProps } from "@/lib/types/document"
 import ChatConversation from "./chat-conversation"
 import Agent from "./agent"
 import DocumentDialog from "./document-dialog"
@@ -15,11 +17,11 @@ import DocumentFile from "./document-file"
 type TabsView = 'chat' | 'document' | 'agent'
 
 type Props = {
-  chats: Chat[]
-  agents: Chat[]
-  documents: any
-  selectedChat: Chat
-  handleSelectChat: (chat: Chat) => void
+  chats: ChatProps[]
+  agents: AgentProps[]
+  documents: DocumentProps[]
+  selectedChat: ChatProps
+  handleSelectChat: (chat: ChatProps) => void
   handleNewChat: () => void
 }
 
@@ -110,7 +112,7 @@ function Sidebar({
         {view === 'agent' && agents.map((agent) => (
           <Agent
             agent={agent}
-            documents={documents.filter(doc => doc.isTrained)}
+            documents={documents.filter(doc => Boolean(doc.isTrained))}
             isSelected={selectedChat.id === agent.id}
             key={agent.id}
           />

@@ -10,21 +10,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
+import type { DocumentProps } from "@/lib/types/document"
 import { Button, buttonVariants } from "./ui/button"
 import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
 import { Label } from "./ui/label"
 
 type Props = {
-  document: any
+  document: DocumentProps
   children: React.ReactNode
 }
 
-// refact this 👨‍🚀
-const parseContent = (content: any) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+const parseContent = (content: DocumentProps['content']) => {
   return content.reduce((acc, chunk) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return chunk.pageContent ? (acc + chunk.pageContent) : acc
   }, '')
     .trim()

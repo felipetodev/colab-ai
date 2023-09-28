@@ -5,7 +5,9 @@ import type { Message } from "ai/react";
 import { useChat } from "ai/react"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation";
-import { type Chat } from "@/lib/types/chat"
+import { type ChatProps } from "@/lib/types/chat";
+import type { Agent } from "@/lib/types/agent";
+import type { DocumentProps } from "@/lib/types/document";
 import ChatInput from "./chat-input"
 import ChatMessages from "./chat-messages"
 import { Button } from "./ui/button"
@@ -15,14 +17,17 @@ import Sidebar from "./sidebar";
 
 type Props = {
   id: string
-  chats: Chat[]
-  documents: any
-  agents: Chat[] // refact
+  chats: ChatProps[] | null
+  documents: DocumentProps[] | null
+  agents: Agent[] | null
 }
 
 function Chat({ chats, agents, documents }: Props) {
   const [gotMessages, setGotMessages] = useState(false);
-  const [selectedChat, setSelectedChat] = useState<Chat>(chats[0] ?? {
+  const [selectedChat, setSelectedChat] = useState<ChatProps>(chats?.[0] ?? {
+    name: 'New Chat',
+    folderId: null,
+    id: crypto.randomUUID(),
     messages: []
   })
   const router = useRouter()
@@ -36,7 +41,7 @@ function Chat({ chats, agents, documents }: Props) {
 
   useEffect(() => {
     if (selectedChat?.messages.length === 0) return
-    setMessages(selectedChat.messages)
+    setMessages(selectedChat.messages )
   }, [selectedChat.id])
 
   const handleSend = async (value: string) => {
@@ -71,7 +76,7 @@ function Chat({ chats, agents, documents }: Props) {
   }, [gotMessages])
 
   const handleNewChat = async () => {
-    const newChat: Chat = {
+    const newChat: ChatProps = {
       id: crypto.randomUUID(),
       name: 'New Chat',
       messages: [],
@@ -89,7 +94,7 @@ function Chat({ chats, agents, documents }: Props) {
     router.refresh()
   }
 
-  const handleSelectChat = (chat: Chat) => {
+  const handleSelectChat = (chat: ChatProps) => {
     setSelectedChat(chat)
   }
 
@@ -103,9 +108,9 @@ function Chat({ chats, agents, documents }: Props) {
   return (
     <div className="relative flex h-full overflow-hidden">
       <Sidebar
-        agents={agents}
-        chats={chats}
-        documents={documents}
+        agents={agents ?? []}
+        chats={chats ?? []}
+        documents={documents ?? []}
         handleNewChat={handleNewChat}
         handleSelectChat={handleSelectChat}
         selectedChat={selectedChat}
