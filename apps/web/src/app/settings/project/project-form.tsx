@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/form"
 import { Separator } from "@/components/ui/separator"
 import { IconOpenAI } from "@/components/ui/icons"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const profileFormSchema = z.object({
@@ -28,6 +30,7 @@ const profileFormSchema = z.object({
   supabaseSecretKey: z.string(),
   supabaseUrl: z.string(),
   vectorDBSelected: z.string(),
+  database: z.boolean(),
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
@@ -48,6 +51,8 @@ export function ProjectForm({ defaultValues }: { defaultValues: ProfileFormValue
 
     router.refresh()
   }
+
+  const useDatabase = form.watch('database')
 
   return (
     <Form {...form}>
@@ -92,8 +97,11 @@ export function ProjectForm({ defaultValues }: { defaultValues: ProfileFormValue
         />
 
         <Separator />
-
-        <Tabs defaultValue={form.watch('vectorDBSelected')} onValueChange={(db: 'pinecone' | 'supabase') => form.setValue('vectorDBSelected', db)}>
+        <div className="flex items-center space-x-2">
+          <Switch defaultChecked={useDatabase}  id="database-toggle" name="database" onCheckedChange={(toggle) => form.setValue('database', toggle)} />
+          <Label htmlFor="database-toggle">Use vector database</Label>
+        </div>
+        <Tabs className="relative" defaultValue={form.watch('vectorDBSelected')} onValueChange={(db: 'pinecone' | 'supabase') => form.setValue('vectorDBSelected', db)}>
           <TabsList className="h-full mb-4">
             <TabsTrigger value="pinecone">
               <img alt="pinecone-db" className="h-8" src="/pinecone-logo.svg" />
@@ -186,6 +194,7 @@ export function ProjectForm({ defaultValues }: { defaultValues: ProfileFormValue
               )}
             />
           </TabsContent>
+          {!useDatabase && <div className="absolute top-0 left-0 h-full w-full bg-background/60 select-none" />}
         </Tabs>
 
         <Button type="submit">Update settings</Button>
