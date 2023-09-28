@@ -35,8 +35,9 @@ function Chat({ chats, agents, documents }: Props) {
   })
 
   useEffect(() => {
+    if (selectedChat?.messages.length === 0) return
     setMessages(selectedChat.messages)
-  }, [selectedChat.messages, setMessages])
+  }, [selectedChat.id])
 
   const handleSend = async (value: string) => {
     const newMessage: Message = {
@@ -70,7 +71,7 @@ function Chat({ chats, agents, documents }: Props) {
   }, [gotMessages])
 
   const handleNewChat = async () => {
-    const newChat = {
+    const newChat: Chat = {
       id: crypto.randomUUID(),
       name: 'New Chat',
       messages: [],
