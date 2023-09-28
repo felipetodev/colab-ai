@@ -20,6 +20,7 @@ type Props = {
   children: React.ReactNode
 }
 
+// refact this 👨‍🚀
 const parseContent = (content: any) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return JSON.parse(content).reduce((acc, chunk) => {
@@ -27,10 +28,31 @@ const parseContent = (content: any) => {
     return chunk.pageContent ? (acc + chunk.pageContent) : acc
   }, '')
     .trim()
+    .replace(/\n/g, ' ')
 }
 
 function DocumentPreviewDialog({ document, children }: Props) {
   const [name, setName] = useState(document.name)
+
+  const handleEmbedding = async () => {
+    await fetch('/api/embeddings/supabase', { // use vector DB selected for the user
+      method: 'POST',
+      body: JSON.stringify({
+        content: document.content
+      }),
+    })
+  }
+
+  const handleDeleteEmbedding = async () => {
+    await fetch('/api/embeddings/supabase', { // use vector DB selected for the user
+      method: 'DELETE',
+      body: JSON.stringify({
+        docId: document.id,
+        ids: document.supaEmbeddedIds // only for supabase vector DB
+      }),
+    })
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -70,9 +92,9 @@ function DocumentPreviewDialog({ document, children }: Props) {
           </div>
         </div>
         <DialogFooter className="!justify-between">
-          {document.isTrained ? <Button variant='destructive'>
-              Delete
-            </Button> : <div />}
+          {document.isTrained ? <Button onClick={handleDeleteEmbedding} variant='destructive'>
+            Delete
+          </Button> : <div />}
           <div className="sm:space-x-2">
             <DialogClose className={cn(buttonVariants({ variant: "secondary" }))}>
               Cancel
@@ -82,7 +104,7 @@ function DocumentPreviewDialog({ document, children }: Props) {
                 Save Changes
               </Button>
             ) : (
-              <Button className="bg-green-700 text-white hover:bg-green-700/90">
+              <Button className="bg-green-700 text-white hover:bg-green-700/90" onClick={handleEmbedding}>
                 Generate Embeddings
               </Button>
             )}
