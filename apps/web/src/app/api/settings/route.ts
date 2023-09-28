@@ -9,6 +9,9 @@ export async function PUT(request: Request) {
     pineconeApiKey,
     pineconeEnvironment,
     pineconeIndex,
+    supabaseSecretKey,
+    supabaseUrl,
+    vectorDBSelected
   } = await request.json();
   const supabase = createRouteHandlerClient({ cookies });
   // get userId to update the user settings
@@ -23,6 +26,9 @@ export async function PUT(request: Request) {
       pinecone_key: pineconeApiKey,
       pinecone_env: pineconeEnvironment,
       pinecone_index: pineconeIndex,
+      supabase_secret_key: supabaseSecretKey,
+      supabase_url: supabaseUrl,
+      vector_db_selected: vectorDBSelected
     })
     .eq('id', user?.id);
 
