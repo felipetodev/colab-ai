@@ -31,6 +31,7 @@ importers:
       '@radix-ui/react-separator': ^1.0.3
       '@radix-ui/react-slider': ^1.1.2
       '@radix-ui/react-slot': ^1.0.2
+      '@radix-ui/react-switch': ^1.0.3
       '@radix-ui/react-tabs': ^1.0.4
       '@supabase/auth-helpers-nextjs': 0.8.1
       '@supabase/supabase-js': 2.36.0
@@ -81,6 +82,7 @@ importers:
       '@radix-ui/react-separator': 1.0.3_hk7n5f7tmnkq3232mkfsgkk6nu
       '@radix-ui/react-slider': 1.1.2_hk7n5f7tmnkq3232mkfsgkk6nu
       '@radix-ui/react-slot': 1.0.2_dpmmhqj3uzrk25jjzo7arvivk4
+      '@radix-ui/react-switch': 1.0.3_hk7n5f7tmnkq3232mkfsgkk6nu
       '@radix-ui/react-tabs': 1.0.4_hk7n5f7tmnkq3232mkfsgkk6nu
       '@supabase/auth-helpers-nextjs': 0.8.1_hanmkkm6xzzkvcfspaywvj7ddm
       '@supabase/supabase-js': 2.36.0
@@ -1593,6 +1595,33 @@ packages:
       '@radix-ui/react-compose-refs': 1.0.1_dpmmhqj3uzrk25jjzo7arvivk4
       '@types/react': 18.2.22
       react: 18.2.0
+    dev: false
+
+  /@radix-ui/react-switch/1.0.3_hk7n5f7tmnkq3232mkfsgkk6nu:
+    resolution: {integrity: sha512-mxm87F88HyHztsI7N+ZUmEoARGkC22YVW5CaC+Byc+HRpuvCrOBPTAnXgf+tZ/7i0Sg/eOePGdMhUKhPaQEqow==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.23.1
+      '@radix-ui/primitive': 1.0.1
+      '@radix-ui/react-compose-refs': 1.0.1_dpmmhqj3uzrk25jjzo7arvivk4
+      '@radix-ui/react-context': 1.0.1_dpmmhqj3uzrk25jjzo7arvivk4
+      '@radix-ui/react-primitive': 1.0.3_hk7n5f7tmnkq3232mkfsgkk6nu
+      '@radix-ui/react-use-controllable-state': 1.0.1_dpmmhqj3uzrk25jjzo7arvivk4
+      '@radix-ui/react-use-previous': 1.0.1_dpmmhqj3uzrk25jjzo7arvivk4
+      '@radix-ui/react-use-size': 1.0.1_dpmmhqj3uzrk25jjzo7arvivk4
+      '@types/react': 18.2.22
+      '@types/react-dom': 18.2.7
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@radix-ui/react-tabs/1.0.4_hk7n5f7tmnkq3232mkfsgkk6nu:
