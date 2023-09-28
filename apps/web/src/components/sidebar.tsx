@@ -110,6 +110,7 @@ function Sidebar({
         {view === 'agent' && agents.map((agent) => (
           <Agent
             agent={agent}
+            documents={documents.filter(doc => doc.isTrained)}
             isSelected={selectedChat.id === agent.id}
             key={agent.id}
           />

@@ -19,13 +19,15 @@ import ModelSelector from "./model-selector"
 import TemperatureSelector from "./temperature-selector"
 import MaxTokensSelector from "./max-tokens-selector"
 import { Label } from "./ui/label"
+import DocumentSelector from "./document-selector"
 
 type Props = {
   agent: Chat // refact this for AGENT type
+  documents: any
   children: React.ReactNode
 }
 
-function AgentDialog({ agent, children }: Props) {
+function AgentDialog({ agent, documents, children }: Props) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -97,10 +99,10 @@ function AgentDialog({ agent, children }: Props) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="upload">Choose document</Label>
-            <div className="text-destructive font-semibold">
-              HERE GOES THE FILE UPLOAD TO TRAIN THE AGENT
-            </div>
+            {/* <div className="text-destructive font-semibold">
+              {documents[0].name}
+            </div> */}
+            <DocumentSelector documents={documents} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="prompt">Prompt</Label>

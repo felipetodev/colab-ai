@@ -7,17 +7,20 @@ import AgentDialog from "./agent-dialog"
 type Props = {
   agent: Chat
   isSelected: boolean
+  documents: any
 }
 
-function Agent({ agent, isSelected }: Props) {
-
+function Agent({ agent, documents, isSelected }: Props) {
   const onOpenAgent = () => {
     // eslint-disable-next-line no-console
     console.log("HEY")
   }
 
   return (
-    <AgentDialog agent={agent}>
+    <AgentDialog
+      agent={agent}
+      documents={documents}
+    >
       <div
         className={cn(
           'flex items-center p-1 m-2 rounded-md hover:bg-secondary/40',
