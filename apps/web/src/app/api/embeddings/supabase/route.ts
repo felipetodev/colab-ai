@@ -4,18 +4,18 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { createClient } from "@supabase/supabase-js";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
-import type { Document } from "langchain/dist/document";
+import type { DocumentProps } from "@/lib/types/document";
 
 const secretKey = process.env.SUPABASE_SECRET_KEY!
 const url = process.env.SUPABASE_PROJECT_URL!
 
-const getDocumentId = (doc: Document[] = []) => {
+const getDocumentId = (doc: DocumentProps['content'] = []) => {
   if (doc.length === 0) return null
   return doc[0]?.metadata?.id as string
 }
 
 export async function POST(req: Request) {
-  const { content } = await req.json() as { content: Document[] }
+  const { content } = await req.json() as { content: DocumentProps['content'] }
   const documentId = getDocumentId(content)
 
   const supabase = createServerComponentClient({ cookies })
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const { docId, ids } = await req.json() as { docId: string, ids: number[] }
+  const { docId, ids } = await req.json() as { docId: DocumentProps['id'], ids: number[] }
 
   const supabase = createServerComponentClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
