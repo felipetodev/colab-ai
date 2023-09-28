@@ -23,7 +23,7 @@ type Props = {
 // refact this 👨‍🚀
 const parseContent = (content: any) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return JSON.parse(content).reduce((acc, chunk) => {
+  return content.reduce((acc, chunk) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return chunk.pageContent ? (acc + chunk.pageContent) : acc
   }, '')

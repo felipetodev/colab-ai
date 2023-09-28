@@ -15,10 +15,8 @@ const getDocumentId = (doc: Document[] = []) => {
 }
 
 export async function POST(req: Request) {
-  const { content } = await req.json() as { content: string }
-
-  const chunkedDocs: Document[] = JSON.parse(content)
-  const documentId = getDocumentId(chunkedDocs)
+  const { content } = await req.json() as { content: Document[] }
+  const documentId = getDocumentId(content)
 
   const supabase = createServerComponentClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
@@ -50,7 +48,7 @@ export async function POST(req: Request) {
     tableName: "embeddings",
   });
 
-  const parsedDocs = chunkedDocs.map((doc) => {
+  const parsedDocs = content.map((doc) => {
     return {
       ...doc,
       pageContent: doc.pageContent.replace(/\n/g, " "),
@@ -100,7 +98,8 @@ export async function DELETE(req: Request) {
     tableName: "embeddings",
   });
 
-  //@ts-expect-error: library types are wrong (doesn't accept ids as number[])
+  // @ts-expect-error: library types are wrong (doesn't accept ids as number[])
+  // Update: https://github.com/langchain-ai/langchainjs/pull/2745 PR submitted to fix it 🙌✨
   await store.delete({ ids })
 
   // update document previously trained to 'false' status
