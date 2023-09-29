@@ -14,14 +14,19 @@ import {
   PopoverContent,
   PopoverTrigger
 } from './ui/popover'
+import { type AgentProps } from '@/lib/types/agent'
 
 type Props = {
   documents: DocumentProps[]
+  agentState: AgentProps
+  onChange: ({ key, value }: { key: 'docsId', value: any }) => void
 }
 
-function DocumentSelector ({ documents, ...props }: Props) {
+function DocumentSelector ({ documents, agentState, onChange, ...props }: Props) {
   const [open, setOpen] = React.useState(false)
   const [selectedPreset, setSelectedPreset] = React.useState({ id: '', name: '' })
+
+  const unselectedDocuments = documents.filter((doc) => !agentState.docsId.includes(doc.id))
 
   return (
     <Popover onOpenChange={setOpen} open={open} {...props}>
@@ -42,13 +47,13 @@ function DocumentSelector ({ documents, ...props }: Props) {
         <Command>
           <CommandInput placeholder="Search models..." />
           <CommandEmpty>No presets found.</CommandEmpty>
-          <CommandGroup heading="Document trained">
-            {documents.map((doc) => (
+          <CommandGroup>
+            {unselectedDocuments.map((doc) => (
               <CommandItem
                 key={doc.id}
                 onSelect={() => {
-                  // onChange({ key: "model", value: model.name.toLowerCase() })
                   setSelectedPreset({ id: doc.id, name: doc.name })
+                  onChange({ key: 'docsId', value: [...agentState.docsId, doc.id] })
                   setOpen(false)
                 }}
               >
@@ -56,11 +61,6 @@ function DocumentSelector ({ documents, ...props }: Props) {
               </CommandItem>
             ))}
           </CommandGroup>
-          {/* <CommandGroup className="pt-0">
-            <CommandItem>
-              More examples
-            </CommandItem>
-          </CommandGroup> */}
         </Command>
       </PopoverContent>
     </Popover>

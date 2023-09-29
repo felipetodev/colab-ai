@@ -47,7 +47,7 @@ function MaxTokensSelector ({ defaultValue, onChange }: MaxLengthSelectorProps) 
             setValue(e)
             onChange({ key: 'maxTokens', value: maxTokens })
           }}
-          step={10}
+          step={50}
         />
       </div>
     </div>

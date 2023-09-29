@@ -31,8 +31,17 @@ type Props = {
 function AgentDialog ({ agent, documents, children }: Props) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const onUpdateSelectedChat = () => { }
+  const [agentState, setAgentState] = useState<AgentProps>(agent)
+
+  const onUpdateSelectedChat = ({
+    key,
+    value
+  }: { key: 'name' | 'model' | 'prompt' | 'temperature' | 'maxTokens' | 'docsId', value: any }) => {
+    setAgentState((prev) => ({
+      ...prev,
+      [key]: value
+    }))
+  }
 
   const handleAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -51,10 +60,18 @@ function AgentDialog ({ agent, documents, children }: Props) {
     // upload avatar to storage reference agent
   }
 
+  const handleUpdateAgent = async () => {
+    await fetch('/api/agents', {
+      method: 'PUT',
+      body: JSON.stringify(agentState)
+    })
+  }
+
   return (
     <Dialog onOpenChange={(open) => {
       if (!open) {
         setAvatarPreview(null)
+        setAgentState(agent)
       }
     }}>
       <DialogTrigger asChild>
@@ -72,7 +89,12 @@ function AgentDialog ({ agent, documents, children }: Props) {
         <div className="flex flex-col gap-y-3">
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
-            <Input id="name" placeholder="Agent Name" readOnly value={agent.name} />
+            <Input
+              id="name"
+              placeholder="Agent Name"
+              value={agentState.name}
+              onChange={({ target }) => onUpdateSelectedChat({ key: 'name', value: target.value })}
+            />
           </div>
 
           <div className="space-y-2 flex flex-col justify-center">
@@ -80,16 +102,16 @@ function AgentDialog ({ agent, documents, children }: Props) {
             <Label className="flex flex-col items-center justify-center w-20 h-20 border rounded cursor-pointer overflow-hidden" htmlFor="dropzone-file">
               {avatarPreview
                 ? (
-                <img
-                  alt="avatar"
-                  className="block h-full w-full object-cover"
-                  src={avatarPreview}
-                />
+                  <img
+                    alt="avatar"
+                    className="block h-full w-full object-cover"
+                    src={avatarPreview}
+                  />
                   )
                 : (
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <ImagePlus className="w-5 h-5" />
-                </div>
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <ImagePlus className="w-5 h-5" />
+                  </div>
                   )}
               <input
                 accept="image/jpeg, image/png, image/webp, image/jpg"
@@ -102,14 +124,24 @@ function AgentDialog ({ agent, documents, children }: Props) {
           </div>
 
           <div className="space-y-2">
-            {/* <div className="text-destructive font-semibold">
-              {documents[0].name}
-            </div> */}
-            <DocumentSelector documents={documents} />
+            <DocumentSelector
+              agentState={agentState}
+              documents={documents}
+              onChange={onUpdateSelectedChat}
+            />
+            <pre className='text-xs'>
+              {documents.map(e => agentState.docsId.includes(e.id) ? e.name : null).filter(e => e).join(', ')}
+            </pre>
           </div>
           <div className="space-y-2">
             <Label htmlFor="prompt">Prompt</Label>
-            <Textarea className="h-40" id="prompt" placeholder="Write your instructions here..." readOnly value={agent.prompt} />
+            <Textarea
+              className="h-40"
+              id="prompt"
+              placeholder="Write your instructions here..."
+              value={agentState.prompt}
+              onChange={({ target }) => onUpdateSelectedChat({ key: 'prompt', value: target.value })}
+            />
           </div>
 
           <div className="space-y-2">
@@ -131,16 +163,16 @@ function AgentDialog ({ agent, documents, children }: Props) {
             </Button>
             {isOpen
               ? (
-              <div className="flex flex-col gap-6">
-                <TemperatureSelector
-                  defaultValue={[0.2]}
-                  onChange={onUpdateSelectedChat}
-                />
-                <MaxTokensSelector
-                  defaultValue={[2000]}
-                  onChange={onUpdateSelectedChat}
-                />
-              </div>
+                <div className="flex flex-col gap-6">
+                  <TemperatureSelector
+                    defaultValue={[agentState.temperature ?? 0.2]}
+                    onChange={onUpdateSelectedChat}
+                  />
+                  <MaxTokensSelector
+                    defaultValue={[agentState.maxTokens ?? 2000]}
+                    onChange={onUpdateSelectedChat}
+                  />
+                </div>
                 )
               : null}
           </div>
@@ -149,7 +181,7 @@ function AgentDialog ({ agent, documents, children }: Props) {
           <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
           </DialogClose>
-          <Button className="text-white bg-green-700 hover:bg-green-700/90">
+          <Button onClick={handleUpdateAgent} className="text-white bg-green-700 hover:bg-green-700/90">
             Save Agent
           </Button>
         </DialogFooter>
