@@ -26,7 +26,7 @@ export async function POST (request: Request) {
 
   if (user === null) return NextResponse.json({ error: 'User not found' })
 
-  await supabase.from('documents').insert({
+  const { status } = await supabase.from('documents').insert({
     user_id: user.id,
     id: documentId,
     name,
@@ -34,5 +34,5 @@ export async function POST (request: Request) {
     content: document
   })
 
-  return NextResponse.json({ success: true })
+  return NextResponse.json({ resp: status })
 }
