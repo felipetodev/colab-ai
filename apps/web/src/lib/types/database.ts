@@ -21,6 +21,7 @@ export interface Database {
           temperature: number
           updated_at: string
           user_id: string
+          docs_id: Json
         }
         Insert: {
           created_at?: string
@@ -33,6 +34,7 @@ export interface Database {
           temperature: number
           updated_at?: string
           user_id: string
+          docs_id: Json
         }
         Update: {
           created_at?: string
@@ -45,6 +47,7 @@ export interface Database {
           temperature?: number
           updated_at?: string
           user_id?: string
+          docs_id: Json
         }
         Relationships: [
           {

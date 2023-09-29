@@ -1,4 +1,5 @@
 import type { Database } from './database'
+import { type DocumentProps } from './document'
 
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
 
@@ -10,6 +11,9 @@ export type Agent = {
   temperature?: Tables<'agents'>['temperature']
   maxTokens?: Tables<'agents'>['max_tokens']
   prompt: Tables<'agents'>['prompt']
+  docsId: Tables<'agents'>['docs_id']
 }
 
-export type AgentProps = Agent
+export type AgentProps = Omit<Agent, 'docsId'> & {
+  docsId: Array<DocumentProps['id']>
+}
