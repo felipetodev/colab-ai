@@ -39,12 +39,15 @@ export const models: Preset[] = [
 ]
 
 interface Props extends PopoverProps {
+  value: string
   onChange: (model: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => void
 }
 
-function ModelSelector ({ onChange, ...props }: Props) {
+function ModelSelector ({ value, onChange, ...props }: Props) {
   const [open, setOpen] = React.useState(false)
-  const [selectedPreset, setSelectedPreset] = React.useState<Preset>(models[0])
+  const [selectedPreset, setSelectedPreset] = React.useState<Preset>(
+    models.find((m) => m.name.toLowerCase() === value.toLowerCase()) ?? models[0]
+  )
 
   return (
     <Popover onOpenChange={setOpen} open={open} {...props}>

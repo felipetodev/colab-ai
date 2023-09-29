@@ -1,5 +1,4 @@
 import { User2, Settings } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import type { AgentProps } from '@/lib/types/agent'
 import type { DocumentProps } from '@/lib/types/document'
@@ -7,26 +6,22 @@ import AgentDialog from './agent-dialog'
 
 type Props = {
   agent: AgentProps
-  isSelected: boolean
   documents: DocumentProps[]
 }
 
-function Agent ({ agent, documents, isSelected }: Props) {
+function Agent ({ agent, documents }: Props) {
   const onOpenAgent = () => {
-    // eslint-disable-next-line no-console
-    console.log('HEY')
+    console.log('open modal with keyboard 4 a11y')
   }
 
   return (
     <AgentDialog
+      type='update'
       agent={agent}
       documents={documents}
     >
       <div
-        className={cn(
-          'flex items-center p-1 m-2 rounded-md hover:bg-secondary/40',
-          isSelected && 'bg-secondary'
-        )}
+        className='flex items-center p-1 m-2 rounded-md hover:bg-secondary/40 focus:bg-secondary'
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             onOpenAgent()

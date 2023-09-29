@@ -24,8 +24,6 @@ type Props = {
 
 function DocumentSelector ({ documents, agentState, onChange, ...props }: Props) {
   const [open, setOpen] = React.useState(false)
-  const [selectedPreset, setSelectedPreset] = React.useState({ id: '', name: '' })
-
   const unselectedDocuments = documents.filter((doc) => !agentState.docsId.includes(doc.id))
 
   return (
@@ -37,22 +35,19 @@ function DocumentSelector ({ documents, agentState, onChange, ...props }: Props)
           role="combobox"
           variant="outline"
         >
-          {selectedPreset.name
-            ? selectedPreset.name
-            : 'Select document...'}
+          Select document...
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[620px] p-0">
         <Command>
-          <CommandInput placeholder="Search models..." />
-          <CommandEmpty>No presets found.</CommandEmpty>
+          <CommandInput placeholder="Search files..." />
+          <CommandEmpty>No more trained documents available.</CommandEmpty>
           <CommandGroup>
             {unselectedDocuments.map((doc) => (
               <CommandItem
                 key={doc.id}
                 onSelect={() => {
-                  setSelectedPreset({ id: doc.id, name: doc.name })
                   onChange({ key: 'docsId', value: [...agentState.docsId, doc.id] })
                   setOpen(false)
                 }}

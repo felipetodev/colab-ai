@@ -10,7 +10,7 @@ export type Agent = {
   model?: Tables<'agents'>['model']
   temperature?: Tables<'agents'>['temperature']
   maxTokens?: Tables<'agents'>['max_tokens']
-  prompt: Tables<'agents'>['prompt']
+  prompt?: Tables<'agents'>['prompt']
   docsId: Tables<'agents'>['docs_id']
 }
 

@@ -13,6 +13,7 @@ import ChatConversation from './chat-conversation'
 import Agent from './agent'
 import DocumentDialog from './document-dialog'
 import DocumentFile from './document-file'
+import AgentDialog from './agent-dialog'
 
 type TabsView = 'chat' | 'document' | 'agent'
 
@@ -74,10 +75,21 @@ function Sidebar ({
           </Button>
         )}
         {view === 'agent' && (
-          <Button className="gap-x-2 w-full font-semibold">
-            <Plus className="h-5 w-5" />
-            <span>New Agent</span>
-          </Button>
+          <AgentDialog
+            type='create'
+            agent={{
+              id: crypto.randomUUID(),
+              name: 'New Agent',
+              folderId: null,
+              docsId: []
+            }}
+            documents={documents}
+          >
+            <Button className="gap-x-2 w-full font-semibold">
+              <Plus className="h-5 w-5" />
+              <span>New Agent</span>
+            </Button>
+          </AgentDialog>
         )}
         {view === 'document' && (
           <DocumentDialog>
@@ -113,7 +125,6 @@ function Sidebar ({
           <Agent
             agent={agent}
             documents={documents.filter(doc => Boolean(doc.isTrained))}
-            isSelected={selectedChat.id === agent.id}
             key={agent.id}
           />
         ))}
