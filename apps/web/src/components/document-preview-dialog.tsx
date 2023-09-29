@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { DialogClose } from "@radix-ui/react-dialog"
+import { useState } from 'react'
+import { DialogClose } from '@radix-ui/react-dialog'
 import {
   Dialog,
   DialogContent,
@@ -7,14 +7,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
-import type { DocumentProps } from "@/lib/types/document"
-import { Button, buttonVariants } from "./ui/button"
-import { Input } from "./ui/input"
-import { Textarea } from "./ui/textarea"
-import { Label } from "./ui/label"
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
+import type { DocumentProps } from '@/lib/types/document'
+import { Button, buttonVariants } from './ui/button'
+import { Input } from './ui/input'
+import { Textarea } from './ui/textarea'
+import { Label } from './ui/label'
 
 type Props = {
   document: DocumentProps
@@ -29,7 +29,7 @@ const parseContent = (content: DocumentProps['content']) => {
     .replace(/\n/g, ' ')
 }
 
-function DocumentPreviewDialog({ document, children }: Props) {
+function DocumentPreviewDialog ({ document, children }: Props) {
   const [name, setName] = useState(document.name)
 
   const handleEmbedding = async () => {
@@ -37,7 +37,7 @@ function DocumentPreviewDialog({ document, children }: Props) {
       method: 'POST',
       body: JSON.stringify({
         content: document.content
-      }),
+      })
     })
   }
 
@@ -47,7 +47,7 @@ function DocumentPreviewDialog({ document, children }: Props) {
       body: JSON.stringify({
         docId: document.id,
         ids: document.supaEmbeddedIds // only for supabase vector DB
-      }),
+      })
     })
   }
 
@@ -62,9 +62,11 @@ function DocumentPreviewDialog({ document, children }: Props) {
             {document.name}
           </DialogTitle>
           <DialogDescription>
-            {document.isTrained ? (
+            {document.isTrained
+              ? (
               <>Your document is ready to be used by an agent.</>
-            ) : <>You must train this file before you can use it in an agent.</>}
+                )
+              : <>You must train this file before you can use it in an agent.</>}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-y-3">
@@ -90,27 +92,31 @@ function DocumentPreviewDialog({ document, children }: Props) {
           </div>
         </div>
         <DialogFooter className="!justify-between">
-          {document.isTrained ? <Button onClick={handleDeleteEmbedding} variant='destructive'>
+          {document.isTrained
+            ? <Button onClick={handleDeleteEmbedding} variant='destructive'>
             Delete
-          </Button> : <div />}
+          </Button>
+            : <div />}
           <div className="sm:space-x-2">
-            <DialogClose className={cn(buttonVariants({ variant: "secondary" }))}>
+            <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
               Cancel
             </DialogClose>
-            {document.isTrained ? (
+            {document.isTrained
+              ? (
               <Button className="bg-green-700 text-white hover:bg-green-700/90">
                 Save Changes
               </Button>
-            ) : (
+                )
+              : (
               <Button className="bg-green-700 text-white hover:bg-green-700/90" onClick={handleEmbedding}>
                 Generate Embeddings
               </Button>
-            )}
+                )}
           </div>
         </DialogFooter>
       </DialogContent>
     </Dialog >
-  );
+  )
 }
 
-export default DocumentPreviewDialog;
+export default DocumentPreviewDialog

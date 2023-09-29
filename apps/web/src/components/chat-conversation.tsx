@@ -1,9 +1,9 @@
-import { MessageCircleIcon, Trash2Icon, FileEditIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
-import type { Chat } from "@/lib/types/chat"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import ChatConversationDialog from "./chat-conversation-dialog"
+import { MessageCircleIcon, Trash2Icon, FileEditIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import type { Chat } from '@/lib/types/chat'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import ChatConversationDialog from './chat-conversation-dialog'
 
 type Props = {
   id: Chat['id']
@@ -12,7 +12,7 @@ type Props = {
   onClick: () => void
 }
 
-function ChatConversation({ id, name, isSelected, onClick }: Props) {
+function ChatConversation ({ id, name, isSelected, onClick }: Props) {
   const router = useRouter()
   return (
     <div
@@ -23,8 +23,8 @@ function ChatConversation({ id, name, isSelected, onClick }: Props) {
       )}
       onClick={onClick}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          onClick();
+        if (e.key === 'Enter' || e.key === ' ') {
+          onClick()
         }
       }}
       role="button"
@@ -46,7 +46,7 @@ function ChatConversation({ id, name, isSelected, onClick }: Props) {
               body: JSON.stringify({
                 id,
                 name: newName
-              }),
+              })
             })
             router.refresh()
           }}
@@ -63,7 +63,7 @@ function ChatConversation({ id, name, isSelected, onClick }: Props) {
               method: 'DELETE',
               body: JSON.stringify({
                 id
-              }),
+              })
             })
             router.refresh()
           }}

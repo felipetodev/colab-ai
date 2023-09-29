@@ -1,5 +1,5 @@
-import type { Document as LDocument } from "langchain/dist/document";
-import type { Database } from "./database";
+import type { Document as LDocument } from 'langchain/dist/document'
+import type { Database } from './database'
 
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
 
@@ -15,4 +15,4 @@ export type Document = {
 
 export type DocumentProps = Omit<Document, 'content'> & {
   content: LDocument[]
-};
+}

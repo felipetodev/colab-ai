@@ -1,15 +1,15 @@
-import { useState } from "react"
-import { InfoCircledIcon } from "@radix-ui/react-icons"
-import type { SliderProps } from "@radix-ui/react-slider"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card"
-import { Slider } from "./ui/slider"
+import { useState } from 'react'
+import { InfoCircledIcon } from '@radix-ui/react-icons'
+import type { SliderProps } from '@radix-ui/react-slider'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card'
+import { Slider } from './ui/slider'
 
 interface TemperatureSelectorProps {
-  defaultValue: SliderProps["defaultValue"]
-  onChange: (value: { key: string, value: any }) => void
+  defaultValue: SliderProps['defaultValue']
+  onChange: (value: { key: 'temperature', value: any }) => void
 }
 
-function TemperatureSelector({ defaultValue, onChange }: TemperatureSelectorProps) {
+function TemperatureSelector ({ defaultValue, onChange }: TemperatureSelectorProps) {
   const [value, setValue] = useState(defaultValue)
   return (
     <div className="w-full">

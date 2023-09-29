@@ -1,22 +1,22 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
-import type { PopoverProps } from "@radix-ui/react-popover"
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
+import type { PopoverProps } from '@radix-ui/react-popover'
+import { cn } from '@/lib/utils'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
-} from "./ui/command"
-import { Button } from "./ui/button"
+  CommandItem
+} from './ui/command'
+import { Button } from './ui/button'
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "./ui/popover"
+  PopoverTrigger
+} from './ui/popover'
 
 export interface Preset {
   id: string
@@ -25,24 +25,24 @@ export interface Preset {
 
 export const models: Preset[] = [
   {
-    id: "9cb0e66a-9937-465d-a188-2c4c4ae2401f",
-    name: "GPT-3.5-turbo",
+    id: '9cb0e66a-9937-465d-a188-2c4c4ae2401f',
+    name: 'GPT-3.5-turbo'
   },
   {
-    id: "61eb0e32-2391-4cd3-adc3-66efe09bc0b7",
-    name: "GPT-3.5-turbo-16k",
+    id: '61eb0e32-2391-4cd3-adc3-66efe09bc0b7',
+    name: 'GPT-3.5-turbo-16k'
   },
   {
-    id: "a4e1fa51-f4ce-4e45-892c-224030a00bdd",
-    name: "GPT-4",
+    id: 'a4e1fa51-f4ce-4e45-892c-224030a00bdd',
+    name: 'GPT-4'
   }
 ]
 
 interface Props extends PopoverProps {
-  onChange: (model: { key: string, value: any }) => void
+  onChange: (model: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => void
 }
 
-function ModelSelector({ onChange, ...props }: Props) {
+function ModelSelector ({ onChange, ...props }: Props) {
   const [open, setOpen] = React.useState(false)
   const [selectedPreset, setSelectedPreset] = React.useState<Preset>(models[0])
 
@@ -56,7 +56,7 @@ function ModelSelector({ onChange, ...props }: Props) {
           role="combobox"
           variant="outline"
         >
-          {selectedPreset ? selectedPreset.name : "Select a model..."}
+          {selectedPreset ? selectedPreset.name : 'Select a model...'}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -69,7 +69,7 @@ function ModelSelector({ onChange, ...props }: Props) {
               <CommandItem
                 key={model.id}
                 onSelect={() => {
-                  onChange({ key: "model", value: model.name.toLowerCase() })
+                  onChange({ key: 'model', value: model.name.toLowerCase() })
                   setSelectedPreset(model)
                   setOpen(false)
                 }}
@@ -77,10 +77,10 @@ function ModelSelector({ onChange, ...props }: Props) {
                 {model.name}
                 <CheckIcon
                   className={cn(
-                    "ml-auto h-4 w-4",
+                    'ml-auto h-4 w-4',
                     selectedPreset?.id === model.id
-                      ? "opacity-100"
-                      : "opacity-0"
+                      ? 'opacity-100'
+                      : 'opacity-0'
                   )}
                 />
               </CommandItem>

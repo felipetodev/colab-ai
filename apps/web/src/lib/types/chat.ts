@@ -1,5 +1,5 @@
-import type { Message } from "ai/react";
-import type { Database } from "./database";
+import type { Message } from 'ai/react'
+import type { Database } from './database'
 
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
 
@@ -16,4 +16,4 @@ export type Chat = {
 
 export type ChatProps = Omit<Chat, 'messages'> & {
   messages: Message[]
-};
+}

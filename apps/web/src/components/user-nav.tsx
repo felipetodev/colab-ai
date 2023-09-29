@@ -1,11 +1,11 @@
-import Link from "next/link"
-import type { Session } from "@supabase/supabase-js"
-import { Button } from "@/components/ui/button"
+import Link from 'next/link'
+import type { Session } from '@supabase/supabase-js'
+import { Button } from '@/components/ui/button'
 import {
   Avatar,
   AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar"
+  AvatarImage
+} from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +14,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
 type Props = {
   username: Session['user']['user_metadata']['user_name']
@@ -24,7 +24,7 @@ type Props = {
   handleSignOut: () => void
 }
 
-function UserNav({
+function UserNav ({
   username,
   avatarUrl,
   email,

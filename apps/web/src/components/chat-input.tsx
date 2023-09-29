@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react"
-import { StopCircle } from "lucide-react"
-import type { UseChatHelpers } from "ai/react"
+import { useEffect, useRef } from 'react'
+import { StopCircle } from 'lucide-react'
+import type { UseChatHelpers } from 'ai/react'
 import Textarea from 'react-textarea-autosize'
-import { useEnterSubmit } from "src/hooks/use-enter-submit"
-import { Button } from "./ui/button"
+import { useEnterSubmit } from '../hooks/use-enter-submit'
+import { Button } from './ui/button'
 
 interface Props
   extends Pick<UseChatHelpers, 'stop' | 'input' | 'setInput'> {
@@ -11,7 +11,7 @@ interface Props
   isLoading: boolean
 }
 
-function ChatInput({
+function ChatInput ({
   input,
   stop,
   setInput,
@@ -28,11 +28,13 @@ function ChatInput({
   }, [])
   return (
     <div className="sticky bg-transparent bottom-6 w-full z-50 pt-8">
-      {isLoading ? <div className="flex justify-center items-center w-full h-12">
+      {isLoading
+        ? <div className="flex justify-center items-center w-full h-12">
         <Button onClick={stop} size='sm' variant='outline'>
           <StopCircle className="w-4 h-4 mr-2" /> Stop generating
         </Button>
-      </div> : null}
+      </div>
+        : null}
       <div className="bg-background max-w-2xl mx-auto rounded-lg p-2 shadow-lg shadow-black/40">
         <form
           className="relative flex"
@@ -48,7 +50,7 @@ function ChatInput({
         >
           <Textarea
             className="border min-h-[20px] max-h-[280px] w-full rounded-lg resize-none bg-transparent px-4 py-2.5 focus-within:outline-none text-sm pr-10"
-            onChange={e => setInput(e.target.value)}
+            onChange={e => { setInput(e.target.value) }}
             onKeyDown={onKeyDown}
             placeholder="Ask ColabAI..."
             ref={inputRef}

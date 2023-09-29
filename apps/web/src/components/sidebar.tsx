@@ -1,18 +1,18 @@
 'use client'
 
-import { useState } from "react"
-import { ViewVerticalIcon } from "@radix-ui/react-icons"
-import { Plus, Archive, MessageSquare, File, User } from "lucide-react"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import type { ChatProps } from "@/lib/types/chat"
-import { type AgentProps } from "@/lib/types/agent"
-import type { DocumentProps } from "@/lib/types/document"
-import ChatConversation from "./chat-conversation"
-import Agent from "./agent"
-import DocumentDialog from "./document-dialog"
-import DocumentFile from "./document-file"
+import { useState } from 'react'
+import { ViewVerticalIcon } from '@radix-ui/react-icons'
+import { Plus, Archive, MessageSquare, File, User } from 'lucide-react'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import type { ChatProps } from '@/lib/types/chat'
+import { type AgentProps } from '@/lib/types/agent'
+import type { DocumentProps } from '@/lib/types/document'
+import ChatConversation from './chat-conversation'
+import Agent from './agent'
+import DocumentDialog from './document-dialog'
+import DocumentFile from './document-file'
 
 type TabsView = 'chat' | 'document' | 'agent'
 
@@ -25,7 +25,7 @@ type Props = {
   handleNewChat: () => void
 }
 
-function Sidebar({
+function Sidebar ({
   chats,
   agents,
   documents,
@@ -41,7 +41,7 @@ function Sidebar({
         <Tabs
           className="flex-1"
           defaultValue={view}
-          onValueChange={(v: TabsView) => setView(v)}
+          onValueChange={(v) => setView(v as TabsView)}
         >
           <div className="flex py-2">
             <TabsList className="w-full h-full">

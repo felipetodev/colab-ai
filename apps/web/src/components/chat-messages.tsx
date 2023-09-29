@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { User, Copy } from "lucide-react"
-import type { Message } from "ai/react"
+import { User, Copy } from 'lucide-react'
+import type { Message } from 'ai/react'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import { cn } from "@/lib/utils"
-import { Button } from "./ui/button"
-import { MemoizedReactMarkdown } from "./markdown"
-import { CodeBlock } from "./codeblock"
+import { cn } from '@/lib/utils'
+import { Button } from './ui/button'
+import { MemoizedReactMarkdown } from './markdown'
+import { CodeBlock } from './codeblock'
 
-function ChatMessages({ content, role }: Message) {
+function ChatMessages ({ content, role }: Message) {
   return (
     <div className={cn({
-      "bg-secondary/50": role === 'user',
-      "bg-secondary/10": role === 'assistant',
+      'bg-secondary/50': role === 'user',
+      'bg-secondary/10': role === 'assistant'
     })}>
       <div className="group max-w-2xl mx-auto">
         <div className="flex justify-between items-center mt-4">
@@ -32,10 +32,10 @@ function ChatMessages({ content, role }: Message) {
           <MemoizedReactMarkdown
             className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
             components={{
-              p({ children }) {
+              p ({ children }) {
                 return <p className="mb-2 last:mb-0">{children}</p>
               },
-              code({ node, inline, className, children, ...props }) {
+              code ({ node, inline, className, children, ...props }) {
                 if (children.length) {
                   if (children[0] === '▍') {
                     return (
@@ -46,7 +46,7 @@ function ChatMessages({ content, role }: Message) {
                   children[0] = (children[0] as string).replace('`▍`', '▍')
                 }
 
-                const match = /language-(\w+)/.exec(className || '')
+                const match = /language-(\w+)/.exec(className ?? '')
 
                 if (inline) {
                   return (
@@ -59,7 +59,7 @@ function ChatMessages({ content, role }: Message) {
                 return (
                   <CodeBlock
                     key={crypto.randomUUID()}
-                    language={(match?.[1]) || ''}
+                    language={(match?.[1]) ?? ''}
                     value={String(children).replace(/\n$/, '')}
                     {...props}
                   />

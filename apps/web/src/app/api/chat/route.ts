@@ -1,15 +1,15 @@
-import type { NextRequest } from 'next/server';
-import type { Message as VercelChatMessage } from 'ai';
-import { StreamingTextResponse } from 'ai';
-import { ChatOpenAI } from 'langchain/chat_models/openai';
-import { BytesOutputParser } from 'langchain/schema/output_parser';
-import { PromptTemplate } from 'langchain/prompts';
+import type { NextRequest } from 'next/server'
+import type { Message as VercelChatMessage } from 'ai'
+import { StreamingTextResponse } from 'ai'
+import { ChatOpenAI } from 'langchain/chat_models/openai'
+import { BytesOutputParser } from 'langchain/schema/output_parser'
+import { PromptTemplate } from 'langchain/prompts'
 
-export const runtime = 'edge';
+export const runtime = 'edge'
 
 const formatMessage = (message: VercelChatMessage) => {
-  return `${message.role}: ${message.content}`;
-};
+  return `${message.role}: ${message.content}`
+}
 
 const TEMPLATE = `You are a helpful, friendly AI assistant.
 
@@ -19,19 +19,19 @@ Current conversation:
 {chat_history}
 
 User: {input}
-AI:`;
+AI:`
 
 const {
-  SUPABASE_PROJECT_URL = "",
-  SUPABASE_ANON_KEY = "",
-  SUPABASE_SECRET_KEY = ""
+  SUPABASE_PROJECT_URL = '',
+  SUPABASE_ANON_KEY = '',
+  SUPABASE_SECRET_KEY = ''
 } = process.env
 
-export async function POST(req: NextRequest) {
+export async function POST (req: NextRequest) {
   const body = await req.json() as { messages?: VercelChatMessage[], chatId?: string }
-  const messages = body.messages ?? [];
-  const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
-  const currentMessageContent = messages[messages.length - 1].content;
+  const messages = body.messages ?? []
+  const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
+  const currentMessageContent = messages[messages.length - 1].content
 
   // get chat data from supabase
   let payload: any
@@ -51,30 +51,30 @@ export async function POST(req: NextRequest) {
       model: chat[0].model?.toLowerCase(),
       temperature: chat[0].temperature,
       max_tokens: chat[0].max_tokens,
-      prompt: chat[0].prompt,
+      prompt: chat[0].prompt
     }
   } catch (error) {
     payload = {}
   }
 
-  const prompt = PromptTemplate.fromTemplate(TEMPLATE);
+  const prompt = PromptTemplate.fromTemplate(TEMPLATE)
 
   const model = new ChatOpenAI({
     modelName: payload.model,
     openAIApiKey: process.env.OPENAI_API_KEY!,
     temperature: payload.temperature,
-    maxTokens: payload.max_tokens,
-  });
+    maxTokens: payload.max_tokens
+  })
 
-  const outputParser = new BytesOutputParser();
+  const outputParser = new BytesOutputParser()
 
-  const chain = prompt.pipe(model).pipe(outputParser);
+  const chain = prompt.pipe(model).pipe(outputParser)
 
   const stream = await chain.stream({
     chat_history: formattedPreviousMessages.join('\n'),
     prompt: payload.prompt ?? '',
-    input: currentMessageContent,
-  });
+    input: currentMessageContent
+  })
 
-  return new StreamingTextResponse(stream);
+  return new StreamingTextResponse(stream)
 }

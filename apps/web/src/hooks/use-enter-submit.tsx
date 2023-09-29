@@ -1,6 +1,6 @@
 import { useRef, type RefObject } from 'react'
 
-export function useEnterSubmit(): {
+export function useEnterSubmit (): {
   formRef: RefObject<HTMLFormElement>
   onKeyDown: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void
 } {

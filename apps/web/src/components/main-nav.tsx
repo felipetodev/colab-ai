@@ -1,10 +1,10 @@
-import Link from "next/link"
-import { HomeIcon, SettingsIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { AuthButtonServer } from "./auth-button-server"
+import Link from 'next/link'
+import { HomeIcon, SettingsIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { AuthButtonServer } from './auth-button-server'
 
-function MainNav({
+function MainNav ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
@@ -12,7 +12,7 @@ function MainNav({
     <div className="border-b">
       <div className="flex h-14 items-center px-4">
         <nav
-          className={cn("flex items-center space-x-2 lg:space-x-2", className)}
+          className={cn('flex items-center space-x-2 lg:space-x-2', className)}
           {...props}
         >
           <Link
@@ -21,7 +21,6 @@ function MainNav({
           >
             Your workspace
           </Link>
-
 
           <Button className="w-8 h-8" size="icon">
             <HomeIcon className="h-5 w-5" />

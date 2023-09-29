@@ -1,19 +1,19 @@
 'use client'
 
-import { Settings } from "lucide-react"
-import type { Message } from "ai/react";
-import { useChat } from "ai/react"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation";
-import { type ChatProps } from "@/lib/types/chat";
-import type { Agent } from "@/lib/types/agent";
-import type { DocumentProps } from "@/lib/types/document";
-import ChatInput from "./chat-input"
-import ChatMessages from "./chat-messages"
-import { Button } from "./ui/button"
-import ChatSettings from "./chat-settings"
-import ChatScrollAnchor from "./chat-scroll-anchor"
-import Sidebar from "./sidebar";
+import { Settings } from 'lucide-react'
+import type { Message } from 'ai/react'
+import { useChat } from 'ai/react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { type ChatProps } from '@/lib/types/chat'
+import type { Agent } from '@/lib/types/agent'
+import type { DocumentProps } from '@/lib/types/document'
+import ChatInput from './chat-input'
+import ChatMessages from './chat-messages'
+import { Button } from './ui/button'
+import ChatSettings from './chat-settings'
+import ChatScrollAnchor from './chat-scroll-anchor'
+import Sidebar from './sidebar'
 
 type Props = {
   id: string
@@ -22,8 +22,8 @@ type Props = {
   agents: Agent[] | null
 }
 
-function Chat({ chats, agents, documents }: Props) {
-  const [gotMessages, setGotMessages] = useState(false);
+function Chat ({ chats, agents, documents }: Props) {
+  const [gotMessages, setGotMessages] = useState(false)
   const [selectedChat, setSelectedChat] = useState<ChatProps>(chats?.[0] ?? {
     name: 'New Chat',
     folderId: null,
@@ -34,14 +34,14 @@ function Chat({ chats, agents, documents }: Props) {
 
   const { messages, input, stop, setInput, append, isLoading, setMessages } = useChat({
     body: {
-      chatId: selectedChat?.id,
+      chatId: selectedChat?.id
     },
-    onFinish: () => setGotMessages(true),
+    onFinish: () => { setGotMessages(true) }
   })
 
   useEffect(() => {
     if (selectedChat?.messages.length === 0) return
-    setMessages(selectedChat.messages )
+    setMessages(selectedChat.messages)
   }, [selectedChat.id])
 
   const handleSend = async (value: string) => {
@@ -68,8 +68,8 @@ function Chat({ chats, agents, documents }: Props) {
         method: 'PUT',
         body: JSON.stringify({
           ...selectedChat,
-          messages,
-        }),
+          messages
+        })
       })
     }
     void sendMessages()
@@ -82,11 +82,11 @@ function Chat({ chats, agents, documents }: Props) {
       messages: [],
       folderId: null,
       temperature: 0.2,
-      maxTokens: 2000,
+      maxTokens: 2000
     }
     await fetch('/chats', {
       method: 'POST',
-      body: JSON.stringify(newChat),
+      body: JSON.stringify(newChat)
     })
 
     setSelectedChat(newChat)
@@ -119,12 +119,14 @@ function Chat({ chats, agents, documents }: Props) {
         <div className="relative min-h-full w-full overflow-y-auto">
           <div className="relative flex min-h-[calc(100vh-90px-60px)] w-full flex-col pb-8">
 
-            {selectedChat.messages.length === 0 ? (
+            {selectedChat.messages.length === 0
+              ? (
               <ChatSettings
                 onUpdateSelectedChat={onUpdateSelectedChat}
                 selectedChat={selectedChat}
               />
-            ) : (
+                )
+              : (
               <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                 <div className="flex items-center space-x-2">
                   <h1>{selectedChat.name}</h1>
@@ -133,7 +135,7 @@ function Chat({ chats, agents, documents }: Props) {
                   </Button>
                 </div>
               </header>
-            )}
+                )}
 
             <div className='flex flex-col pb-[60px]'>
               {messages?.map((message) => (

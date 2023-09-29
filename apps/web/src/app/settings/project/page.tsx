@@ -1,10 +1,10 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { Separator } from "@/components/ui/separator";
-import type { Database } from "@/lib/types/database";
-import { ProjectForm } from "./project-form";
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { Separator } from '@/components/ui/separator'
+import type { Database } from '@/lib/types/database'
+import { ProjectForm } from './project-form'
 
-export default async function ProjectSettings() {
+export default async function ProjectSettings () {
   const supabase = createServerComponentClient<Database>({ cookies })
 
   const { data: user } = await supabase
@@ -26,5 +26,5 @@ export default async function ProjectSettings() {
       <Separator />
       <ProjectForm defaultValues={user[0]} />
     </main>
-  );
+  )
 }

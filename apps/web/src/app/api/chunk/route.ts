@@ -1,10 +1,10 @@
 import crypto from 'node:crypto'
-import { NextResponse } from "next/server";
-import { WebPDFLoader } from "langchain/document_loaders/web/pdf";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { NextResponse } from 'next/server'
+import { WebPDFLoader } from 'langchain/document_loaders/web/pdf'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 
-export async function POST(request: Request) {
+export async function POST (request: Request) {
   const formData = await request.formData()
 
   const pdf = formData.get('file') as Blob | null
@@ -14,8 +14,8 @@ export async function POST(request: Request) {
 
   if (!pdf) return null
 
-  const loader = new WebPDFLoader(pdf);
-  const document = await loader.load();
+  const loader = new WebPDFLoader(pdf)
+  const document = await loader.load()
 
   document.forEach((page) => {
     page.metadata.id = documentId
@@ -34,5 +34,5 @@ export async function POST(request: Request) {
     content: document
   })
 
-  return NextResponse.json({ success: true });
+  return NextResponse.json({ success: true })
 }

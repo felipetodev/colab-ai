@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Form,
   FormControl,
@@ -13,13 +13,13 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Separator } from "@/components/ui/separator"
-import { IconOpenAI } from "@/components/ui/icons"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+  FormMessage
+} from '@/components/ui/form'
+import { Separator } from '@/components/ui/separator'
+import { IconOpenAI } from '@/components/ui/icons'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 const profileFormSchema = z.object({
   openaiKey: z.string(),
@@ -29,30 +29,27 @@ const profileFormSchema = z.object({
   pineconeIndex: z.string(),
   supabaseSecretKey: z.string(),
   supabaseUrl: z.string(),
-  vectorDBSelected: z.string(),
-  database: z.boolean(),
+  vectorDBSelected: z.string()
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-export function ProjectForm({ defaultValues }: { defaultValues: ProfileFormValues }) {
+export function ProjectForm ({ defaultValues }: { defaultValues: ProfileFormValues }) {
   const router = useRouter()
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
-    mode: "onChange",
+    mode: 'onChange'
   })
 
-  async function onSubmit(data: ProfileFormValues) {
+  async function onSubmit (data: ProfileFormValues) {
     await fetch('/api/settings', {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(data)
-    });
+    })
 
     router.refresh()
   }
-
-  const useDatabase = form.watch('database')
 
   return (
     <Form {...form}>
@@ -98,10 +95,10 @@ export function ProjectForm({ defaultValues }: { defaultValues: ProfileFormValue
 
         <Separator />
         <div className="flex items-center space-x-2">
-          <Switch defaultChecked={useDatabase}  id="database-toggle" name="database" onCheckedChange={(toggle) => form.setValue('database', toggle)} />
+          <Switch defaultChecked={false} id="database-toggle" name="database" />
           <Label htmlFor="database-toggle">Use vector database</Label>
         </div>
-        <Tabs className="relative" defaultValue={form.watch('vectorDBSelected')} onValueChange={(db: 'pinecone' | 'supabase') => form.setValue('vectorDBSelected', db)}>
+        <Tabs className="relative" defaultValue={form.watch('vectorDBSelected')} onValueChange={(db) => form.setValue('vectorDBSelected', db as 'pinecone' | 'supabase')}>
           <TabsList className="h-full mb-4">
             <TabsTrigger value="pinecone">
               <img alt="pinecone-db" className="h-8" src="/pinecone-logo.svg" />
@@ -194,7 +191,7 @@ export function ProjectForm({ defaultValues }: { defaultValues: ProfileFormValue
               )}
             />
           </TabsContent>
-          {!useDatabase && <div className="absolute top-0 left-0 h-full w-full bg-background/60 select-none" />}
+          {/* {!useDatabase && <div className="absolute top-0 left-0 h-full w-full bg-background/60 select-none" />} */}
         </Tabs>
 
         <Button type="submit">Update settings</Button>

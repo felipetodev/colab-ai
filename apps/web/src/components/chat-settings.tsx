@@ -1,21 +1,21 @@
-import { useState } from "react"
-import { InfoCircledIcon } from "@radix-ui/react-icons"
-import { ChevronRightIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import type { ChatProps } from "@/lib/types/chat"
-import ModelSelector from "./model-selector"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card"
-import { Textarea } from "./ui/textarea"
-import TemperatureSelector from "./temperature-selector"
-import MaxTokensSelector from "./max-tokens-selector"
-import { Button } from "./ui/button"
+import { useState } from 'react'
+import { InfoCircledIcon } from '@radix-ui/react-icons'
+import { ChevronRightIcon } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { ChatProps } from '@/lib/types/chat'
+import ModelSelector from './model-selector'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card'
+import { Textarea } from './ui/textarea'
+import TemperatureSelector from './temperature-selector'
+import MaxTokensSelector from './max-tokens-selector'
+import { Button } from './ui/button'
 
 type Props = {
   selectedChat: ChatProps
-  onUpdateSelectedChat: (value: { key: string, value: any }) => void
+  onUpdateSelectedChat: (value: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => void
 }
 
-function ChatSettings({ selectedChat, onUpdateSelectedChat }: Props) {
+function ChatSettings ({ selectedChat, onUpdateSelectedChat }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <div className="bg-background w-full max-w-2xl mx-auto border rounded-lg mt-20 shadow-lg shadow-black/40">
@@ -75,16 +75,17 @@ function ChatSettings({ selectedChat, onUpdateSelectedChat }: Props) {
           <div className="w-full">
             <Button
               className="flex items-center justify-start mb-4"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => { setIsOpen(!isOpen) }}
               variant='secondary'
             >
               <span>Show Advanced Settings</span>
               <ChevronRightIcon
                 className={cn('w-4 h-4 ml-1', {
-                  'transform rotate-90': isOpen,
+                  'transform rotate-90': isOpen
                 })} />
             </Button>
-            {isOpen ? (
+            {isOpen
+              ? (
               <div className="flex flex-col gap-6">
                 <TemperatureSelector
                   defaultValue={[selectedChat.temperature ?? 0.2]}
@@ -95,7 +96,8 @@ function ChatSettings({ selectedChat, onUpdateSelectedChat }: Props) {
                   onChange={onUpdateSelectedChat}
                 />
               </div>
-            ) : null}
+                )
+              : null}
           </div>
         </div>
       </div>

@@ -1,27 +1,27 @@
-import type { Metadata } from "next"
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
-import { cookies } from "next/headers"
-import { redirect } from "next/navigation";
-import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
-import { SidebarNav } from "./components/sidebar-nav"
+import type { Metadata } from 'next'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
+import { SidebarNav } from './components/sidebar-nav'
 
 export const metadata: Metadata = {
-  title: "Colab-AI | Settings",
+  title: 'Colab-AI | Settings'
 }
 
 const sidebarNavItems = [
   {
-    title: "Profile",
-    href: "/settings",
+    title: 'Profile',
+    href: '/settings'
   },
   {
-    title: "Project Settings",
-    href: "/settings/project",
+    title: 'Project Settings',
+    href: '/settings/project'
   },
   {
-    title: "Appearance",
-    href: "/settings/appearance",
+    title: 'Appearance',
+    href: '/settings/appearance'
   }
 ]
 
@@ -29,7 +29,7 @@ interface SettingsLayoutProps {
   children: React.ReactNode
 }
 
-export default async function SettingsLayout({ children }: SettingsLayoutProps) {
+export default async function SettingsLayout ({ children }: SettingsLayoutProps) {
   const supabase = createServerComponentClient({ cookies })
   const { data: { session } } = await supabase.auth.getSession()
 

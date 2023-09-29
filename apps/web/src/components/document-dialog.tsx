@@ -1,5 +1,5 @@
-import { DialogClose } from "@radix-ui/react-dialog"
-import { useState } from "react"
+import { DialogClose } from '@radix-ui/react-dialog'
+import { useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -7,23 +7,23 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button, buttonVariants } from "./ui/button"
-import { Input } from "./ui/input"
-import { Label } from "./ui/label"
-import { IconGitHub } from "./ui/icons"
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Button, buttonVariants } from './ui/button'
+import { Input } from './ui/input'
+import { Label } from './ui/label'
+import { IconGitHub } from './ui/icons'
 
 type Props = {
   children: React.ReactNode
 }
 
-type Tabs = 'documents' | 'github'
+type ITabs = 'documents' | 'github'
 
-function DocumentDialog({ children }: Props) {
-  const [activeTab, setActiveTab] = useState<Tabs>('documents')
+function DocumentDialog ({ children }: Props) {
+  const [activeTab, setActiveTab] = useState<ITabs>('documents')
   const [fileName, setFileName] = useState('')
   const [fileLists, setFileLists] = useState<FileList | null>(null)
 
@@ -35,7 +35,7 @@ function DocumentDialog({ children }: Props) {
     setFileLists(files)
   }
 
-  const onFileSubmit = async (tab: Tabs) => {
+  const onFileSubmit = async (tab: ITabs) => {
     if (tab === 'documents') {
       if (!fileLists) return
       const file = fileLists[0]
@@ -64,7 +64,7 @@ function DocumentDialog({ children }: Props) {
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
-        <Tabs defaultValue="documents" onValueChange={(tab: Tabs) => setActiveTab(tab)}>
+        <Tabs defaultValue="documents" onValueChange={(tab) => setActiveTab(tab as ITabs)}>
           <DialogHeader>
             <DialogTitle>
               <TabsList>
@@ -82,7 +82,7 @@ function DocumentDialog({ children }: Props) {
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
-                  onChange={({ target }) => setFileName(target.value)}
+                  onChange={({ target }) => { setFileName(target.value) }}
                   placeholder="File name"
                   value={(fileName || fileLists?.[0]?.name) ?? ''}
                 />
@@ -126,10 +126,10 @@ function DocumentDialog({ children }: Props) {
           </TabsContent>
         </Tabs>
         <DialogFooter>
-          <DialogClose className={cn(buttonVariants({ variant: "secondary" }))}>
+          <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
           </DialogClose>
-          <Button className="text-white bg-green-700 hover:bg-green-700/90" onClick={() => onFileSubmit(activeTab)}>
+          <Button className="text-white bg-green-700 hover:bg-green-700/90" onClick={async () => { await onFileSubmit(activeTab) }}>
             {activeTab === 'documents' ? 'Upload' : 'Connect'}
           </Button>
         </DialogFooter>

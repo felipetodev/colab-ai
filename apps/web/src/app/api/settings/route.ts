@@ -1,8 +1,8 @@
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
 
-export async function PUT(request: Request) {
+export async function PUT (request: Request) {
   const {
     openaiKey,
     openaiOrg,
@@ -12,14 +12,13 @@ export async function PUT(request: Request) {
     supabaseSecretKey,
     supabaseUrl,
     vectorDBSelected
-  } = await request.json();
-  const supabase = createRouteHandlerClient({ cookies });
+  } = await request.json()
+  const supabase = createRouteHandlerClient({ cookies })
   // get userId to update the user settings
   const { data: { user } } = await supabase.auth.getUser()
 
-
   const { data } = await supabase
-    .from("users")
+    .from('users')
     .update({
       openai_key: openaiKey,
       openai_org: openaiOrg,
@@ -30,7 +29,7 @@ export async function PUT(request: Request) {
       supabase_url: supabaseUrl,
       vector_db_selected: vectorDBSelected
     })
-    .eq('id', user?.id);
+    .eq('id', user?.id)
 
-  return NextResponse.json(data);
+  return NextResponse.json(data)
 }

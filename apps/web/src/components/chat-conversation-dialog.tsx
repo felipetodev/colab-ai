@@ -1,5 +1,5 @@
-import { DialogClose } from "@radix-ui/react-dialog"
-import { useState } from "react"
+import { DialogClose } from '@radix-ui/react-dialog'
+import { useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -7,11 +7,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "./ui/button"
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
+import { Button, buttonVariants } from './ui/button'
 
 type Props =
   | {
@@ -25,7 +25,7 @@ type Props =
     children: React.ReactNode
   }
 
-function ChatConversationDialog(props: Props) {
+function ChatConversationDialog (props: Props) {
   const { type, onClick, children } = props
   const [newChatName, setNewChatName] = useState('')
   return (
@@ -34,7 +34,8 @@ function ChatConversationDialog(props: Props) {
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
-        {type === 'edit' ? (
+        {type === 'edit'
+          ? (
           <>
             <DialogHeader>
               <DialogTitle>Edit chat</DialogTitle>
@@ -43,33 +44,36 @@ function ChatConversationDialog(props: Props) {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <Input onChange={({ target }) => setNewChatName(target.value)} placeholder={props.activeName} />
+              <Input onChange={({ target }) => { setNewChatName(target.value) }} placeholder={props.activeName} />
             </div>
           </>
-        ) : (
+            )
+          : (
           <DialogHeader>
             <DialogTitle>Delete chat</DialogTitle>
             <DialogDescription>
               Are you sure you want to delete this chat?
             </DialogDescription>
           </DialogHeader>
-        )}
+            )}
         <DialogFooter>
-          {type === 'delete' ? (
+          {type === 'delete'
+            ? (
             <>
-              <DialogClose className={cn(buttonVariants({ variant: "secondary" }))}>
+              <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
                 Cancel
               </DialogClose>
               <Button onClick={onClick} variant="destructive">Delete</Button>
             </>
-          ) : (
+              )
+            : (
             <>
-              <DialogClose className={cn(buttonVariants({ variant: "secondary" }))}>
+              <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
                 Cancel
               </DialogClose>
-              <Button onClick={() => onClick(newChatName)}>Save</Button>
+              <Button onClick={() => { onClick(newChatName) }}>Save</Button>
             </>
-          )}
+              )}
         </DialogFooter>
       </DialogContent>
     </Dialog >

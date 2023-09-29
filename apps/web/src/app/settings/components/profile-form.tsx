@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import Link from 'next/link'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Form,
   FormControl,
@@ -13,45 +13,44 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+  FormMessage
+} from '@/components/ui/form'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import type { User } from "@/lib/types/user"
+  SelectValue
+} from '@/components/ui/select'
+import type { User } from '@/lib/types/user'
 
 const profileFormSchema = z.object({
   username: z
     .string()
     .min(2, {
-      message: "Username must be at least 2 characters.",
+      message: 'Username must be at least 2 characters.'
     })
     .max(30, {
-      message: "Username must not be longer than 30 characters.",
+      message: 'Username must not be longer than 30 characters.'
     }),
   email: z
     .string({
-      required_error: "Please select an email to display.",
+      required_error: 'Please select an email to display.'
     })
-    .email(),
+    .email()
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-export function ProfileForm({ username }: { username: User['user_name'] }) {
+export function ProfileForm ({ username }: { username: User['user_name'] }) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: { username: username ?? '' },
-    mode: "onChange",
+    mode: 'onChange'
   })
 
-  function onSubmit(data: ProfileFormValues) {
-    // eslint-disable-next-line no-console
-    console.log({data})
+  function onSubmit (data: ProfileFormValues) {
+    // console.log({ data })
   }
 
   return (
@@ -93,7 +92,7 @@ export function ProfileForm({ username }: { username: User['user_name'] }) {
                 </SelectContent>
               </Select>
               <FormDescription>
-                You can manage verified email addresses in your{" "}
+                You can manage verified email addresses in your{' '}
                 <Link href="/examples/forms">email settings</Link>.
               </FormDescription>
               <FormMessage />

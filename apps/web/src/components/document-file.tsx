@@ -1,15 +1,15 @@
-import { Settings, FileText } from "lucide-react";
-import { cn } from "@/lib/utils";
-import type { DocumentProps } from "@/lib/types/document";
-import { Button } from "./ui/button";
-import DocumentPreviewDialog from "./document-preview-dialog";
+import { Settings, FileText } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { DocumentProps } from '@/lib/types/document'
+import { Button } from './ui/button'
+import DocumentPreviewDialog from './document-preview-dialog'
 
 type Props = {
   document: DocumentProps
   isSelected: boolean
 }
 
-function DocumentFile({ document, isSelected }: Props) {
+function DocumentFile ({ document, isSelected }: Props) {
   return (
     <DocumentPreviewDialog document={document}>
       <div
@@ -18,7 +18,7 @@ function DocumentFile({ document, isSelected }: Props) {
           isSelected && 'bg-secondary'
         )}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
+          if (e.key === 'Enter' || e.key === ' ') {
             // onOpenAgent();
           }
         }}

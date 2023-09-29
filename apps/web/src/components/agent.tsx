@@ -1,9 +1,9 @@
-import { User2, Settings } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import type { AgentProps } from "@/lib/types/agent"
-import type { DocumentProps } from "@/lib/types/document"
-import AgentDialog from "./agent-dialog"
+import { User2, Settings } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import type { AgentProps } from '@/lib/types/agent'
+import type { DocumentProps } from '@/lib/types/document'
+import AgentDialog from './agent-dialog'
 
 type Props = {
   agent: AgentProps
@@ -11,10 +11,10 @@ type Props = {
   documents: DocumentProps[]
 }
 
-function Agent({ agent, documents, isSelected }: Props) {
+function Agent ({ agent, documents, isSelected }: Props) {
   const onOpenAgent = () => {
     // eslint-disable-next-line no-console
-    console.log("HEY")
+    console.log('HEY')
   }
 
   return (
@@ -28,8 +28,8 @@ function Agent({ agent, documents, isSelected }: Props) {
           isSelected && 'bg-secondary'
         )}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            onOpenAgent();
+          if (e.key === 'Enter' || e.key === ' ') {
+            onOpenAgent()
           }
         }}
         role="button"

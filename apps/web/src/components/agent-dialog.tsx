@@ -1,6 +1,6 @@
-import { DialogClose } from "@radix-ui/react-dialog"
-import { useState } from "react"
-import { ChevronRightIcon, ImagePlus } from "lucide-react"
+import { DialogClose } from '@radix-ui/react-dialog'
+import { useState } from 'react'
+import { ChevronRightIcon, ImagePlus } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -8,19 +8,19 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
-import type { AgentProps } from "@/lib/types/agent"
-import type { DocumentProps } from "@/lib/types/document"
-import { Button, buttonVariants } from "./ui/button"
-import { Input } from "./ui/input"
-import { Textarea } from "./ui/textarea"
-import ModelSelector from "./model-selector"
-import TemperatureSelector from "./temperature-selector"
-import MaxTokensSelector from "./max-tokens-selector"
-import { Label } from "./ui/label"
-import DocumentSelector from "./document-selector"
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
+import type { AgentProps } from '@/lib/types/agent'
+import type { DocumentProps } from '@/lib/types/document'
+import { Button, buttonVariants } from './ui/button'
+import { Input } from './ui/input'
+import { Textarea } from './ui/textarea'
+import ModelSelector from './model-selector'
+import TemperatureSelector from './temperature-selector'
+import MaxTokensSelector from './max-tokens-selector'
+import { Label } from './ui/label'
+import DocumentSelector from './document-selector'
 
 type Props = {
   agent: AgentProps
@@ -28,7 +28,7 @@ type Props = {
   children: React.ReactNode
 }
 
-function AgentDialog({ agent, documents, children }: Props) {
+function AgentDialog ({ agent, documents, children }: Props) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -78,17 +78,19 @@ function AgentDialog({ agent, documents, children }: Props) {
           <div className="space-y-2 flex flex-col justify-center">
             <Label htmlFor="dropzone-file">Avatar</Label>
             <Label className="flex flex-col items-center justify-center w-20 h-20 border rounded cursor-pointer overflow-hidden" htmlFor="dropzone-file">
-              {avatarPreview ? (
+              {avatarPreview
+                ? (
                 <img
                   alt="avatar"
                   className="block h-full w-full object-cover"
                   src={avatarPreview}
                 />
-              ) : (
+                  )
+                : (
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <ImagePlus className="w-5 h-5" />
                 </div>
-              )}
+                  )}
               <input
                 accept="image/jpeg, image/png, image/webp, image/jpg"
                 className="hidden"
@@ -118,16 +120,17 @@ function AgentDialog({ agent, documents, children }: Props) {
           <div className="w-full mt-2">
             <Button
               className="flex items-center justify-start mb-4"
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => { setIsOpen(!isOpen) }}
               variant='secondary'
             >
               <span>Show Advanced Settings</span>
               <ChevronRightIcon
                 className={cn('w-4 h-4 ml-1', {
-                  'transform rotate-90': isOpen,
+                  'transform rotate-90': isOpen
                 })} />
             </Button>
-            {isOpen ? (
+            {isOpen
+              ? (
               <div className="flex flex-col gap-6">
                 <TemperatureSelector
                   defaultValue={[0.2]}
@@ -138,11 +141,12 @@ function AgentDialog({ agent, documents, children }: Props) {
                   onChange={onUpdateSelectedChat}
                 />
               </div>
-            ) : null}
+                )
+              : null}
           </div>
         </div>
         <DialogFooter>
-          <DialogClose className={cn(buttonVariants({ variant: "secondary" }))}>
+          <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
           </DialogClose>
           <Button className="text-white bg-green-700 hover:bg-green-700/90">

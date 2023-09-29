@@ -5,11 +5,11 @@
 
 'use client'
 
-import type { FC } from 'react';
+import type { FC } from 'react'
 import { memo } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
-import { Check, CopyIcon, DownloadIcon } from "lucide-react"
+import { Check, CopyIcon, DownloadIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCopyToClipboard } from '../hooks/use-copy-to-clipboard'
 
@@ -18,7 +18,7 @@ interface Props {
   value: string
 }
 
-type languageMap = Record<string, string | undefined>;
+type languageMap = Record<string, string | undefined>
 
 export const programmingLanguages: languageMap = {
   javascript: '.js',
@@ -56,6 +56,7 @@ export const generateRandomString = (length: number, lowercase = false) => {
   return lowercase ? result.toLowerCase() : result
 }
 
+// eslint-disable-next-line react/prop-types
 const CodeBlock: FC<Props> = memo(({ language, value }) => {
   const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
 
@@ -63,7 +64,7 @@ const CodeBlock: FC<Props> = memo(({ language, value }) => {
     if (typeof window === 'undefined') {
       return
     }
-    const fileExtension = programmingLanguages[language] || '.file'
+    const fileExtension = programmingLanguages[language] ?? '.file'
     const suggestedFileName = `file-${generateRandomString(
       3,
       true

@@ -1,25 +1,25 @@
-import * as React from "react"
-import { ChevronsUpDown } from "lucide-react"
-import type { DocumentProps } from "@/lib/types/document"
+import * as React from 'react'
+import { ChevronsUpDown } from 'lucide-react'
+import type { DocumentProps } from '@/lib/types/document'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
-  CommandItem,
-} from "./ui/command"
-import { Button } from "./ui/button"
+  CommandItem
+} from './ui/command'
+import { Button } from './ui/button'
 import {
   Popover,
   PopoverContent,
-  PopoverTrigger,
-} from "./ui/popover"
+  PopoverTrigger
+} from './ui/popover'
 
 type Props = {
   documents: DocumentProps[]
 }
 
-function DocumentSelector({ documents, ...props }: Props) {
+function DocumentSelector ({ documents, ...props }: Props) {
   const [open, setOpen] = React.useState(false)
   const [selectedPreset, setSelectedPreset] = React.useState({ id: '', name: '' })
 
@@ -34,7 +34,7 @@ function DocumentSelector({ documents, ...props }: Props) {
         >
           {selectedPreset.name
             ? selectedPreset.name
-            : "Select document..."}
+            : 'Select document...'}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

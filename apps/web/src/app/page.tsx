@@ -1,8 +1,8 @@
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
-import Chat from "@/components/chat";
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import Chat from '@/components/chat'
 
-export default async function Home() {
+export default async function Home () {
   const supabase = createServerComponentClient({ cookies })
   const { data: chats } = await supabase
     .from('chats')
@@ -25,5 +25,5 @@ export default async function Home() {
         id={crypto.randomUUID()}
       />
     </main>
-  );
+  )
 }
