@@ -2,25 +2,32 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
-import type { Chat } from '@/lib/types/chat'
+import type { ChatProps } from '@/lib/types/chat'
 
 export async function POST (request: Request) {
   const {
+    model = 'gpt-3.5-turbo',
     folderId: folder_id,
     maxTokens: max_tokens,
     ...restOfProps
-  } = await request.json() as Chat
+  } = await request.json() as ChatProps
 
   const supabase = createRouteHandlerClient({ cookies })
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (user === null) return
+  if (user === null) return NextResponse.json({ error: 'Something went wrong creating new chat' })
 
-  const { data: chat } = await supabase
+  const { data: chat, error } = await supabase
     .from('chats')
-    .insert({ user_id: user.id, folder_id, max_tokens, ...restOfProps }) // send user_id: user.id from auth
+    .insert({
+      user_id: user.id,
+      folder_id,
+      max_tokens,
+      model,
+      ...restOfProps
+    }) // send user_id: user.id from auth
 
-  return NextResponse.json(chat)
+  return NextResponse.json({ chat, error })
 }
 
 export async function PUT (request: Request) {
