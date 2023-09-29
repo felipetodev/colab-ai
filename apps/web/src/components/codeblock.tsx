@@ -1,5 +1,3 @@
-/* eslint-disable no-constant-binary-expression */
-/* eslint-disable no-alert */
 // Inspired by Chatbot-UI and modified to fit the needs of this project
 // @see https://github.com/mckaywrigley/chatbot-ui/blob/main/components/Markdown/CodeBlock.tsx
 
