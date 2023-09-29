@@ -76,6 +76,8 @@ function Chat ({ chats, agents, documents }: Props) {
   }, [gotMessages])
 
   const handleNewChat = async () => {
+    // clean useChat state
+    setMessages([])
     const newChat: ChatProps = {
       id: crypto.randomUUID(),
       name: 'New Chat',
@@ -94,10 +96,6 @@ function Chat ({ chats, agents, documents }: Props) {
     router.refresh()
   }
 
-  const handleSelectChat = (chat: ChatProps) => {
-    setSelectedChat(chat)
-  }
-
   const onUpdateSelectedChat = (e: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => {
     setSelectedChat({
       ...selectedChat,
@@ -112,7 +110,7 @@ function Chat ({ chats, agents, documents }: Props) {
         chats={chats ?? []}
         documents={documents ?? []}
         handleNewChat={handleNewChat}
-        handleSelectChat={handleSelectChat}
+        handleSelectChat={setSelectedChat}
         selectedChat={selectedChat}
       />
       <div className="relative flex flex-col justify-between bg-zinc-400 dark:bg-zinc-900 w-full h-full">
@@ -121,33 +119,34 @@ function Chat ({ chats, agents, documents }: Props) {
 
             {selectedChat.messages.length === 0
               ? (
-              <ChatSettings
-                onUpdateSelectedChat={onUpdateSelectedChat}
-                selectedChat={selectedChat}
-              />
+                <ChatSettings
+                  onUpdateSelectedChat={onUpdateSelectedChat}
+                  selectedChat={selectedChat}
+                />
                 )
               : (
-              <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
-                <div className="flex items-center space-x-2">
-                  <h1>{selectedChat.name}</h1>
-                  <Button className="w-8 h-8" size='icon' variant='ghost'>
-                    <Settings className="h-5 w-5" />
-                  </Button>
-                </div>
-              </header>
+                <>
+                  <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
+                    <div className="flex items-center space-x-2">
+                      <h1>{selectedChat.name}</h1>
+                      <Button className="w-8 h-8" size='icon' variant='ghost'>
+                        <Settings className="h-5 w-5" />
+                      </Button>
+                    </div>
+                  </header>
+                  <div className='flex flex-col pb-[60px]'>
+                    {messages?.map((message) => (
+                      <ChatMessages
+                        content={message.content}
+                        id={message.id}
+                        key={message.id}
+                        role={message.role}
+                      />
+                    ))}
+                    <ChatScrollAnchor trackVisibility={isLoading} />
+                  </div>
+                </>
                 )}
-
-            <div className='flex flex-col pb-[60px]'>
-              {messages?.map((message) => (
-                <ChatMessages
-                  content={message.content}
-                  id={message.id}
-                  key={message.id}
-                  role={message.role}
-                />
-              ))}
-              <ChatScrollAnchor trackVisibility={isLoading} />
-            </div>
 
           </div>
           <ChatInput
