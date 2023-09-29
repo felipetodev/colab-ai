@@ -26,3 +26,32 @@ export async function PUT (req: Request) {
 
   return NextResponse.json({ success: true })
 }
+
+export async function POST (req: Request) {
+  const {
+    model = 'gpt-3.5-turbo',
+    temperature = 0.2,
+    maxTokens: max_tokens = 2000,
+    folderId: folder_id,
+    docsId: docs_id,
+    ...restOfProps
+  } = await req.json() as AgentProps
+  const supabase = createRouteHandlerClient({ cookies })
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user === null) return NextResponse.json({ error: 'User not found' })
+
+  await supabase
+    .from('agents')
+    .insert({
+      user_id: user.id,
+      model,
+      folder_id,
+      docs_id,
+      temperature,
+      max_tokens,
+      ...restOfProps
+    })
+
+  return NextResponse.json({ success: true })
+}
