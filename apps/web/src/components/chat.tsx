@@ -6,7 +6,7 @@ import { useChat } from 'ai/react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { type ChatProps } from '@/lib/types/chat'
-import type { Agent } from '@/lib/types/agent'
+import type { AgentProps } from '@/lib/types/agent'
 import type { DocumentProps } from '@/lib/types/document'
 import ChatInput from './chat-input'
 import ChatMessages from './chat-messages'
@@ -19,7 +19,7 @@ type Props = {
   id: string
   chats: ChatProps[] | null
   documents: DocumentProps[] | null
-  agents: Agent[] | null
+  agents: AgentProps[] | null
 }
 
 function Chat ({ chats, agents, documents }: Props) {
