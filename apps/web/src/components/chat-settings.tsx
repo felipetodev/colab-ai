@@ -45,7 +45,7 @@ function ChatSettings ({ selectedChat, onUpdateSelectedChat }: Props) {
             </h2>
           </div>
           {/* Input Selector */}
-          <ModelSelector onChange={onUpdateSelectedChat} />
+          <ModelSelector value={selectedChat.model ?? ''} onChange={onUpdateSelectedChat} />
           <div className="flex items-center w-full mb-2">
             <HoverCard openDelay={200}>
               <HoverCardTrigger asChild>
