@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-function IconOpenAI({ className, ...props }: React.ComponentProps<'svg'>) {
+function IconOpenAI ({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
       className={cn('h-4 w-4', className)}
@@ -16,7 +16,7 @@ function IconOpenAI({ className, ...props }: React.ComponentProps<'svg'>) {
   )
 }
 
-function IconGitHub({ className, ...props }: React.ComponentProps<'svg'>) {
+function IconGitHub ({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
       className={cn('h-4 w-4', className)}
@@ -32,5 +32,5 @@ function IconGitHub({ className, ...props }: React.ComponentProps<'svg'>) {
 
 export {
   IconOpenAI,
-  IconGitHub,
+  IconGitHub
 }
