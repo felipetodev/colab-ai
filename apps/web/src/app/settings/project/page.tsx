@@ -5,7 +5,8 @@ import type { Database } from '@/lib/types/database'
 import { ProjectForm } from './project-form'
 
 export default async function ProjectSettings () {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
 
   const { data: user } = await supabase
     .from('users')

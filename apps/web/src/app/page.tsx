@@ -3,7 +3,8 @@ import { cookies } from 'next/headers'
 import Chat from '@/components/chat'
 
 export default async function Home () {
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const { data: chats } = await supabase
     .from('chats')
     .select('id, name, messages, folderId:folder_id, model, temperature, maxTokens:max_tokens, prompt')

@@ -5,7 +5,8 @@ import { ProfileForm } from './components/profile-form'
 import type { Database } from '@/lib/types/database'
 
 export default async function Settings () {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient<Database>({ cookies: () => cookieStore })
   const { data: user } = await supabase
     .from('users')
     .select('username:user_name')
