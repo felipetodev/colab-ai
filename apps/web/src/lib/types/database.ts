@@ -179,6 +179,7 @@ export interface Database {
           supabase_url: string
           user_name: string
           vector_db_selected: string
+          db_status: boolean
         }
         Insert: {
           avatar_url: string
@@ -193,6 +194,7 @@ export interface Database {
           supabase_url?: string
           user_name: string
           vector_db_selected?: string | null
+          db_status: boolean
         }
         Update: {
           avatar_url?: string
@@ -207,6 +209,7 @@ export interface Database {
           supabase_url?: string
           user_name?: string
           vector_db_selected?: string | null
+          db_status: boolean
         }
         Relationships: [
           {

@@ -29,7 +29,8 @@ const profileFormSchema = z.object({
   pineconeIndex: z.string(),
   supabaseSecretKey: z.string(),
   supabaseUrl: z.string(),
-  vectorDBSelected: z.string()
+  vectorDBSelected: z.string(),
+  dbStatus: z.boolean()
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
@@ -50,6 +51,8 @@ export function ProjectForm ({ defaultValues }: { defaultValues: ProfileFormValu
 
     router.refresh()
   }
+
+  const activeUserDatabase = form.watch('dbStatus')
 
   return (
     <Form {...form}>
@@ -95,7 +98,7 @@ export function ProjectForm ({ defaultValues }: { defaultValues: ProfileFormValu
 
         <Separator />
         <div className="flex items-center space-x-2">
-          <Switch defaultChecked={false} id="database-toggle" name="database" />
+          <Switch defaultChecked={activeUserDatabase} id="database-toggle" name="dbStatus" onCheckedChange={(isChecked) => form.setValue('dbStatus', isChecked)} />
           <Label htmlFor="database-toggle">Use vector database</Label>
         </div>
         <Tabs className="relative" defaultValue={form.watch('vectorDBSelected')} onValueChange={(db) => form.setValue('vectorDBSelected', db as 'pinecone' | 'supabase')}>
@@ -191,7 +194,9 @@ export function ProjectForm ({ defaultValues }: { defaultValues: ProfileFormValu
               )}
             />
           </TabsContent>
-          {/* {!useDatabase && <div className="absolute top-0 left-0 h-full w-full bg-background/60 select-none" />} */}
+          {!activeUserDatabase && (
+            <div className="absolute top-0 left-0 h-full w-full bg-background/60 select-none" />
+          )}
         </Tabs>
 
         <Button type="submit">Update settings</Button>

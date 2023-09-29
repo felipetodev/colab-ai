@@ -10,7 +10,7 @@ export default async function ProjectSettings () {
 
   const { data: user } = await supabase
     .from('users')
-    .select('openaiKey:openai_key, openaiOrg:openai_org, pineconeApiKey:pinecone_key, pineconeEnvironment:pinecone_env, pineconeIndex:pinecone_index, supabaseSecretKey:supabase_secret_key, supabaseUrl:supabase_url, vectorDBSelected:vector_db_selected')
+    .select('openaiKey:openai_key, openaiOrg:openai_org, pineconeApiKey:pinecone_key, pineconeEnvironment:pinecone_env, pineconeIndex:pinecone_index, supabaseSecretKey:supabase_secret_key, supabaseUrl:supabase_url, vectorDBSelected:vector_db_selected, dbStatus:db_status')
 
   // on this page, user data can not be null
   // anyway this is handled in src > app > settings > layout.tsx
