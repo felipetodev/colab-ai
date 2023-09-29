@@ -4,7 +4,7 @@ import { WebPDFLoader } from 'langchain/document_loaders/web/pdf'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 
-export async function POST (request: Request) {
+export async function POST (request: NextResponse) {
   const formData = await request.formData()
 
   const pdf = formData.get('file') as Blob | null
