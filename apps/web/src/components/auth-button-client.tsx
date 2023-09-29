@@ -14,7 +14,9 @@ export function AuthButtonClient ({ session }: { session: Session | null }) {
     await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: 'http://localhost:3000/auth/callback'
+        redirectTo: process.env.NODE_ENV === 'production'
+          ? `${process.env.APP_HOST}/auth/callback`
+          : 'http://localhost:3000/auth/callback'
       }
     })
   }
