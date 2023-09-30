@@ -31,15 +31,22 @@ export async function POST (request: Request) {
 }
 
 export async function PUT (request: Request) {
-  const { id, folderId: _, maxTokens: max_tokens, ...restOfProps } = await request.json()
+  const {
+    id,
+    folderId: _,
+    isAgent: is_agent = false,
+    agentId: agent_id = null,
+    maxTokens: __,
+    ...restOfProps
+  } = await request.json()
   const supabase = createRouteHandlerClient({ cookies })
 
-  const { data: chat } = await supabase
+  const { data: chat, error } = await supabase
     .from('chats')
-    .update({ ...max_tokens, ...restOfProps })
+    .update({ is_agent, agent_id, ...restOfProps })
     .eq('id', id)
 
-  return NextResponse.json(chat)
+  return NextResponse.json({ chat, error })
 }
 
 export async function DELETE (request: Request) {
