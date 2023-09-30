@@ -132,7 +132,6 @@ function Sidebar ({
         {view === 'document' && documents.map((document) => (
           <DocumentFile
             document={document}
-            isSelected={selectedChat.id === document.id}
             key={document.id}
           />
         ))}
