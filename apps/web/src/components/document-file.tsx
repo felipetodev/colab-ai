@@ -1,22 +1,17 @@
 import { Settings, FileText } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import type { DocumentProps } from '@/lib/types/document'
 import { Button } from './ui/button'
 import DocumentPreviewDialog from './document-preview-dialog'
 
 type Props = {
   document: DocumentProps
-  isSelected: boolean
 }
 
-function DocumentFile ({ document, isSelected }: Props) {
+function DocumentFile ({ document }: Props) {
   return (
     <DocumentPreviewDialog document={document}>
       <div
-        className={cn(
-          'flex items-center p-1 m-2 rounded-md hover:bg-secondary/40',
-          isSelected && 'bg-secondary'
-        )}
+        className='flex items-center p-1 m-2 rounded-md hover:bg-secondary/40'
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             // onOpenAgent();
