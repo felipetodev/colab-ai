@@ -69,6 +69,7 @@ export interface Database {
           prompt: string
           temperature: number
           user_id: string
+          is_agent: boolean
         }
         Insert: {
           folder_id?: string | null
@@ -80,6 +81,7 @@ export interface Database {
           prompt?: string
           temperature: number
           user_id: string
+          is_agent: boolean
         }
         Update: {
           folder_id?: string | null
@@ -91,6 +93,7 @@ export interface Database {
           prompt?: string
           temperature?: number
           user_id?: string
+          is_agent: boolean
         }
         Relationships: [
           {

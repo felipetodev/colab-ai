@@ -12,6 +12,7 @@ export type Chat = {
   temperature?: Tables<'chats'>['temperature']
   maxTokens?: Tables<'chats'>['max_tokens']
   prompt?: Tables<'chats'>['prompt']
+  isAgent?: Tables<'chats'>['is_agent']
 }
 
 export type ChatProps = Omit<Chat, 'messages'> & {
