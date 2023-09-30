@@ -21,6 +21,7 @@ type Props = {
   children: React.ReactNode
 }
 
+// do on the server
 const parseContent = (content: DocumentProps['content']) => {
   return content.reduce((acc, chunk) => {
     return chunk.pageContent ? (acc + chunk.pageContent) : acc
@@ -52,7 +53,11 @@ function DocumentPreviewDialog ({ document, children }: Props) {
   }
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={(open) => {
+      if (!open) {
+        setName(document.name)
+      }
+    }}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
@@ -74,7 +79,7 @@ function DocumentPreviewDialog ({ document, children }: Props) {
             <Label htmlFor="name">Name</Label>
             <Input
               id="name"
-              onChange={({ target }) => setName(target.name)}
+              onChange={({ target }) => setName(target.value)}
               placeholder="File name"
               value={name}
             />
