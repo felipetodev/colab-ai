@@ -82,7 +82,7 @@ function DocumentDialog ({ children }: Props) {
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
-                  onChange={({ target }) => { setFileName(target.value) }}
+                  onChange={({ target }) => setFileName(target.value)}
                   placeholder="File name"
                   value={(fileName || fileLists?.[0]?.name) ?? ''}
                 />
