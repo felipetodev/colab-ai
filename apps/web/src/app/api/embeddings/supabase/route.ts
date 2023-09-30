@@ -15,7 +15,7 @@ const getDocumentId = (doc: DocumentProps['content'] = []) => {
 }
 
 export async function POST (req: Request) {
-  const { content } = await req.json() as { content: DocumentProps['content'] }
+  const { name, content } = await req.json() as { name: DocumentProps['name'], content: DocumentProps['content'] }
   const documentId = getDocumentId(content)
 
   const supabase = createServerComponentClient({ cookies })
@@ -59,7 +59,7 @@ export async function POST (req: Request) {
 
   // update document to trained 'true' status
   await supabase.from('documents')
-    .update({ is_trained: true, supabase_embeddings_ids: ids })
+    .update({ name, is_trained: true, supabase_embeddings_ids: ids })
     .eq('id', documentId)
 
   return NextResponse.json({ finished: true, content })
