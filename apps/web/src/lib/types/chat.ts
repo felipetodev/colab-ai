@@ -13,12 +13,18 @@ export type Chat = {
   maxTokens?: Tables<'chats'>['max_tokens']
   prompt?: Tables<'chats'>['prompt']
   isAgent?: Tables<'chats'>['is_agent']
+  user?: Tables<'chats'>['user_id']
 }
 
-export type ChatProps = Omit<Chat, 'messages'> & {
+export type ChatProps = Omit<Chat, 'messages' | 'user'> & {
   messages: Message[]
+  user?: {
+    id: string
+    vectorProvider: 'pinecone' | 'supabase' | any
+  } | any
   agent?: {
     id: string
     docsId: string[]
+    prompt: string
   } | any
 }
