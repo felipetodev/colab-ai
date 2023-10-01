@@ -31,7 +31,7 @@ function TalkToChat ({ selectedChat, handleModalClose }: Props) {
       await updateChat(formData)
       handleModalClose()
     }}>
-      <input type="hidden" name="id" value={selectedChat.id} />
+      <input type="hidden" name="id" value={selectedChat?.id} />
       <input type="hidden" name="chatPreferences" value={JSON.stringify(chatPreferences)} />
       <div className="flex items-center w-full mb-2">
         <h2 className="font-semibold">

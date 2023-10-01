@@ -29,7 +29,7 @@ function TalkToAgent ({ agents, selectedChat, handleModalClose }: TalkAgentProps
       <h3 className="mt-6 font-medium">
         Select an agent to talk to with:
       </h3>
-      <input type="hidden" name="id" value={selectedChat.id} />
+      <input type="hidden" name="id" value={selectedChat?.id} />
       <input type="hidden" name="agentId" value={agentSelected?.id} />
       <div className="space-y-4">
         {agents.map((agent) => (
