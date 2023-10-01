@@ -46,6 +46,7 @@ importers:
       class-variance-authority: ^0.7.0
       clsx: ^2.0.0
       cmdk: ^0.2.0
+      d3-dsv: '2'
       eslint: ^8.0.1
       eslint-config-standard-with-typescript: ^39.1.0
       eslint-plugin-import: ^2.25.2
@@ -97,7 +98,8 @@ importers:
       class-variance-authority: 0.7.0
       clsx: 2.0.0
       cmdk: 0.2.0_7xd7ir5nhcoi7hkxcipzh5svmq
-      langchain: 0.0.154_slk5tg2zsjymucsidplumkl7du
+      d3-dsv: 2.0.0
+      langchain: 0.0.154_4npnuow76w62bcmhbtuybcbfkq
       lucide-react: 0.279.0_react@18.2.0
       mammoth: 1.6.0
       next: 13.5.3_biqbaboplfbrettd7655fr4n2y
@@ -3246,6 +3248,10 @@ packages:
     resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
     engines: {node: '>=14'}
 
+  /commander/2.20.3:
+    resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
+    dev: false
+
   /commander/4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
     engines: {node: '>= 6'}
@@ -3324,6 +3330,15 @@ packages:
     dependencies:
       es5-ext: 0.10.62
       type: 1.2.0
+    dev: false
+
+  /d3-dsv/2.0.0:
+    resolution: {integrity: sha512-E+Pn8UJYx9mViuIUkoc93gJGGYut6mSDKy2+XaPwccwkRGlR+LO97L2VCCRjQivTwLHkSnAJG7yo00BWY6QM+w==}
+    hasBin: true
+    dependencies:
+      commander: 2.20.3
+      iconv-lite: 0.4.24
+      rw: 1.3.3
     dev: false
 
   /damerau-levenshtein/1.0.8:
@@ -4781,7 +4796,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
-    dev: true
 
   /ieee754/1.2.1:
     resolution: {integrity: sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA==}
@@ -5336,7 +5350,7 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /langchain/0.0.154_slk5tg2zsjymucsidplumkl7du:
+  /langchain/0.0.154_4npnuow76w62bcmhbtuybcbfkq:
     resolution: {integrity: sha512-BnUvUZ9OBL/0BM4jhy53H8RF8+AmisrJq3tvNks6U/ueFC9ZKG9r4U9zqjwM2dTaWjW+oN3ig83Ioa9Y7d6ZFw==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -5591,6 +5605,7 @@ packages:
       ansi-styles: 5.2.0
       binary-extensions: 2.2.0
       camelcase: 6.3.0
+      d3-dsv: 2.0.0
       decamelize: 1.2.0
       expr-eval: 2.0.2
       flat: 5.0.2
@@ -7688,6 +7703,10 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
 
+  /rw/1.3.3:
+    resolution: {integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==}
+    dev: false
+
   /rxjs/6.6.7:
     resolution: {integrity: sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==}
     engines: {npm: '>=2.0.0'}
@@ -7736,7 +7755,6 @@ packages:
 
   /safer-buffer/2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
-    dev: true
 
   /scheduler/0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
