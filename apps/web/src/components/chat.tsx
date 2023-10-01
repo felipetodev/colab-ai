@@ -13,6 +13,8 @@ import ChatSettings from './chat-settings'
 import ChatScrollAnchor from './chat-scroll-anchor'
 import Sidebar from './sidebar'
 import ChatSettingsDialog from './chat-settings-dialog'
+import { Badge } from './ui/badge'
+import { createCompletion } from '@/lib/utils'
 
 type Props = {
   id: string
@@ -32,9 +34,7 @@ function Chat ({ chats, agents, documents }: Props) {
   const router = useRouter()
 
   const { messages, input, stop, setInput, append, isLoading, setMessages } = useChat({
-    api: selectedChat.isAgent && selectedChat.user?.vectorProvider
-      ? `/api/completions/${selectedChat.user?.vectorProvider}`
-      : '/api/chat',
+    api: createCompletion({ chat: selectedChat }),
     body: selectedChat.isAgent && selectedChat.user?.vectorProvider
       ? {
           userId: selectedChat.user?.id,
@@ -144,6 +144,9 @@ function Chat ({ chats, agents, documents }: Props) {
                   <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                     <div className="flex items-center space-x-2">
                       <h1>{selectedChat.name}</h1>
+                      {selectedChat.isAgent && (
+                        <Badge variant='secondary'>{selectedChat.agent.name}</Badge>
+                      )}
                       <ChatSettingsDialog
                         agents={agents ?? []}
                         selectedChat={selectedChat}

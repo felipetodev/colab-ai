@@ -21,6 +21,7 @@ export type ChatProps = Omit<Chat, 'messages' | 'user'> & {
   user?: {
     id: string
     vectorProvider: 'pinecone' | 'supabase' | any
+    dbStatus: boolean
   } | any
   agent?: {
     id: string
