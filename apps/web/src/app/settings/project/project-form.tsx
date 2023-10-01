@@ -29,7 +29,7 @@ const profileFormSchema = z.object({
   pineconeIndex: z.string(),
   supabaseSecretKey: z.string(),
   supabaseUrl: z.string(),
-  vectorDBSelected: z.string(),
+  vectorDBSelected: z.string().optional().nullish(),
   dbStatus: z.boolean()
 })
 
@@ -101,7 +101,7 @@ export function ProjectForm ({ defaultValues }: { defaultValues: ProfileFormValu
           <Switch defaultChecked={activeUserDatabase} id="database-toggle" name="dbStatus" onCheckedChange={(isChecked) => form.setValue('dbStatus', isChecked)} />
           <Label htmlFor="database-toggle">Use vector database</Label>
         </div>
-        <Tabs className="relative" defaultValue={form.watch('vectorDBSelected')} onValueChange={(db) => form.setValue('vectorDBSelected', db as 'pinecone' | 'supabase')}>
+        <Tabs className="relative" defaultValue={form.watch('vectorDBSelected') ?? 'pinecone'} onValueChange={(db) => form.setValue('vectorDBSelected', db as 'pinecone' | 'supabase')}>
           <TabsList className="h-full mb-4">
             <TabsTrigger value="pinecone">
               <img alt="pinecone-db" className="h-8" src="/pinecone-logo.svg" />
