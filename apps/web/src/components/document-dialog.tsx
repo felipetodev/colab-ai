@@ -15,15 +15,27 @@ import { Button, buttonVariants } from './ui/button'
 import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { IconGitHub } from './ui/icons'
+import { Badge } from './ui/badge'
+
+const SUPPORTED_FILES = [
+  '.pdf',
+  '.doc',
+  '.docs',
+  '.docx',
+  '.csv',
+  '.txt'
+  // '.xls'
+]
 
 type Props = {
   children: React.ReactNode
 }
 
-type ITabs = 'documents' | 'github'
+type TabProps = 'documents' | 'github'
 
 function DocumentDialog ({ children }: Props) {
-  const [activeTab, setActiveTab] = useState<ITabs>('documents')
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<TabProps>('documents')
   const [fileName, setFileName] = useState('')
   const [fileLists, setFileLists] = useState<FileList | null>(null)
 
@@ -35,7 +47,7 @@ function DocumentDialog ({ children }: Props) {
     setFileLists(files)
   }
 
-  const onFileSubmit = async (tab: ITabs) => {
+  const onFileSubmit = async (tab: TabProps) => {
     if (tab === 'documents') {
       if (!fileLists) return
       const file = fileLists[0]
@@ -48,13 +60,16 @@ function DocumentDialog ({ children }: Props) {
         method: 'POST',
         body: formData
       })
+      setIsOpen(false)
     }
   }
 
   return (
     <Dialog
-      onOpenChange={e => {
-        if (!e) {
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open)
+        if (!open) {
           setFileName('')
           setFileLists(null)
         }
@@ -64,7 +79,7 @@ function DocumentDialog ({ children }: Props) {
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
-        <Tabs defaultValue="documents" onValueChange={(tab) => setActiveTab(tab as ITabs)}>
+        <Tabs defaultValue="documents" onValueChange={(tab) => setActiveTab(tab as TabProps)}>
           <DialogHeader>
             <DialogTitle>
               <TabsList>
@@ -75,7 +90,12 @@ function DocumentDialog ({ children }: Props) {
           </DialogHeader>
           <TabsContent className="text-sm" value="documents">
             <DialogDescription className="mb-6">
-              Upload file to use in chat conversation. Supported file extensions: .pdf, .doc, .docx
+              Upload file to use in chat conversation. Supported file extensions:
+              {SUPPORTED_FILES.map((file) => (
+                <Badge key={file} variant='secondary' className='mx-1'>
+                  {file}
+                </Badge>
+              ))}
             </DialogDescription>
             <div className="flex flex-col gap-y-4">
               <div className="space-y-2">
@@ -89,7 +109,13 @@ function DocumentDialog ({ children }: Props) {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="upload">Upload document</Label>
-                <Input id="upload" multiple={false} onChange={handleInputFile} type="file" />
+                <Input
+                  id="upload"
+                  multiple={false}
+                  onChange={handleInputFile}
+                  type="file"
+                  accept=".pdf,.doc,.docs,.docx,.csv,.txt"
+                />
               </div>
             </div>
           </TabsContent>
@@ -129,7 +155,10 @@ function DocumentDialog ({ children }: Props) {
           <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
           </DialogClose>
-          <Button className="text-white bg-green-700 hover:bg-green-700/90" onClick={async () => { await onFileSubmit(activeTab) }}>
+          <Button
+            className="text-white bg-green-700 hover:bg-green-700/90"
+            onClick={async () => await onFileSubmit(activeTab)}
+          >
             {activeTab === 'documents' ? 'Upload' : 'Connect'}
           </Button>
         </DialogFooter>
