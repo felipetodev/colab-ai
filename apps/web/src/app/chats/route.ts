@@ -33,6 +33,7 @@ export async function POST (request: Request) {
 export async function PUT (request: Request) {
   const {
     id,
+    user: _user,
     folderId: _folderId,
     agent: _agent,
     isAgent: is_agent = false,
