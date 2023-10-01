@@ -1,6 +1,5 @@
 'use client'
 
-import { Settings } from 'lucide-react'
 import type { Message } from 'ai/react'
 import { useChat } from 'ai/react'
 import { useEffect, useState } from 'react'
@@ -10,10 +9,10 @@ import type { AgentProps } from '@/lib/types/agent'
 import type { DocumentProps } from '@/lib/types/document'
 import ChatInput from './chat-input'
 import ChatMessages from './chat-messages'
-import { Button } from './ui/button'
 import ChatSettings from './chat-settings'
 import ChatScrollAnchor from './chat-scroll-anchor'
 import Sidebar from './sidebar'
+import ChatSettingsDialog from './chat-settings-dialog'
 
 type Props = {
   id: string
@@ -43,6 +42,12 @@ function Chat ({ chats, agents, documents }: Props) {
     if (selectedChat?.messages.length === 0) return
     setMessages(selectedChat.messages)
   }, [selectedChat.id])
+
+  useEffect(() => {
+    // update revalidation changes in chats due server actions
+    if (!chats) return
+    setSelectedChat(chats[0])
+  }, [chats])
 
   const handleSend = async (value: string) => {
     const newMessage: Message = {
@@ -129,9 +134,10 @@ function Chat ({ chats, agents, documents }: Props) {
                   <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                     <div className="flex items-center space-x-2">
                       <h1>{selectedChat.name}</h1>
-                      <Button className="w-8 h-8" size='icon' variant='ghost'>
-                        <Settings className="h-5 w-5" />
-                      </Button>
+                      <ChatSettingsDialog
+                        agents={agents ?? []}
+                        selectedChat={selectedChat}
+                      />
                     </div>
                   </header>
                   <div className='flex flex-col pb-[60px]'>
