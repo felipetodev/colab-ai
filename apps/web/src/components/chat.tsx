@@ -12,7 +12,7 @@ import ChatMessages from './chat-messages'
 import ChatSettings from './chat-settings'
 import ChatScrollAnchor from './chat-scroll-anchor'
 import Sidebar from './sidebar'
-import ChatSettingsDialog from './chat-settings-dialog'
+// import ChatSettingsDialog from './chat-settings-dialog'
 
 type Props = {
   id: string
@@ -43,11 +43,11 @@ function Chat ({ chats, agents, documents }: Props) {
     setMessages(selectedChat.messages)
   }, [selectedChat.id])
 
-  useEffect(() => {
-    // update revalidation changes in chats due server actions
-    if (!chats) return
-    setSelectedChat(chats[0])
-  }, [chats])
+  // useEffect(() => {
+  //   // update revalidation changes in chats due server actions
+  //   if (!chats) return
+  //   setSelectedChat(chats[0])
+  // }, [chats])
 
   const handleSend = async (value: string) => {
     const newMessage: Message = {
@@ -134,10 +134,10 @@ function Chat ({ chats, agents, documents }: Props) {
                   <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                     <div className="flex items-center space-x-2">
                       <h1>{selectedChat.name}</h1>
-                      <ChatSettingsDialog
+                      {/* <ChatSettingsDialog
                         agents={agents ?? []}
                         selectedChat={selectedChat}
-                      />
+                      /> */}
                     </div>
                   </header>
                   <div className='flex flex-col pb-[60px]'>
