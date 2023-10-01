@@ -33,10 +33,11 @@ export async function POST (request: Request) {
 export async function PUT (request: Request) {
   const {
     id,
-    folderId: _,
+    folderId: _folderId,
+    agent: _agent,
     isAgent: is_agent = false,
     agentId: agent_id = null,
-    maxTokens: __,
+    maxTokens: _maxTokens,
     ...restOfProps
   } = await request.json()
   const supabase = createRouteHandlerClient({ cookies })

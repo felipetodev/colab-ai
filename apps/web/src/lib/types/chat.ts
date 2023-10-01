@@ -17,4 +17,8 @@ export type Chat = {
 
 export type ChatProps = Omit<Chat, 'messages'> & {
   messages: Message[]
+  agent?: {
+    id: string
+    docsId: string[]
+  } | any
 }
