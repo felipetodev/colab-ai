@@ -24,6 +24,10 @@ type Props = {
 function Chat ({ chats, agents, documents }: Props) {
   const [gotMessages, setGotMessages] = useState(false)
   const [selectedChat, setSelectedChat] = useState<ChatProps>(chats?.[0] ?? {
+    user: {
+      id: '',
+      vectorProvider: null
+    },
     name: 'New Chat',
     folderId: null,
     id: crypto.randomUUID(),
@@ -32,9 +36,16 @@ function Chat ({ chats, agents, documents }: Props) {
   const router = useRouter()
 
   const { messages, input, stop, setInput, append, isLoading, setMessages } = useChat({
-    body: {
-      chatId: selectedChat?.id
-    },
+    api: selectedChat.isAgent && selectedChat.user?.vectorProvider
+      ? `/api/completions/${selectedChat.user?.vectorProvider}`
+      : '/api/chat',
+    body: selectedChat.isAgent && selectedChat.user?.vectorProvider
+      ? {
+          userId: selectedChat.user?.id,
+          docsId: selectedChat.agent?.docsId,
+          prompt: selectedChat.agent?.prompt
+        }
+      : { chatId: selectedChat?.id },
     onFinish: () => { setGotMessages(true) }
   })
 
@@ -73,6 +84,9 @@ function Chat ({ chats, agents, documents }: Props) {
         method: 'PUT',
         body: JSON.stringify({
           ...selectedChat,
+          ...(selectedChat.isAgent && {
+            agentId: selectedChat.agent.id
+          }),
           messages
         })
       })
