@@ -12,6 +12,7 @@ export interface Database {
       agents: {
         Row: {
           created_at: string
+          docs_id: Json
           folder_id: string | null
           id: string
           max_tokens: number
@@ -21,10 +22,10 @@ export interface Database {
           temperature: number
           updated_at: string
           user_id: string
-          docs_id: Json
         }
         Insert: {
           created_at?: string
+          docs_id?: Json
           folder_id?: string | null
           id?: string
           max_tokens: number
@@ -34,10 +35,10 @@ export interface Database {
           temperature: number
           updated_at?: string
           user_id: string
-          docs_id: Json
         }
         Update: {
           created_at?: string
+          docs_id?: Json
           folder_id?: string | null
           id?: string
           max_tokens?: number
@@ -47,7 +48,6 @@ export interface Database {
           temperature?: number
           updated_at?: string
           user_id?: string
-          docs_id: Json
         }
         Relationships: [
           {
@@ -60,8 +60,10 @@ export interface Database {
       }
       chats: {
         Row: {
+          agent_id: string | null
           folder_id: string | null
           id: string
+          is_agent: boolean
           max_tokens: number
           messages: Json
           model: string
@@ -69,11 +71,12 @@ export interface Database {
           prompt: string
           temperature: number
           user_id: string
-          is_agent: boolean
         }
         Insert: {
+          agent_id?: string | null
           folder_id?: string | null
           id?: string
+          is_agent?: boolean
           max_tokens: number
           messages?: Json
           model?: string
@@ -81,11 +84,12 @@ export interface Database {
           prompt?: string
           temperature: number
           user_id: string
-          is_agent: boolean
         }
         Update: {
+          agent_id?: string | null
           folder_id?: string | null
           id?: string
+          is_agent?: boolean
           max_tokens?: number
           messages?: Json
           model?: string
@@ -93,9 +97,14 @@ export interface Database {
           prompt?: string
           temperature?: number
           user_id?: string
-          is_agent: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: 'chats_agent_id_fkey'
+            columns: ['agent_id']
+            referencedRelation: 'agents'
+            referencedColumns: ['id']
+          },
           {
             foreignKeyName: 'chats_user_id_fkey'
             columns: ['user_id']
@@ -171,6 +180,7 @@ export interface Database {
       users: {
         Row: {
           avatar_url: string
+          db_status: boolean
           id: string
           name: string | null
           openai_key: string
@@ -181,11 +191,11 @@ export interface Database {
           supabase_secret_key: string
           supabase_url: string
           user_name: string
-          vector_db_selected: string
-          db_status: boolean
+          vector_db_selected: string | null
         }
         Insert: {
           avatar_url: string
+          db_status?: boolean
           id: string
           name?: string | null
           openai_key?: string
@@ -197,10 +207,10 @@ export interface Database {
           supabase_url?: string
           user_name: string
           vector_db_selected?: string | null
-          db_status: boolean
         }
         Update: {
           avatar_url?: string
+          db_status?: boolean
           id?: string
           name?: string | null
           openai_key?: string
@@ -212,7 +222,6 @@ export interface Database {
           supabase_url?: string
           user_name?: string
           vector_db_selected?: string | null
-          db_status: boolean
         }
         Relationships: [
           {
