@@ -24,10 +24,6 @@ type Props = {
 function Chat ({ chats, agents, documents }: Props) {
   const [gotMessages, setGotMessages] = useState(false)
   const [selectedChat, setSelectedChat] = useState<ChatProps>(chats?.[0] ?? {
-    user: {
-      id: '',
-      vectorProvider: null
-    },
     name: 'New Chat',
     folderId: null,
     id: crypto.randomUUID(),
