@@ -7,7 +7,8 @@ export default async function Home () {
   const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const { data: chats } = await supabase
     .from('chats')
-    .select('id, name, messages, folderId:folder_id, model, temperature, maxTokens:max_tokens, prompt, isAgent:is_agent')
+    .select('id, name, messages, folderId:folder_id, model, temperature, maxTokens:max_tokens, prompt, isAgent:is_agent, agent:agent_id(id, docsId:docs_id)')
+    .order('updated_at', { ascending: false })
 
   const { data: agents } = await supabase
     .from('agents')
