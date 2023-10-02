@@ -14,7 +14,7 @@ import ChatScrollAnchor from './chat-scroll-anchor'
 import Sidebar from './sidebar'
 import ChatSettingsDialog from './chat-settings-dialog'
 import { Badge } from './ui/badge'
-import { createCompletion } from '@/lib/utils'
+import { createApiCompletion, createBodyCompletion } from '@/lib/utils'
 
 type Props = {
   id: string
@@ -34,14 +34,8 @@ function Chat ({ chats, agents, documents }: Props) {
   const router = useRouter()
 
   const { messages, input, stop, setInput, append, isLoading, setMessages } = useChat({
-    api: createCompletion({ chat: selectedChat }),
-    body: selectedChat.isAgent && selectedChat.user?.vectorProvider
-      ? {
-          userId: selectedChat.user?.id,
-          docsId: selectedChat.agent?.docsId,
-          prompt: selectedChat.agent?.prompt
-        }
-      : { chatId: selectedChat?.id },
+    api: createApiCompletion({ chat: selectedChat }),
+    body: createBodyCompletion({ chat: selectedChat }),
     onFinish: () => { setGotMessages(true) }
   })
 

@@ -6,17 +6,32 @@ export function cn (...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function createCompletion ({ chat }: { chat: ChatProps }) {
+export function createApiCompletion ({ chat }: { chat: ChatProps }) {
   /**
    * isAgent is true when chat has an agent assigned (already trained with docs)
    * vectorProvider is the option chosen in settings (pinecone, supabase, etc.)
    * dbStatus is the status of the database (on/off) chosen in settings
    */
-  const { isAgent, user: { vectorProvider, dbStatus } } = chat
+  const { isAgent, user: { vectorProvider, dbStatus } = {} } = chat
 
   if (!isAgent || !vectorProvider || !dbStatus) {
     return '/api/chat'
   } else {
     return `/api/completions/${vectorProvider}`
+  }
+}
+
+export function createBodyCompletion ({ chat }: { chat: ChatProps }) {
+  const { isAgent, user: { vectorProvider, dbStatus } = {} } = chat
+
+  if (!isAgent || !vectorProvider || !dbStatus) {
+    return { chatId: chat?.id }
+  } else {
+    return {
+      name: chat.agent.name,
+      userId: chat.user?.id,
+      docsId: chat.agent?.docsId,
+      prompt: chat.agent?.prompt
+    }
   }
 }
