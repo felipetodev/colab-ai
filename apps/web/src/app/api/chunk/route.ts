@@ -5,7 +5,6 @@ import { DocxLoader } from 'langchain/document_loaders/fs/docx'
 import { CSVLoader } from 'langchain/document_loaders/fs/csv'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { TextLoader } from 'langchain/document_loaders/fs/text'
-// import { OpenAIWhisperAudio } from 'langchain/document_loaders/fs/openai_whisper_audio'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 
@@ -22,7 +21,6 @@ export async function POST (request: Request): Promise<any> {
   | typeof DocxLoader
   | typeof CSVLoader
   | typeof TextLoader
-  // | typeof OpenAIWhisperAudio
 
   switch (type) {
     case 'application/pdf': {
@@ -41,10 +39,6 @@ export async function POST (request: Request): Promise<any> {
       Loader = TextLoader
       break
     }
-    // case 'audio/mpeg': {
-    //   Loader = OpenAIWhisperAudio
-    //   break
-    // }
     default: {
       throw new Error(`Chunked file type ${type} not supported yet, please contact our support team.`)
     }
@@ -58,16 +52,17 @@ export async function POST (request: Request): Promise<any> {
   const loader = new Loader(file)
   const document = await loader.load()
 
-  // pdf, csv, text, audio don't need splitting
+  // pdf, csv, text, don't need splitting
   const allowedMimeTypes = ['application/pdf', 'text/csv', 'audio/mpeg', 'text/plain']
   const needsSplitting = !allowedMimeTypes.includes(type)
 
   const textSplitter = new RecursiveCharacterTextSplitter()
   const docs = needsSplitting ? await textSplitter.splitDocuments(document) : document
-  const formattedDocs = docs.map((doc) => ({
-    ...doc,
+  const formattedDocs = docs.map(({ pageContent, metadata }) => ({
+    pageContent: pageContent.replace(/\n/g, ' '),
     metadata: {
-      ...doc.metadata,
+      ...metadata,
+      refId: crypto.randomUUID(),
       id: documentId
     }
   }))
