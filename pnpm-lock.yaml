@@ -58,6 +58,7 @@ importers:
       mammoth: 1.6.0
       next: ^13.5.3
       next-themes: ^0.2.1
+      openai-edge: 1.2.2
       pdf-parse: 1.1.1
       postcss: ^8.4.30
       react: ^18.2.0
@@ -104,6 +105,7 @@ importers:
       mammoth: 1.6.0
       next: 13.5.3_biqbaboplfbrettd7655fr4n2y
       next-themes: 0.2.1_vs65xldtmolprftbsqonkgfxyi
+      openai-edge: 1.2.2
       pdf-parse: 1.1.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -6867,6 +6869,11 @@ packages:
       is-inside-container: 1.0.0
       is-wsl: 2.2.0
     dev: true
+
+  /openai-edge/1.2.2:
+    resolution: {integrity: sha512-C3/Ao9Hkx5uBPv9YFBpX/x59XMPgPUU4dyGg/0J2sOJ7O9D98kD+lfdOc7v/60oYo5xzMGct80uFkYLH+X2qgw==}
+    engines: {node: '>=18'}
+    dev: false
 
   /openai/4.2.0:
     resolution: {integrity: sha512-zfvpO2eITIxIjTG8T6Cek7NB2dMvP/LW0TRUJ4P9E8+qbBNKw00DrtfF64b+fAV2+wUYCVyynT6iSycJ//TtbA==}
