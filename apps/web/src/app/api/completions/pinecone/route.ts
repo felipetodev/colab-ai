@@ -5,6 +5,7 @@ import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { BytesOutputParser } from 'langchain/schema/output_parser'
 import { StreamingTextResponse } from 'ai'
 import { supabase } from 'src/services/supabase/api'
+import { type AgentProps } from '@/lib/types/agent'
 
 export const runtime = 'edge'
 
@@ -27,18 +28,23 @@ User: {input}
 AI:`
 
 export async function POST (req: Request) {
-  const body = await req.json() as { messages?: VercelChatMessage[], userId?: string, docsId?: string[], prompt?: string }
+  const body = await req.json() as {
+    messages?: VercelChatMessage[]
+    userId?: string
+    docsId?: AgentProps['docsId']
+    prompt?: AgentProps['prompt']
+    model?: AgentProps['model']
+    temperature?: AgentProps['temperature']
+    maxTokens?: AgentProps['maxTokens']
+  }
   const messages = body.messages ?? []
   // const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
   const currentMessageContent = messages[messages.length - 1].content
 
-  const userId = body.userId!
-  const docsId = body.docsId
-  const agentPrompt = body.prompt
+  const { userId, docsId, prompt: agentPrompt, model: agentModel, temperature, maxTokens } = body
 
-  // Get settings from supabase (sdk doesn't work in edge)
   const { data: user } = await supabase.getUser({
-    id: userId,
+    id: userId!,
     select: 'pineconeApiKey, pineconeEnvironment, pineconeIndex, openaiKey, openaiOrg'
   })
 
@@ -77,16 +83,19 @@ export async function POST (req: Request) {
   // const qualifyingDocs = matches.filter(m => m.score && m.score > minScore)
   const content = matches ? matches.map(match => (match.metadata as Metadata).chunk).join('\n') : ''
 
-  console.log('==🚛==🚛==🚛==🚛==🚛==🚛==🚛==🚛==🚛==🚛')
+  console.log('------------------')
   console.log(content)
-  console.log('==🚗==🚗==🚗==🚗==🚗==🚗==🚗==🚗==🚗==🚗')
+  console.log('------------------')
 
   const prompt = PromptTemplate.fromTemplate(TEMPLATE)
 
   const model = new ChatOpenAI({
-    modelName: 'gpt-3.5-turbo',
+    modelName: agentModel,
     openAIApiKey: openaiKey,
-    temperature: 0.2
+    temperature,
+    maxTokens
+  }, {
+    ...(openaiOrg && { organization: openaiOrg })
   })
 
   const outputParser = new BytesOutputParser()

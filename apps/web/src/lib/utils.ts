@@ -31,7 +31,11 @@ export function createBodyCompletion ({ chat }: { chat: ChatProps }) {
       name: chat.agent.name,
       userId: chat.user?.id,
       docsId: chat.agent?.docsId,
-      prompt: chat.agent?.prompt
+      prompt: chat.agent?.prompt,
+      model: chat.agent?.model,
+      temperature: chat.agent?.temperature,
+      maxTokens: chat.agent?.maxTokens
+      // references:
     }
   }
 }
