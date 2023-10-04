@@ -42,14 +42,6 @@ export async function PUT (request: Request) {
   } = await request.json()
   const supabase = createRouteHandlerClient({ cookies })
 
-  console.log({
-    ...(folder_id && { folder_id }),
-    ...(is_agent && { is_agent: is_agent ?? false }),
-    ...(agent?.id && { agent_id: agent.id }),
-    ...(max_tokens && { max_tokens }),
-    ...restOfProps
-  })
-
   const { data: chat, error } = await supabase
     .from('chats')
     .update({
