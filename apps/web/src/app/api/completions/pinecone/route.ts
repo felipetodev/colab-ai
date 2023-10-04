@@ -1,11 +1,13 @@
 import type { Message as VercelChatMessage } from 'ai'
-import { getEmbeddings, getMatchesFromEmbeddings } from '@/lib/utils.edge'
+import { getEmbeddings } from '@/lib/utils.edge'
 import { PromptTemplate } from 'langchain/prompts'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { BytesOutputParser } from 'langchain/schema/output_parser'
 import { StreamingTextResponse } from 'ai'
-import { supabase } from 'src/services/supabase/api'
 import { type AgentProps } from '@/lib/types/agent'
+import { RequestCookies } from '@edge-runtime/cookies'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { getMatchesFromEmbeddings } from 'src/services/pinecone/utils'
 
 export const runtime = 'edge'
 
@@ -30,7 +32,6 @@ AI:`
 export async function POST (req: Request) {
   const body = await req.json() as {
     messages?: VercelChatMessage[]
-    userId?: string
     docsId?: AgentProps['docsId']
     prompt?: AgentProps['prompt']
     model?: AgentProps['model']
@@ -41,12 +42,19 @@ export async function POST (req: Request) {
   // const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
   const currentMessageContent = messages[messages.length - 1].content
 
-  const { userId, docsId, prompt: agentPrompt, model: agentModel, temperature, maxTokens } = body
+  const { docsId, prompt: agentPrompt, model: agentModel, temperature } = body
 
-  const { data: user } = await supabase.getUser({
-    id: userId!,
-    select: 'pineconeApiKey, pineconeEnvironment, pineconeIndex, openaiKey, openaiOrg'
-  })
+  const cookies = new RequestCookies(req.headers) as any
+  const supabase = createServerComponentClient({ cookies: () => cookies })
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user === null) {
+    throw new Error('Something went wrong, please contact support')
+  }
+
+  const { data: settings } = await supabase.from('users')
+    .select('pineconeApiKey:pinecone_key, pineconeEnvironment:pinecone_env, pineconeIndex:pinecone_index, openaiKey:openai_key, openaiOrg:openai_org')
+    .eq('id', user?.id)
 
   const {
     pineconeApiKey,
@@ -54,7 +62,7 @@ export async function POST (req: Request) {
     pineconeIndex,
     openaiKey,
     openaiOrg = null
-  } = user?.[0] ?? {}
+  } = settings?.[0] ?? {}
 
   if (!pineconeApiKey || !pineconeEnvironment || !pineconeIndex) {
     throw new Error('Missing Pinecone ⚡ credentials')
@@ -92,8 +100,8 @@ export async function POST (req: Request) {
   const model = new ChatOpenAI({
     modelName: agentModel,
     openAIApiKey: openaiKey,
-    temperature,
-    maxTokens
+    temperature
+    // maxTokens
   }, {
     ...(openaiOrg && { organization: openaiOrg })
   })

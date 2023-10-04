@@ -6,7 +6,9 @@ import { PromptTemplate } from 'langchain/prompts'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { BytesOutputParser } from 'langchain/schema/output_parser'
 import { StreamingTextResponse } from 'ai'
-import { supabase } from 'src/services/supabase/api'
+import { RequestCookies } from '@edge-runtime/cookies'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { type AgentProps } from '@/lib/types/agent'
 
 export const runtime = 'edge'
 
@@ -23,27 +25,40 @@ User: {input}
 AI:`
 
 export async function POST (req: Request) {
-  const body = await req.json() as { messages?: VercelChatMessage[], userId?: string, docsId?: string[], prompt?: string }
+  const body = await req.json() as {
+    messages?: VercelChatMessage[]
+    docsId?: AgentProps['docsId']
+    prompt?: AgentProps['prompt']
+    model?: AgentProps['model']
+    temperature?: AgentProps['temperature']
+    maxTokens?: AgentProps['maxTokens']
+  }
   const messages = body.messages ?? []
   // const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
   const currentMessageContent = messages[messages.length - 1].content
 
-  const userId = body.userId!
   const docId = body.docsId?.[0]
-  const agentPrompt = body.prompt
   // const agentName = body.name
+  const { prompt: agentPrompt, model: agentModel, temperature, maxTokens } = body
 
-  const { data: user } = await supabase.getUser({
-    id: userId,
-    select: 'supabaseUrl, supabaseSecretKey, openaiKey, openaiOrg'
-  })
+  const cookies = new RequestCookies(req.headers) as any
+  const supabase = createServerComponentClient({ cookies: () => cookies })
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user === null) {
+    throw new Error('Something went wrong, please contact support')
+  }
+
+  const { data: settings } = await supabase.from('users')
+    .select('supabaseUrl:supabase_url, supabaseSecretKey:supabase_secret_key, openaiKey:openai_key, openaiOrg:openai_org')
+    .eq('id', user?.id)
 
   const {
     supabaseUrl: url,
     supabaseSecretKey: secretKey,
     openaiKey,
     openaiOrg = null
-  } = user?.[0] ?? {}
+  } = settings?.[0] ?? {}
 
   if (!url || !secretKey || !openaiKey) throw new Error('Missing supabase ⚡ credentials')
 
@@ -78,9 +93,10 @@ export async function POST (req: Request) {
   const prompt = PromptTemplate.fromTemplate(TEMPLATE)
 
   const model = new ChatOpenAI({
-    modelName: 'gpt-3.5-turbo',
+    modelName: agentModel,
     openAIApiKey: openaiKey,
-    temperature: 0.2
+    temperature,
+    maxTokens
   })
 
   const outputParser = new BytesOutputParser()
