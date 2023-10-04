@@ -74,9 +74,6 @@ function Chat ({ chats, agents, documents }: Props) {
         method: 'PUT',
         body: JSON.stringify({
           ...selectedChat,
-          ...(selectedChat.isAgent && {
-            agentId: selectedChat.agent.id
-          }),
           messages
         })
       })

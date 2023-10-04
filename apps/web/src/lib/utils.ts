@@ -29,7 +29,6 @@ export function createBodyCompletion ({ chat }: { chat: ChatProps }) {
   } else {
     return {
       name: chat.agent.name,
-      userId: chat.user?.id,
       docsId: chat.agent?.docsId,
       prompt: chat.agent?.prompt,
       model: chat.agent?.model,
