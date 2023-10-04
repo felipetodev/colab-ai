@@ -10,9 +10,12 @@ export type Document = {
   content: Tables<'documents'>['content']
   isTrained: Tables<'documents'>['is_trained']
   folderId: Tables<'documents'>['folder_id']
-  supaEmbeddedIds: Tables<'documents'>['supabase_embeddings_ids']
+  embeddedIds: Tables<'documents'>['embeddings_ids']
 }
 
 export type DocumentProps = Omit<Document, 'content'> & {
   content: LDocument[]
+  user?: {
+    id: string
+  } | any
 }

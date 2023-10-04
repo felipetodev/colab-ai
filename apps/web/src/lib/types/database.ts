@@ -124,7 +124,7 @@ export interface Database {
           id: string
           is_trained: boolean
           name: string
-          supabase_embeddings_ids: Json | null
+          embeddings_ids: Json | null
           type: string
           user_id: string | null
         }
@@ -135,7 +135,7 @@ export interface Database {
           id?: string
           is_trained?: boolean
           name: string
-          supabase_embeddings_ids?: Json | null
+          embeddings_ids?: Json | null
           type: string
           user_id?: string | null
         }
@@ -146,7 +146,7 @@ export interface Database {
           id?: string
           is_trained?: boolean
           name?: string
-          supabase_embeddings_ids?: Json | null
+          embeddings_ids?: Json | null
           type?: string
           user_id?: string | null
         }

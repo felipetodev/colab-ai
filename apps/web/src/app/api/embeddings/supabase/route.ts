@@ -9,24 +9,22 @@ import type { DocumentProps } from '@/lib/types/document'
 const secretKey = process.env.SUPABASE_SECRET_KEY!
 const url = process.env.SUPABASE_PROJECT_URL!
 
-const getDocumentId = (doc: DocumentProps['content'] = []) => {
-  if (doc.length === 0) return null
-  return doc[0]?.metadata?.id as string
-}
-
 export async function POST (req: Request) {
-  const { name, content } = await req.json() as { name: DocumentProps['name'], content: DocumentProps['content'] }
-  const documentId = getDocumentId(content)
+  const { name, docId, content } = await req.json() as {
+    name: DocumentProps['name']
+    docId: DocumentProps['id']
+    content: DocumentProps['content']
+  }
 
   const supabase = createServerComponentClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (user === null || documentId === null) {
+  if (user === null || docId === null) {
     return NextResponse.json({ error: 'Something went wrong creating embedding' })
   }
 
   const { data: settings } = await supabase.from('users')
-    .select('openaiKey:openai_key, openaiOrg:openai_org, pineconeApiKey:pinecone_key, pineconeEnvironment:pinecone_env, pineconeIndex:pinecone_index')
+    .select('openaiKey:openai_key, openaiOrg:openai_org')
     .eq('id', user?.id)
 
   const {
@@ -59,10 +57,10 @@ export async function POST (req: Request) {
 
   // update document to trained 'true' status
   await supabase.from('documents')
-    .update({ name, is_trained: true, supabase_embeddings_ids: ids })
-    .eq('id', documentId)
+    .update({ name, is_trained: true, embeddings_ids: ids })
+    .eq('id', docId)
 
-  return NextResponse.json({ finished: true, content })
+  return NextResponse.json({ finished: true, docId })
 }
 
 export async function DELETE (req: Request) {
@@ -104,7 +102,8 @@ export async function DELETE (req: Request) {
 
   // update document previously trained to 'false' status
   await supabase.from('documents')
-    .update({ is_trained: false, supabase_embeddings_ids: null })
+    .update({ is_trained: false, embeddings_ids: null })
     .eq('id', docId)
+
   return NextResponse.json({ test: true, ids })
 }
