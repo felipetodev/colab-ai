@@ -1,8 +1,7 @@
 import { type DocumentProps } from '@/lib/types/document'
-import { type Index, Pinecone, type PineconeRecord } from '@pinecone-database/pinecone'
-import { type Document } from 'langchain/dist/document'
+import { Pinecone } from '@pinecone-database/pinecone'
 import { NextResponse } from 'next/server'
-import { OpenAIApi, Configuration } from 'openai-edge'
+import { chunkedUpsert, embedDocument } from 'src/services/pinecone/utils'
 import { supabase } from 'src/services/supabase/api'
 
 const {
@@ -11,84 +10,8 @@ const {
   SUPABASE_ANON_KEY
 } = process.env
 
-const config = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
-})
-const openai = new OpenAIApi(config)
-
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
-
-const sliceIntoChunks = <T>(arr: T[], chunkSize: number) => {
-  return Array.from({ length: Math.ceil(arr.length / chunkSize) }, (_, i) =>
-    arr.slice(i * chunkSize, (i + 1) * chunkSize)
-  )
-}
-
-const chunkedUpsert = async (
-  index: Index,
-  vectors: PineconeRecord[],
-  namespace: string,
-  chunkSize = 10
-) => {
-  // Split the vectors into chunks
-  const chunks = sliceIntoChunks<PineconeRecord>(vectors, chunkSize)
-
-  try {
-    // Upsert each chunk of vectors into the index
-    await Promise.allSettled(
-      chunks.map(async (chunk) => {
-        try {
-          await index.namespace(namespace).upsert(vectors)
-        } catch (e) {
-          console.log('Error upserting chunk', e)
-        }
-      })
-    )
-
-    return true
-  } catch (e) {
-    throw new Error(`Error upserting vectors into index: ${e as string}`)
-  }
-}
-
-async function getEmbeddings (input: string) {
-  try {
-    const response = await openai.createEmbedding({
-      model: 'text-embedding-ada-002',
-      input: input.replace(/\n/g, ' ')
-    })
-
-    const result = await response.json()
-    return result.data[0].embedding as number[]
-  } catch (e) {
-    console.log('Error calling OpenAI embedding API: ', e)
-    throw new Error(`Error calling OpenAI embedding API: ${e as string}`)
-  }
-}
-
-async function embedDocument ({ pageContent, metadata }: Document): Promise<PineconeRecord> {
-  try {
-    // Generate OpenAI embeddings for the document content
-    const embedding = await getEmbeddings(pageContent)
-
-    // Return the vector embedding object
-    return {
-      id: crypto.randomUUID(),
-      values: embedding,
-      metadata: {
-        id: metadata.id,
-        refId: metadata?.refId ?? crypto.randomUUID(),
-        ...(metadata.loc && { pageNumber: metadata.loc.pageNumber }),
-        ...(metadata.pdf && { totalPages: metadata.pdf.totalPages }),
-        chunk: pageContent
-      }
-    } as PineconeRecord
-  } catch (error) {
-    console.log('Error embedding document: ', error)
-    throw error
-  }
-}
 
 export async function POST (req: Request) {
   const { name, userId, docId, content } = await req.json() as {
@@ -98,7 +21,6 @@ export async function POST (req: Request) {
     content: DocumentProps['content']
   }
 
-  // Get settings from supabase (sdk doesn't work in edge)
   const { data: user } = await supabase.getUser({
     id: userId,
     select: 'pineconeApiKey, pineconeEnvironment, pineconeIndex, openaiKey, openaiOrg'
@@ -107,9 +29,9 @@ export async function POST (req: Request) {
   const {
     pineconeApiKey,
     pineconeEnvironment,
-    pineconeIndex
-    // openaiKey,
-    // openaiOrg = null
+    pineconeIndex,
+    openaiKey,
+    openaiOrg
   } = user?.[0] ?? {}
 
   if (!pineconeApiKey || !pineconeEnvironment || !pineconeIndex) {
@@ -134,7 +56,15 @@ export async function POST (req: Request) {
 
   const index = pinecone.Index(pineconeIndex)
 
-  const vectors = await Promise.all(content.flat().map(embedDocument))
+  const vectors = await Promise.all(content.flat().map(
+    async (e) => await embedDocument(
+      e,
+      {
+        apiKey: openaiKey,
+        ...(openaiOrg && { organization: openaiOrg })
+      }
+    )
+  ))
   const ids = vectors.map(({ id }) => id)
 
   // Upsert vectors into the Pinecone index
@@ -164,36 +94,16 @@ export async function DELETE (req: Request) {
     ids
   } = await req.json() as { userId: string, docId: DocumentProps['id'], ids: string[] }
 
-  // Get settings from supabase (sdk doesn't work in edge)
-  let payload: null | any = null
-  try {
-    const data = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/users?id=eq.${userId}&select=pinecone_key,pinecone_env, pinecone_index`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY!,
-        Authorization: `Bearer ${SUPABASE_SECRET_KEY}`
-      }
-    })
-
-    const user = await data.json()
-
-    payload = {
-      pineconeApiKey: user[0].pinecone_key,
-      pineconeEnvironment: user[0].pinecone_env,
-      pineconeIndex: user[0].pinecone_index
-    }
-  } catch (error) {
-    console.error(error)
-  }
+  const { data: user } = await supabase.getUser({
+    id: userId,
+    select: 'pineconeApiKey, pineconeEnvironment, pineconeIndex'
+  })
 
   const {
     pineconeApiKey,
     pineconeEnvironment,
     pineconeIndex
-    // openaiKey
-    // openaiOrg = null
-  } = payload // refact
+  } = user?.[0] ?? {}
 
   if (!pineconeApiKey || !pineconeEnvironment || !pineconeIndex) {
     throw new Error('Missing Pinecone ⚡ credentials')
