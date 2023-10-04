@@ -6,20 +6,15 @@ import { PromptTemplate } from 'langchain/prompts'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { BytesOutputParser } from 'langchain/schema/output_parser'
 import { StreamingTextResponse } from 'ai'
-
-// const formatMessage = (message: VercelChatMessage) => {
-//   return `${message.role}: ${message.content}`
-// }
-
-const {
-  SUPABASE_SECRET_KEY,
-  SUPABASE_PROJECT_URL,
-  SUPABASE_ANON_KEY
-} = process.env
+import { supabase } from 'src/services/supabase/api'
 
 export const runtime = 'edge'
 
-const TEMPLATE = `{prompt}
+const TEMPLATE = `You are a representative who loves to help people!
+Given the following sections from the documentation (preceded by a section id), answer the question using only that information, outputted in Markdown format.
+
+Here is some context which might contain valuable information to answer the question:
+{prompt}
 
 Current conversation:
 {chat_history}
@@ -33,38 +28,26 @@ export async function POST (req: Request) {
   // const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
   const currentMessageContent = messages[messages.length - 1].content
 
-  const userId = body.userId
+  const userId = body.userId!
   const docId = body.docsId?.[0]
   const agentPrompt = body.prompt
+  // const agentName = body.name
 
-  // Get settings from supabase (sdk doesn't work in edge)
-  let payload: null | any = null
-  try {
-    const data = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/users?id=eq.${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY!,
-        Authorization: `Bearer ${SUPABASE_SECRET_KEY}`
-      }
-    })
-
-    const user = await data.json()
-
-    payload = {
-      openaiKey: user[0].openai_key,
-      openaiOrg: user[0].openai_org
-    }
-  } catch (error) {
-    console.error(error)
-  }
+  const { data: user } = await supabase.getUser({
+    id: userId,
+    select: 'supabaseUrl, supabaseSecretKey, openaiKey, openaiOrg'
+  })
 
   const {
+    supabaseUrl: url,
+    supabaseSecretKey: secretKey,
     openaiKey,
     openaiOrg = null
-  } = payload // refact
+  } = user?.[0] ?? {}
 
-  const client = createClient(SUPABASE_PROJECT_URL!, SUPABASE_SECRET_KEY!) // this keys should be came from the user
+  if (!url || !secretKey || !openaiKey) throw new Error('Missing supabase ⚡ credentials')
+
+  const client = createClient(url, secretKey)
 
   const embeddings = new OpenAIEmbeddings(
     {
@@ -78,13 +61,17 @@ export async function POST (req: Request) {
     tableName: 'embeddings'
   })
 
-  const funcFilterA: SupabaseFilterRPCCall = (rpc) =>
+  const funcFilter: SupabaseFilterRPCCall = (rpc) =>
     rpc
       .filter('metadata->>id', 'eq', docId)
   // .filter("metadata.loc->pageNumber::int", "eq", 2)
 
-  const docs = await store.similaritySearch(currentMessageContent, 4, funcFilterA)
-  const content = docs.map(({ pageContent }) => pageContent).join('\n\n')
+  const docs = await store.similaritySearch(currentMessageContent, 4, funcFilter)
+
+  const content = docs.map(({ pageContent, metadata }) => {
+    if (!metadata?.loc?.pageNumber) return pageContent
+    return `-----\nPAGE ${metadata?.loc?.pageNumber}\n\n${pageContent}\nEND PAGE ${metadata?.loc?.pageNumber}\n-----`
+  }).join('\n\n')
 
   console.log(content)
 
