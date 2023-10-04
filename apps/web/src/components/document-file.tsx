@@ -5,11 +5,19 @@ import DocumentPreviewDialog from './document-preview-dialog'
 
 type Props = {
   document: DocumentProps
+  user: {
+    id: string
+    dbStatus: boolean
+    vectorProvider: 'pinecone' | 'supabase' | null
+  }
 }
 
-function DocumentFile ({ document }: Props) {
+function DocumentFile ({ document, user }: Props) {
   return (
-    <DocumentPreviewDialog document={document}>
+    <DocumentPreviewDialog
+      user={user}
+      document={document}
+    >
       <div
         className='flex items-center p-1 m-2 rounded-md hover:bg-secondary/40'
         onKeyDown={(e) => {
