@@ -16,6 +16,7 @@ importers:
 
   apps/web:
     specifiers:
+      '@edge-runtime/cookies': ^4.0.0
       '@hookform/resolvers': 3.3.1
       '@next/eslint-plugin-next': ^13.4.19
       '@pinecone-database/pinecone': 1.1.0
@@ -77,6 +78,7 @@ importers:
       ui: workspace:*
       zod: 3.22.2
     dependencies:
+      '@edge-runtime/cookies': 4.0.0
       '@hookform/resolvers': 3.3.1_react-hook-form@7.46.2
       '@pinecone-database/pinecone': 1.1.0
       '@radix-ui/react-avatar': 1.0.4_w2t4jfowrdz4rm4uaz5cwoqleu
@@ -424,6 +426,11 @@ packages:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
+
+  /@edge-runtime/cookies/4.0.0:
+    resolution: {integrity: sha512-PPgW/669apZqT3qUOa4JV0ctXQ7ayCNiklKXDD1z5fC7aemWrjpZ7r0Na7yQ96Fp673pNF5lzpfTJh26sWaGDg==}
+    engines: {node: '>=16'}
+    dev: false
 
   /@edge-runtime/primitives/4.0.1:
     resolution: {integrity: sha512-hxWUzx1SeyOed/Ea9Z6y6tyFKSj8gQWIdLilybTR2ene1IthLZE01A1SLGoch1szUdhFlUwpWDaYBYQw00lj2g==}

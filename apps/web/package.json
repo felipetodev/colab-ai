@@ -10,6 +10,7 @@
     "gen:types": "npx supabase gen types typescript --project-id xrtuwugpioxoncenmpoi > ./src/lib/types/database.ts"
   },
   "dependencies": {
+    "@edge-runtime/cookies": "^4.0.0",
     "@hookform/resolvers": "3.3.1",
     "@pinecone-database/pinecone": "1.1.0",
     "@radix-ui/react-avatar": "^1.0.3",
