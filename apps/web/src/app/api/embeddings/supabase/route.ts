@@ -2,12 +2,11 @@ import { NextResponse } from 'next/server'
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { createClient } from '@supabase/supabase-js'
+import { RequestCookies } from '@edge-runtime/cookies'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 import type { DocumentProps } from '@/lib/types/document'
 
-const secretKey = process.env.SUPABASE_SECRET_KEY!
-const url = process.env.SUPABASE_PROJECT_URL!
+export const runtime = 'edge'
 
 export async function POST (req: Request) {
   const { name, docId, content } = await req.json() as {
@@ -16,7 +15,8 @@ export async function POST (req: Request) {
     content: DocumentProps['content']
   }
 
-  const supabase = createServerComponentClient({ cookies })
+  const cookies = new RequestCookies(req.headers) as any
+  const supabase = createServerComponentClient({ cookies: () => cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user === null || docId === null) {
@@ -24,15 +24,17 @@ export async function POST (req: Request) {
   }
 
   const { data: settings } = await supabase.from('users')
-    .select('openaiKey:openai_key, openaiOrg:openai_org')
+    .select('supabaseUrl:supabase_url, supabaseSecretKey:supabase_secret_key,openaiKey:openai_key, openaiOrg:openai_org')
     .eq('id', user?.id)
 
   const {
+    supabaseUrl,
+    supabaseSecretKey,
     openaiKey,
     openaiOrg = null
-  } = settings?.[0] as any // refact
+  } = settings?.[0] ?? {}
 
-  const client = createClient(url, secretKey)
+  const client = createClient(supabaseUrl, supabaseSecretKey)
 
   const embeddings = new OpenAIEmbeddings(
     {
@@ -66,7 +68,8 @@ export async function POST (req: Request) {
 export async function DELETE (req: Request) {
   const { docId, ids } = await req.json() as { docId: DocumentProps['id'], ids: number[] }
 
-  const supabase = createServerComponentClient({ cookies })
+  const cookies = new RequestCookies(req.headers) as any
+  const supabase = createServerComponentClient({ cookies: () => cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user === null || !docId) {
@@ -74,15 +77,17 @@ export async function DELETE (req: Request) {
   }
 
   const { data: settings } = await supabase.from('users')
-    .select('openaiKey:openai_key, openaiOrg:openai_org')
+    .select('supabaseUrl:supabase_url, supabaseSecretKey:supabase_secret_key, openaiKey:openai_key, openaiOrg:openai_org')
     .eq('id', user?.id)
 
   const {
+    supabaseUrl,
+    supabaseSecretKey,
     openaiKey,
     openaiOrg = null
-  } = settings?.[0] as any // refact
+  } = settings?.[0] ?? {}
 
-  const client = createClient(url, secretKey)
+  const client = createClient(supabaseUrl, supabaseSecretKey)
 
   const embeddings = new OpenAIEmbeddings(
     {

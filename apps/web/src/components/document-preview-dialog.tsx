@@ -45,7 +45,6 @@ function DocumentPreviewDialog ({ user, document, children }: Props) {
       method: 'POST',
       body: JSON.stringify({
         name: name || document.name,
-        userId: document.user.id,
         docId: document.id,
         content: document.content
       })
@@ -59,7 +58,6 @@ function DocumentPreviewDialog ({ user, document, children }: Props) {
     await fetch(`/api/embeddings/${user.vectorProvider}`, {
       method: 'DELETE',
       body: JSON.stringify({
-        userId: document.user.id,
         docId: document.id,
         ids: document.embeddedIds
       })
