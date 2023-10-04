@@ -34,18 +34,31 @@ export async function PUT (request: Request) {
   const {
     id,
     user: _user,
-    folderId: _folderId,
-    agent: _agent,
-    isAgent: is_agent = false,
-    agentId: agent_id = null,
-    maxTokens: _maxTokens,
+    folderId: folder_id,
+    agent,
+    isAgent: is_agent,
+    maxTokens: max_tokens,
     ...restOfProps
   } = await request.json()
   const supabase = createRouteHandlerClient({ cookies })
 
+  console.log({
+    ...(folder_id && { folder_id }),
+    ...(is_agent && { is_agent: is_agent ?? false }),
+    ...(agent?.id && { agent_id: agent.id }),
+    ...(max_tokens && { max_tokens }),
+    ...restOfProps
+  })
+
   const { data: chat, error } = await supabase
     .from('chats')
-    .update({ is_agent, agent_id, ...restOfProps })
+    .update({
+      ...(folder_id && { folder_id }),
+      ...(is_agent && { is_agent: is_agent ?? false }),
+      ...(agent?.id && { agent_id: agent.id }),
+      ...(max_tokens && { max_tokens }),
+      ...restOfProps
+    })
     .eq('id', id)
 
   return NextResponse.json({ chat, error })
