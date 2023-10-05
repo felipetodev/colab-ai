@@ -27,7 +27,7 @@ function ChatInput ({
     }
   }, [])
   return (
-    <div className="sticky bg-transparent bottom-6 w-full z-50 pt-8">
+    <div className="sticky bg-transparent bottom-6 w-full z-40 pt-8">
       {isLoading
         ? <div className="flex justify-center items-center w-full h-12">
         <Button onClick={stop} size='sm' variant='outline'>
