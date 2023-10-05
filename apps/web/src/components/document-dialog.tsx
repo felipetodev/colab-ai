@@ -1,5 +1,5 @@
 import { DialogClose } from '@radix-ui/react-dialog'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -36,24 +36,17 @@ type TabProps = 'documents' | 'github'
 function DocumentDialog ({ children }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabProps>('documents')
-  const [fileName, setFileName] = useState('')
-  const [fileLists, setFileLists] = useState<FileList | null>(null)
 
-  const handleInputFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFileName('')
-    const files = e.target.files
-
-    if (!files) return
-    setFileLists(files)
-  }
+  const inputFileRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const onFileSubmit = async (tab: TabProps) => {
     if (tab === 'documents') {
-      if (!fileLists) return
-      const file = fileLists[0]
+      if (!inputFileRef.current?.files) return
+      const file = inputFileRef.current.files[0]
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('name', fileName || file.name)
+      formData.append('name', inputRef.current?.value ?? file.name)
       formData.append('type', file.type)
 
       await fetch('/api/chunk', {
@@ -67,13 +60,7 @@ function DocumentDialog ({ children }: Props) {
   return (
     <Dialog
       open={isOpen}
-      onOpenChange={(open) => {
-        setIsOpen(open)
-        if (!open) {
-          setFileName('')
-          setFileLists(null)
-        }
-      }}
+      onOpenChange={setIsOpen}
     >
       <DialogTrigger asChild>
         {children}
@@ -102,9 +89,8 @@ function DocumentDialog ({ children }: Props) {
                 <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
-                  onChange={({ target }) => setFileName(target.value)}
+                  ref={inputRef}
                   placeholder="File name"
-                  value={(fileName || fileLists?.[0]?.name) ?? ''}
                 />
               </div>
               <div className="space-y-2">
@@ -112,7 +98,14 @@ function DocumentDialog ({ children }: Props) {
                 <Input
                   id="upload"
                   multiple={false}
-                  onChange={handleInputFile}
+                  ref={inputFileRef}
+                  onChange={(e) => {
+                    const files = e.target.files
+                    if (!files) return
+                    if (inputRef.current) {
+                      inputRef.current.value = files[0].name
+                    }
+                  }}
                   type="file"
                   accept=".pdf,.doc,.docs,.docx,.csv,.txt"
                 />
@@ -130,12 +123,14 @@ function DocumentDialog ({ children }: Props) {
                   <Input
                     id="repository"
                     placeholder="https://github.com/vercel/ai"
+                    onChange={({ target }) => console.log(target.value)}
                   />
                 </div>
                 <div className="w-24">
                   <Input
                     id="branch"
                     placeholder="main"
+                    onChange={({ target }) => console.log(target.value)}
                   />
                 </div>
               </div>
