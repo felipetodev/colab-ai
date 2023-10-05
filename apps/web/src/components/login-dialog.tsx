@@ -43,7 +43,7 @@ function LoginDialog ({ session, handleSignIn }: Props) {
             disabled={isLoading.google}
             onClick={() => {
               handleSignIn('google')
-              setIsLoading(prev => ({ ...prev, google: true }))
+              setIsLoading({ ...isLoading, google: true })
             }}
           >
             {isLoading.google
@@ -60,7 +60,7 @@ function LoginDialog ({ session, handleSignIn }: Props) {
             type="button"
             disabled={isLoading.github}
             onClick={() => {
-              setIsLoading(prev => ({ ...prev, github: true }))
+              setIsLoading({ ...isLoading, github: true })
               handleSignIn('github')
             }}
           >
