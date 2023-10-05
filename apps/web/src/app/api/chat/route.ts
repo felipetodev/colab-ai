@@ -58,8 +58,8 @@ export async function POST (req: NextRequest) {
     temperature,
     maxTokens
   }, {
-    ...(secrets?.openAiorg && {
-      organization: secrets?.openAiorg
+    ...(secrets.openAiorg && {
+      organization: secrets.openAiorg
     })
   })
 
