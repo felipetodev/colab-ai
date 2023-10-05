@@ -55,6 +55,8 @@ export async function POST (req: Request) {
   const { data: settings } = await supabase.from('users')
     .select('pineconeApiKey:pinecone_key, pineconeEnvironment:pinecone_env, pineconeIndex:pinecone_index, openaiKey:openai_key, openaiOrg:openai_org')
     .eq('id', user?.id)
+    .limit(1)
+    .maybeSingle()
 
   const {
     pineconeApiKey,
@@ -62,7 +64,7 @@ export async function POST (req: Request) {
     pineconeIndex,
     openaiKey,
     openaiOrg = null
-  } = settings?.[0] ?? {}
+  } = settings ?? {}
 
   if (!pineconeApiKey || !pineconeEnvironment || !pineconeIndex) {
     throw new Error('Missing Pinecone ⚡ credentials')

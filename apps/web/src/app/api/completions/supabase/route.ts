@@ -52,13 +52,15 @@ export async function POST (req: Request) {
   const { data: settings } = await supabase.from('users')
     .select('supabaseUrl:supabase_url, supabaseSecretKey:supabase_secret_key, openaiKey:openai_key, openaiOrg:openai_org')
     .eq('id', user?.id)
+    .limit(1)
+    .maybeSingle()
 
   const {
     supabaseUrl: url,
     supabaseSecretKey: secretKey,
     openaiKey,
     openaiOrg = null
-  } = settings?.[0] ?? {}
+  } = settings ?? {}
 
   if (!url || !secretKey || !openaiKey) throw new Error('Missing supabase ⚡ credentials')
 

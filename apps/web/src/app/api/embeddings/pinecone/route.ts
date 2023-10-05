@@ -96,15 +96,17 @@ export async function DELETE (req: Request) {
     return NextResponse.json({ error: 'Something went wrong creating embedding' })
   }
 
-  const { data } = await supabase.from('users')
+  const { data: settings } = await supabase.from('users')
     .select('pineconeApiKey:pinecone_key, pineconeEnvironment:pinecone_env, pineconeIndex:pinecone_index')
     .eq('id', user.id)
+    .limit(1)
+    .maybeSingle()
 
   const {
     pineconeApiKey,
     pineconeEnvironment,
     pineconeIndex
-  } = data?.[0] ?? {}
+  } = settings ?? {}
 
   if (!pineconeApiKey || !pineconeEnvironment || !pineconeIndex) {
     throw new Error('Missing Pinecone ⚡ credentials')
