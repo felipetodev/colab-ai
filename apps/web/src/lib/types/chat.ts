@@ -20,6 +20,8 @@ export type ChatProps = Omit<Chat, 'messages' | 'user'> & {
   messages: Message[]
   user?: {
     id: string
+    openaiKey: string
+    openaiOrg: string
     vectorProvider: 'pinecone' | 'supabase' | any
     dbStatus: boolean
   } | any

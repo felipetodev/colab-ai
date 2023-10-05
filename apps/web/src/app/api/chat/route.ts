@@ -4,6 +4,9 @@ import { StreamingTextResponse } from 'ai'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { BytesOutputParser } from 'langchain/schema/output_parser'
 import { PromptTemplate } from 'langchain/prompts'
+import { RequestCookies } from '@edge-runtime/cookies'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { type ChatProps } from '@/lib/types/chat'
 
 export const runtime = 'edge'
 
@@ -21,49 +24,43 @@ Current conversation:
 User: {input}
 AI:`
 
-const {
-  SUPABASE_PROJECT_URL = '',
-  SUPABASE_ANON_KEY = '',
-  SUPABASE_SECRET_KEY = ''
-} = process.env
-
 export async function POST (req: NextRequest) {
   const body = await req.json() as { messages?: VercelChatMessage[], chatId?: string }
   const messages = body.messages ?? []
   const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
   const currentMessageContent = messages[messages.length - 1].content
 
-  // get chat data from supabase
-  let payload: any
-  try {
-    const data = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/chats?id=eq.${body?.chatId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_SECRET_KEY}`
-      }
-    })
+  const cookies = new RequestCookies(req.headers) as any
+  const supabase = createServerComponentClient({ cookies: () => cookies })
+  const { data: { user } } = await supabase.auth.getUser()
 
-    const chat = await data.json()
-
-    payload = {
-      model: chat[0].model?.toLowerCase(),
-      temperature: chat[0].temperature,
-      max_tokens: chat[0].max_tokens,
-      prompt: chat[0].prompt
-    }
-  } catch (error) {
-    payload = {}
+  if (user === null) {
+    throw new Error('Something went wrong, please contact support')
   }
+
+  const { data: chat } = await supabase.from('chats')
+    .select('model, temperature, maxTokens:max_tokens, prompt, user:user_id(openaiKey:openai_key, openaiOrg:openai_org)')
+    .eq('id', body?.chatId)
+
+  const {
+    user: secrets,
+    model: modelName,
+    temperature,
+    maxTokens,
+    prompt: promptText
+  } = chat?.[0] ?? {} as ChatProps
 
   const prompt = PromptTemplate.fromTemplate(TEMPLATE)
 
   const model = new ChatOpenAI({
-    modelName: payload.model,
-    openAIApiKey: process.env.OPENAI_API_KEY!,
-    temperature: payload.temperature,
-    maxTokens: payload.max_tokens
+    modelName,
+    openAIApiKey: secrets.openaiKey,
+    temperature,
+    maxTokens
+  }, {
+    ...(secrets?.openAiorg && {
+      organization: secrets?.openAiorg
+    })
   })
 
   const outputParser = new BytesOutputParser()
@@ -72,7 +69,7 @@ export async function POST (req: NextRequest) {
 
   const stream = await chain.stream({
     chat_history: formattedPreviousMessages.join('\n'),
-    prompt: payload.prompt ?? '',
+    prompt: promptText ?? '',
     input: currentMessageContent
   })
 
