@@ -103,8 +103,6 @@ export async function DELETE (req: Request) {
     tableName: 'embeddings'
   })
 
-  // @ts-expect-error: library types are wrong (doesn't accept ids as number[])
-  // Update: https://github.com/langchain-ai/langchainjs/pull/2745 PR submitted to fix it 🙌✨
   await store.delete({ ids })
 
   // update document previously trained to 'false' status
