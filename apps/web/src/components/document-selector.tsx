@@ -14,17 +14,16 @@ import {
   PopoverContent,
   PopoverTrigger
 } from './ui/popover'
-import { type AgentProps } from '@/lib/types/agent'
 
 type Props = {
   documents: DocumentProps[]
-  agentState: AgentProps
-  onChange: ({ key, value }: { key: 'docsId', value: any }) => void
+  selectedDocuments: string[]
+  onChange: (e: string[]) => void
 }
 
-function DocumentSelector ({ documents, agentState, onChange, ...props }: Props) {
+function DocumentSelector ({ documents, selectedDocuments, onChange, ...props }: Props) {
   const [open, setOpen] = React.useState(false)
-  const unselectedDocuments = documents.filter((doc) => !agentState.docsId.includes(doc.id))
+  const unselectedDocuments = documents.filter((doc) => !selectedDocuments.includes(doc.id))
 
   return (
     <Popover onOpenChange={setOpen} open={open} {...props}>
@@ -48,7 +47,7 @@ function DocumentSelector ({ documents, agentState, onChange, ...props }: Props)
               <CommandItem
                 key={doc.id}
                 onSelect={() => {
-                  onChange({ key: 'docsId', value: [...agentState.docsId, doc.id] })
+                  onChange([...selectedDocuments, doc.id])
                   setOpen(false)
                 }}
               >

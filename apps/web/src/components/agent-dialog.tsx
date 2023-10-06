@@ -15,14 +15,14 @@ type Props = {
 }
 
 function AgentDialog ({ type, agent, documents, children }: Props) {
+  const [selectedDocuments, setSelectedDocuments] = useState<AgentProps['docsId']>(agent.docsId)
   const [isOpen, setIsOpen] = useState(false)
-  const [agentState, setAgentState] = useState<AgentProps>(agent)
 
   return (
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
-        setAgentState(agent)
+        setSelectedDocuments(agent.docsId)
         setIsOpen(open)
       }}
     >
@@ -33,14 +33,9 @@ function AgentDialog ({ type, agent, documents, children }: Props) {
         type={type}
         agent={agent}
         documents={documents}
-        agentState={agentState}
+        selectedDocuments={selectedDocuments}
+        handleSelectDocuments={setSelectedDocuments}
         handleCloseDialog={() => setIsOpen(false)}
-        handleAgentState={({ key, value }) => (
-          setAgentState((prev) => ({
-            ...prev,
-            [key]: value
-          }))
-        )}
       />
     </Dialog >
   )

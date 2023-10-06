@@ -40,7 +40,7 @@ export const models: Preset[] = [
 
 interface Props extends PopoverProps {
   value: string
-  onChange: (model: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => void
+  onChange?: (model: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => void
 }
 
 function ModelSelector ({ value, onChange, ...props }: Props) {
@@ -73,7 +73,7 @@ function ModelSelector ({ value, onChange, ...props }: Props) {
               <CommandItem
                 key={model.id}
                 onSelect={() => {
-                  onChange({ key: 'model', value: model.name.toLowerCase() })
+                  onChange && onChange({ key: 'model', value: model.name.toLowerCase() })
                   setSelectedPreset(model)
                   setOpen(false)
                 }}
