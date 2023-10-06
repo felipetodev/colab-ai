@@ -12,7 +12,7 @@ importers:
       eslint: 8.50.0
       prettier: 3.0.3
       tsconfig: link:packages/tsconfig
-      turbo: 1.10.14
+      turbo: 1.10.15
 
   apps/web:
     specifiers:
@@ -55,7 +55,7 @@ importers:
       eslint-plugin-n: '^15.0.0 || ^16.0.0 '
       eslint-plugin-promise: ^6.0.0
       eslint-plugin-react: ^7.33.2
-      langchain: 0.0.154
+      langchain: 0.0.160
       lucide-react: ^0.279.0
       mammoth: 1.6.0
       next: ^13.5.3
@@ -104,7 +104,7 @@ importers:
       clsx: 2.0.0
       cmdk: 0.2.0_7xd7ir5nhcoi7hkxcipzh5svmq
       d3-dsv: 2.0.0
-      langchain: 0.0.154_7qtf6kx6kuohr7trwsvmju3uxu
+      langchain: 0.0.160_7qtf6kx6kuohr7trwsvmju3uxu
       lucide-react: 0.279.0_react@18.2.0
       mammoth: 1.6.0
       next: 13.5.3_biqbaboplfbrettd7655fr4n2y
@@ -5399,8 +5399,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /langchain/0.0.154_7qtf6kx6kuohr7trwsvmju3uxu:
-    resolution: {integrity: sha512-BnUvUZ9OBL/0BM4jhy53H8RF8+AmisrJq3tvNks6U/ueFC9ZKG9r4U9zqjwM2dTaWjW+oN3ig83Ioa9Y7d6ZFw==}
+  /langchain/0.0.160_7qtf6kx6kuohr7trwsvmju3uxu:
+    resolution: {integrity: sha512-G4G3/3BOsG7JVmP7v5ii+xvmKG3a1ID+/T8eQbcSybOuaKCSKw2anksB95UYUtY2onIbaD/hc62SfhH5YFOB3A==}
     engines: {node: '>=18'}
     peerDependencies:
       '@aws-crypto/sha256-js': ^5.0.0
@@ -5411,11 +5411,9 @@ packages:
       '@aws-sdk/client-sagemaker-runtime': ^3.310.0
       '@aws-sdk/client-sfn': ^3.310.0
       '@aws-sdk/credential-provider-node': ^3.388.0
-      '@aws-sdk/protocol-http': ^3.374.0
-      '@aws-sdk/signature-v4': ^3.374.0
       '@azure/storage-blob': ^12.15.0
       '@clickhouse/client': ^0.0.14
-      '@cloudflare/workers-types': ^4.20230904.0
+      '@cloudflare/ai': ^1.0.12
       '@elastic/elasticsearch': ^8.4.0
       '@getmetal/metal-sdk': '*'
       '@getzep/zep-js': ^0.7.0
@@ -5426,11 +5424,13 @@ packages:
       '@mozilla/readability': '*'
       '@notionhq/client': ^2.2.10
       '@opensearch-project/opensearch': '*'
-      '@pinecone-database/pinecone': '*'
+      '@pinecone-database/pinecone': ^1.1.0
       '@planetscale/database': ^1.8.0
       '@qdrant/js-client-rest': ^1.2.0
       '@raycast/api': ^1.55.2
       '@smithy/eventstream-codec': ^2.0.5
+      '@smithy/protocol-http': ^3.0.6
+      '@smithy/signature-v4': ^2.0.10
       '@smithy/util-utf8': ^2.0.0
       '@supabase/postgrest-js': ^1.1.1
       '@supabase/supabase-js': ^2.10.0
@@ -5438,6 +5438,7 @@ packages:
       '@tensorflow/tfjs-converter': '*'
       '@tensorflow/tfjs-core': '*'
       '@upstash/redis': ^1.20.6
+      '@vercel/postgres': ^0.5.0
       '@writerai/writer-sdk': ^0.40.2
       '@xata.io/client': ^0.25.1
       '@xenova/transformers': ^2.5.4
@@ -5453,6 +5454,7 @@ packages:
       fast-xml-parser: ^4.2.7
       firebase-admin: ^11.9.0
       google-auth-library: ^8.9.0
+      googleapis: ^126.0.1
       hnswlib-node: ^1.4.2
       html-to-text: ^9.0.5
       ignore: ^5.2.0
@@ -5462,6 +5464,7 @@ packages:
       mammoth: '*'
       mongodb: ^5.2.0
       mysql2: ^3.3.3
+      neo4j-driver: '*'
       node-llama-cpp: '*'
       notion-to-md: ^3.1.0
       pdf-parse: 1.1.1
@@ -5501,15 +5504,11 @@ packages:
         optional: true
       '@aws-sdk/credential-provider-node':
         optional: true
-      '@aws-sdk/protocol-http':
-        optional: true
-      '@aws-sdk/signature-v4':
-        optional: true
       '@azure/storage-blob':
         optional: true
       '@clickhouse/client':
         optional: true
-      '@cloudflare/workers-types':
+      '@cloudflare/ai':
         optional: true
       '@elastic/elasticsearch':
         optional: true
@@ -5541,6 +5540,10 @@ packages:
         optional: true
       '@smithy/eventstream-codec':
         optional: true
+      '@smithy/protocol-http':
+        optional: true
+      '@smithy/signature-v4':
+        optional: true
       '@smithy/util-utf8':
         optional: true
       '@supabase/postgrest-js':
@@ -5554,6 +5557,8 @@ packages:
       '@tensorflow/tfjs-core':
         optional: true
       '@upstash/redis':
+        optional: true
+      '@vercel/postgres':
         optional: true
       '@writerai/writer-sdk':
         optional: true
@@ -5585,6 +5590,8 @@ packages:
         optional: true
       google-auth-library:
         optional: true
+      googleapis:
+        optional: true
       hnswlib-node:
         optional: true
       html-to-text:
@@ -5602,6 +5609,8 @@ packages:
       mongodb:
         optional: true
       mysql2:
+        optional: true
+      neo4j-driver:
         optional: true
       node-llama-cpp:
         optional: true
@@ -5673,8 +5682,8 @@ packages:
       pdf-parse: 1.1.1
       uuid: 9.0.1
       yaml: 2.3.2
-      zod: 3.22.2
-      zod-to-json-schema: 3.21.4_zod@3.22.2
+      zod: 3.22.4
+      zod-to-json-schema: 3.21.4_zod@3.22.4
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -8443,64 +8452,64 @@ packages:
       typescript: 4.9.5
     dev: true
 
-  /turbo-darwin-64/1.10.14:
-    resolution: {integrity: sha512-I8RtFk1b9UILAExPdG/XRgGQz95nmXPE7OiGb6ytjtNIR5/UZBS/xVX/7HYpCdmfriKdVwBKhalCoV4oDvAGEg==}
+  /turbo-darwin-64/1.10.15:
+    resolution: {integrity: sha512-Sik5uogjkRTe1XVP9TC2GryEMOJCaKE2pM/O9uLn4koQDnWKGcLQv+mDU+H+9DXvKLnJnKCD18OVRkwK5tdpoA==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64/1.10.14:
-    resolution: {integrity: sha512-KAdUWryJi/XX7OD0alOuOa0aJ5TLyd4DNIYkHPHYcM6/d7YAovYvxRNwmx9iv6Vx6IkzTnLeTiUB8zy69QkG9Q==}
+  /turbo-darwin-arm64/1.10.15:
+    resolution: {integrity: sha512-xwqyFDYUcl2xwXyGPmHkmgnNm4Cy0oNzMpMOBGRr5x64SErS7QQLR4VHb0ubiR+VAb8M+ECPklU6vD1Gm+wekg==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64/1.10.14:
-    resolution: {integrity: sha512-BOBzoREC2u4Vgpap/WDxM6wETVqVMRcM8OZw4hWzqCj2bqbQ6L0wxs1LCLWVrghQf93JBQtIGAdFFLyCSBXjWQ==}
+  /turbo-linux-64/1.10.15:
+    resolution: {integrity: sha512-dM07SiO3RMAJ09Z+uB2LNUSkPp3I1IMF8goH5eLj+d8Kkwoxd/+qbUZOj9RvInyxU/IhlnO9w3PGd3Hp14m/nA==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64/1.10.14:
-    resolution: {integrity: sha512-D8T6XxoTdN5D4V5qE2VZG+/lbZX/89BkAEHzXcsSUTRjrwfMepT3d2z8aT6hxv4yu8EDdooZq/2Bn/vjMI32xw==}
+  /turbo-linux-arm64/1.10.15:
+    resolution: {integrity: sha512-MkzKLkKYKyrz4lwfjNXH8aTny5+Hmiu4SFBZbx+5C0vOlyp6fV5jZANDBvLXWiDDL4DSEAuCEK/2cmN6FVH1ow==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64/1.10.14:
-    resolution: {integrity: sha512-zKNS3c1w4i6432N0cexZ20r/aIhV62g69opUn82FLVs/zk3Ie0GVkSB6h0rqIvMalCp7enIR87LkPSDGz9K4UA==}
+  /turbo-windows-64/1.10.15:
+    resolution: {integrity: sha512-3TdVU+WEH9ThvQGwV3ieX/XHebtYNHv9HARHauPwmVj3kakoALkpGxLclkHFBLdLKkqDvmHmXtcsfs6cXXRHJg==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64/1.10.14:
-    resolution: {integrity: sha512-rkBwrTPTxNSOUF7of8eVvvM+BkfkhA2OvpHM94if8tVsU+khrjglilp8MTVPHlyS9byfemPAmFN90oRIPB05BA==}
+  /turbo-windows-arm64/1.10.15:
+    resolution: {integrity: sha512-l+7UOBCbfadvPMYsX08hyLD+UIoAkg6ojfH+E8aud3gcA1padpjCJTh9gMpm3QdMbKwZteT5uUM+wyi6Rbbyww==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo/1.10.14:
-    resolution: {integrity: sha512-hr9wDNYcsee+vLkCDIm8qTtwhJ6+UAMJc3nIY6+PNgUTtXcQgHxCq8BGoL7gbABvNWv76CNbK5qL4Lp9G3ZYRA==}
+  /turbo/1.10.15:
+    resolution: {integrity: sha512-mKKkqsuDAQy1wCCIjCdG+jOCwUflhckDMSRoeBPcIL/CnCl7c5yRDFe7SyaXloUUkt4tUR0rvNIhVCcT7YeQpg==}
     hasBin: true
     optionalDependencies:
-      turbo-darwin-64: 1.10.14
-      turbo-darwin-arm64: 1.10.14
-      turbo-linux-64: 1.10.14
-      turbo-linux-arm64: 1.10.14
-      turbo-windows-64: 1.10.14
-      turbo-windows-arm64: 1.10.14
+      turbo-darwin-64: 1.10.15
+      turbo-darwin-arm64: 1.10.15
+      turbo-linux-64: 1.10.15
+      turbo-linux-arm64: 1.10.15
+      turbo-windows-64: 1.10.15
+      turbo-windows-arm64: 1.10.15
     dev: true
 
   /type-check/0.4.0:
@@ -9070,12 +9079,12 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zod-to-json-schema/3.21.4_zod@3.22.2:
+  /zod-to-json-schema/3.21.4_zod@3.22.4:
     resolution: {integrity: sha512-fjUZh4nQ1s6HMccgIeE0VP4QG/YRGPmyjO9sAh890aQKPEk3nqbfUXhMFaC+Dr5KvYBm8BCyvfpZf2jY9aGSsw==}
     peerDependencies:
       zod: ^3.21.4
     dependencies:
-      zod: 3.22.2
+      zod: 3.22.4
     dev: false
 
   /zod/3.21.4:
@@ -9084,6 +9093,10 @@ packages:
 
   /zod/3.22.2:
     resolution: {integrity: sha512-wvWkphh5WQsJbVk1tbx1l1Ly4yg+XecD+Mq280uBGt9wa5BKSWf4Mhp6GmrkPixhMxmabYY7RbzlwVP32pbGCg==}
+    dev: false
+
+  /zod/3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: false
 
   /zwitch/2.0.4:
