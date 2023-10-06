@@ -63,6 +63,7 @@ function ModelSelector ({ value, onChange, ...props }: Props) {
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
+      <input type="hidden" name="modelTest" value={selectedPreset.name} />
       <PopoverContent className="w-[620px] p-0">
         <Command>
           <CommandInput placeholder="Search models..." />

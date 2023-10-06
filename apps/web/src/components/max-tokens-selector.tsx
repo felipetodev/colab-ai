@@ -6,7 +6,7 @@ import { Slider } from './ui/slider'
 
 interface MaxLengthSelectorProps {
   defaultValue: SliderProps['defaultValue']
-  onChange: (value: { key: 'maxTokens', value: any }) => void
+  onChange?: (value: { key: 'maxTokens', value: any }) => void
 }
 
 function MaxTokensSelector ({ defaultValue, onChange }: MaxLengthSelectorProps) {
@@ -40,12 +40,13 @@ function MaxTokensSelector ({ defaultValue, onChange }: MaxLengthSelectorProps) 
           aria-label="Max Tokens"
           className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
           defaultValue={value}
+          name="maxTokens"
           id="maxlength"
           max={4000}
           onValueChange={(e) => {
             const [maxTokens] = e as [number]
             setValue(e)
-            onChange({ key: 'maxTokens', value: maxTokens })
+            onChange && onChange({ key: 'maxTokens', value: maxTokens })
           }}
           step={50}
         />

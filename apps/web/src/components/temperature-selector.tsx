@@ -6,7 +6,7 @@ import { Slider } from './ui/slider'
 
 interface TemperatureSelectorProps {
   defaultValue: SliderProps['defaultValue']
-  onChange: (value: { key: 'temperature', value: any }) => void
+  onChange?: (value: { key: 'temperature', value: any }) => void
 }
 
 function TemperatureSelector ({ defaultValue, onChange }: TemperatureSelectorProps) {
@@ -37,6 +37,7 @@ function TemperatureSelector ({ defaultValue, onChange }: TemperatureSelectorPro
           </div>
         </div>
         <Slider
+          name='temperature'
           aria-label="Temperature"
           className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
           defaultValue={value}
@@ -45,7 +46,7 @@ function TemperatureSelector ({ defaultValue, onChange }: TemperatureSelectorPro
           onValueChange={(e) => {
             const [temperature] = e as [number]
             setValue(e)
-            onChange({ key: 'temperature', value: temperature })
+            onChange && onChange({ key: 'temperature', value: temperature })
           }}
           step={0.1}
         />
