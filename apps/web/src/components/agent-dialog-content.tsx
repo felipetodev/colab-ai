@@ -22,6 +22,7 @@ import { Badge } from './ui/badge'
 import { type AgentProps } from '@/lib/types/agent'
 import { type DocumentProps } from '@/lib/types/document'
 import { createAgent } from 'src/app/actions/create-agent'
+import { SubmitButton } from '../app/actions/submit-button'
 
 type Props = {
   type: 'create' | 'update'
@@ -92,7 +93,7 @@ function AgentDialogContent ({
 
           <div className="space-y-2 flex flex-col justify-center">
             <Label className='max-w-max' htmlFor="dropzone-file">Avatar</Label>
-            <Label className="flex flex-col items-center justify-center w-20 h-20 border rounded cursor-pointer overflow-hidden" htmlFor="dropzone-file">
+            <Label className="bg-neutral-800/20 flex flex-col items-center justify-center w-20 h-20 border rounded cursor-pointer overflow-hidden" htmlFor="dropzone-file">
               {avatarPreview
                 ? (
                   <img
@@ -159,7 +160,7 @@ function AgentDialogContent ({
           <div className="w-full mt-2">
             <Button
               type="button"
-              className="flex items-center justify-start mb-4"
+              className="flex items-center justify-start"
               onClick={() => setIsOpenSettings(!isOpenSettings)}
               variant='secondary'
             >
@@ -171,7 +172,7 @@ function AgentDialogContent ({
             </Button>
             {isOpenSettings
               ? (
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-6 my-6">
                   <TemperatureSelector
                     defaultValue={[agent.temperature ?? 0.2]}
                   />
@@ -183,19 +184,19 @@ function AgentDialogContent ({
               : null}
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className='mt-4'>
           <DialogClose type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
           </DialogClose>
           {type === 'create' && (
-            <Button type="submit" className="text-white bg-green-700 hover:bg-green-700/90">
+            <SubmitButton>
               Create Agent
-            </Button>
+            </SubmitButton>
           )}
           {type === 'update' && (
-            <Button className="text-white bg-green-700 hover:bg-green-700/90">
+            <SubmitButton>
               Save Agent
-            </Button>
+            </SubmitButton>
           )}
         </DialogFooter>
       </form>
