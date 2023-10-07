@@ -15,7 +15,7 @@ export function AuthButtonClient ({ session }: { session: Session | null }) {
       provider,
       options: {
         redirectTo: process.env.NODE_ENV === 'production'
-          ? `${process.env.APP_HOST}/auth/callback`
+          ? `${process.env.NEXT_PUBLIC_APP_HOST}/auth/callback`
           : 'http://localhost:3000/auth/callback'
       }
     })
