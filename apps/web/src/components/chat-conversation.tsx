@@ -1,5 +1,4 @@
 import { MessageCircleIcon, Trash2Icon, FileEditIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import type { Chat } from '@/lib/types/chat'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -13,7 +12,6 @@ type Props = {
 }
 
 function ChatConversation ({ id, name, isSelected, onClick }: Props) {
-  const router = useRouter()
   return (
     <div
       aria-pressed={isSelected}
@@ -36,20 +34,10 @@ function ChatConversation ({ id, name, isSelected, onClick }: Props) {
       <span className="text-sm truncate w-full mr-2">
         {name}
       </span>
-      <div className="ml-auto flex">
+      <div className="ml-auto flex border border-red-500">
         <ChatConversationDialog
           activeName={name}
-          onClick={async (newName) => {
-            if (!newName) return
-            await fetch('/chats', {
-              method: 'PUT',
-              body: JSON.stringify({
-                id,
-                name: newName
-              })
-            })
-            router.refresh()
-          }}
+          id={id}
           type="edit"
         >
           <Button className="w-7 h-7" size='icon' variant="ghost">
@@ -58,15 +46,7 @@ function ChatConversation ({ id, name, isSelected, onClick }: Props) {
         </ChatConversationDialog>
 
         <ChatConversationDialog
-          onClick={async () => {
-            await fetch('/chats', {
-              method: 'DELETE',
-              body: JSON.stringify({
-                id
-              })
-            })
-            router.refresh()
-          }}
+          id={id}
           type="delete"
         >
           <Button className="w-7 h-7" size='icon' variant="ghost">

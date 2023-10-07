@@ -189,12 +189,12 @@ function AgentDialogContent ({
             Cancel
           </DialogClose>
           {type === 'create' && (
-            <SubmitButton>
+            <SubmitButton className='text-white bg-green-700 hover:bg-green-700/90'>
               Create Agent
             </SubmitButton>
           )}
           {type === 'update' && (
-            <SubmitButton>
+            <SubmitButton className='text-white bg-green-700 hover:bg-green-700/90'>
               Save Agent
             </SubmitButton>
           )}

@@ -1,5 +1,4 @@
 import { DialogClose } from '@radix-ui/react-dialog'
-import { useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -11,70 +10,81 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import { Button, buttonVariants } from './ui/button'
+import { buttonVariants } from './ui/button'
+import { SubmitButton } from 'src/app/actions/submit-button'
+import { updateChat } from 'src/app/actions/update-chat-settings'
 
 type Props =
   | {
     type: 'delete'
-    onClick: () => void
+    id: string
     children: React.ReactNode
   } | {
     type: 'edit'
     activeName: string
-    onClick: (name: string) => void
+    id: string
     children: React.ReactNode
   }
 
 function ChatConversationDialog (props: Props) {
-  const { type, onClick, children } = props
-  const [newChatName, setNewChatName] = useState('')
+  const { type, id, children } = props
+
   return (
     <Dialog>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
-        {type === 'edit'
-          ? (
-          <>
-            <DialogHeader>
-              <DialogTitle>Edit chat</DialogTitle>
-              <DialogDescription>
-                Update your chat name.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <Input onChange={({ target }) => { setNewChatName(target.value) }} placeholder={props.activeName} />
-            </div>
-          </>
-            )
-          : (
-          <DialogHeader>
-            <DialogTitle>Delete chat</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete this chat?
-            </DialogDescription>
-          </DialogHeader>
-            )}
-        <DialogFooter>
-          {type === 'delete'
+        <form action={async (formData: FormData) => {
+          formData.set('id', id)
+          await updateChat(type, formData)
+        }}>
+          {type === 'edit'
             ? (
-            <>
-              <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
-                Cancel
-              </DialogClose>
-              <Button onClick={onClick} variant="destructive">Delete</Button>
-            </>
+              <>
+                <DialogHeader>
+                  <DialogTitle>Edit chat</DialogTitle>
+                  <DialogDescription>
+                    Update your chat name.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <Input name="name" placeholder={props.activeName} />
+                </div>
+              </>
               )
             : (
-            <>
-              <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
-                Cancel
-              </DialogClose>
-              <Button onClick={() => { onClick(newChatName) }}>Save</Button>
-            </>
+              <DialogHeader>
+                <DialogTitle>Delete chat</DialogTitle>
+                <DialogDescription>
+                  Are you sure you want to delete this chat?
+                </DialogDescription>
+              </DialogHeader>
               )}
-        </DialogFooter>
+          <DialogFooter>
+            {type === 'delete'
+              ? (
+                <>
+                  <DialogClose type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
+                    Cancel
+                  </DialogClose>
+                  <SubmitButton variant='destructive'>
+                    Delete
+                  </SubmitButton>
+                </>
+                )
+              : (
+                <>
+                  <DialogClose type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
+                    Cancel
+                  </DialogClose>
+                  <SubmitButton className='text-white bg-green-700 hover:bg-green-700/90'>
+                    Save
+                  </SubmitButton>
+                </>
+                )}
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog >
   )
