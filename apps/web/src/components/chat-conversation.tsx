@@ -34,7 +34,7 @@ function ChatConversation ({ id, name, isSelected, onClick }: Props) {
       <span className="text-sm truncate w-full mr-2">
         {name}
       </span>
-      <div className="ml-auto flex border border-red-500">
+      <div className="ml-auto flex">
         <ChatConversationDialog
           activeName={name}
           id={id}
