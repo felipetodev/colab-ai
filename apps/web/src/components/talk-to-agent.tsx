@@ -23,7 +23,7 @@ function TalkToAgent ({ agents, selectedChat, handleModalClose }: TalkAgentProps
       className="w-full space-y-4"
       action={async (formData) => {
         if (!agentSelected) return alert('Please select an agent to talk to with')
-        await updateChat(formData)
+        await updateChat('edit', formData) // refact updateChat
         handleModalClose()
       }}
     >

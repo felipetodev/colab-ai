@@ -28,7 +28,7 @@ function TalkToChat ({ selectedChat, handleModalClose }: Props) {
 
   return (
     <form action={async (formData) => {
-      await updateChat(formData)
+      await updateChat('edit', formData) // refact updateChat
       handleModalClose()
     }}>
       <input type="hidden" name="id" value={selectedChat?.id} />
