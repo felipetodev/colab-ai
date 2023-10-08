@@ -12,7 +12,7 @@ function HelpPopover () {
   return (
     <Popover>
       <PopoverTrigger className='text-sm'>
-        <div className='flex items-center'>
+        <div className={cn(buttonVariants({ variant: 'ghost' }), 'h-7 px-2')}>
           <HelpCircle className='w-4 h-4 mr-1.5' />
           Help
         </div>
