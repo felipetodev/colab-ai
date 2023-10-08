@@ -1,19 +1,27 @@
-import crypto from 'node:crypto'
-import { NextResponse } from 'next/server'
+'use server'
+
+import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { revalidatePath } from 'next/cache'
 import { WebPDFLoader } from 'langchain/document_loaders/web/pdf'
 import { DocxLoader } from 'langchain/document_loaders/fs/docx'
 import { CSVLoader } from 'langchain/document_loaders/fs/csv'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { TextLoader } from 'langchain/document_loaders/fs/text'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
 
-export async function POST (request: Request): Promise<any> {
-  const formData = await request.formData()
+export const createFileChunks = async (formData: FormData) => {
+  const name = formData.get('name')
+  const file = formData.get('file')
 
-  const file = formData.get('file') as Blob
-  const type = formData.get('type') as string | null
-  const name = formData.get('name') as string | null
+  if (!file) throw new Error('File not found')
+
+  const type = (file as File).type
+
+  const supabase = createServerActionClient({ cookies })
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user === null) return { error: 'User not found' }
+
   const documentId = crypto.randomUUID()
 
   let Loader:
@@ -44,12 +52,7 @@ export async function POST (request: Request): Promise<any> {
     }
   }
 
-  const supabase = createServerComponentClient({ cookies })
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (user === null) return NextResponse.json({ error: 'User not found' })
-
-  const loader = new Loader(file)
+  const loader = new Loader(file as File)
   const document = await loader.load()
 
   // pdf, csv, text, don't need splitting
@@ -75,5 +78,7 @@ export async function POST (request: Request): Promise<any> {
     content: formattedDocs
   })
 
-  return NextResponse.json({ resp: status, type, name })
+  revalidatePath('/')
+
+  return { status }
 }
