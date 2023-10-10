@@ -1,7 +1,6 @@
 import type { Message as VercelChatMessage } from 'ai'
-import { PromptTemplate } from 'langchain/prompts'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { BytesOutputParser } from 'langchain/schema/output_parser'
+import { BytesOutputParser, StringOutputParser } from 'langchain/schema/output_parser'
 import { StreamingTextResponse } from 'ai'
 import { type AgentProps } from '@/lib/types/agent'
 import { RequestCookies } from '@edge-runtime/cookies'
@@ -9,31 +8,16 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Pinecone } from '@pinecone-database/pinecone'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { RunnableSequence } from 'langchain/schema/runnable'
+import {
+  type ChatWindowMessage,
+  _formatChatHistoryAsMessages,
+  createRetrievalChain,
+  parsePrevMessages,
+  responseChainPrompt
+} from '@/lib/utils.langchain'
 
 export const runtime = 'edge'
-
-export type Metadata = {
-  id: string
-  refId: string
-  chunk: string
-}
-
-const TEMPLATE = `You are a representative who loves to help people!
-Given the following sections from the documentation (preceded by a section id), answer the question using only that information, outputted in Markdown format.
-{prompt}
-
-Current conversation:
-{chat_history}
-
-Here is some context which might contain valuable information to answer the question:
-{context}
-
-User: {input}
-AI:`
-
-const formatMessage = (message: VercelChatMessage) => {
-  return `${message.role}: ${message.content}`
-}
 
 export async function POST (req: Request) {
   const body = await req.json() as {
@@ -45,10 +29,10 @@ export async function POST (req: Request) {
     maxTokens?: AgentProps['maxTokens']
   }
   const messages = body.messages ?? []
-  const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
+  const previousMessages = parsePrevMessages(messages.slice(0, -1))
   const currentMessageContent = messages[messages.length - 1].content
 
-  const { docsId, prompt: agentPrompt, model: agentModel, temperature } = body
+  const { docsId, prompt, model: agentModel, temperature } = body
 
   const cookies = new RequestCookies(req.headers) as any
   const supabase = createServerComponentClient({ cookies: () => cookies })
@@ -90,43 +74,58 @@ export async function POST (req: Request) {
       ...(openaiOrg && { organization: openaiOrg })
     }),
     {
-      pineconeIndex: index
+      pineconeIndex: index,
+      filter: {
+        id: { $in: docsId }
+      }
     }
   )
 
-  const results = await vectorStore.similaritySearch(
-    currentMessageContent,
-    3,
-    {
-      id: { $in: docsId }
-    }
-  )
-
-  console.log('------------------')
-  console.log(results)
-  console.log({ references: docsId })
-  console.log('------------------')
-
-  const prompt = PromptTemplate.fromTemplate(TEMPLATE)
-
-  const model = new ChatOpenAI({
+  const llm = new ChatOpenAI({
     modelName: agentModel,
     openAIApiKey: openaiKey,
     temperature,
     maxTokens: -1
-  }, {
-    ...(openaiOrg && { organization: openaiOrg })
   })
 
-  const outputParser = new BytesOutputParser()
+  const retrievalChain = createRetrievalChain(
+    llm,
+    vectorStore.asRetriever(),
+    previousMessages
+  )
 
-  const chain = prompt.pipe(model).pipe(outputParser)
+  const responseChain = RunnableSequence.from([
+    responseChainPrompt,
+    llm,
+    new StringOutputParser()
+  ])
 
-  const stream = await chain.stream({
-    prompt: agentPrompt ?? '',
-    chat_history: formattedPreviousMessages.join('\n'),
-    context: results.map(({ pageContent }) => pageContent).join('\n'),
-    input: currentMessageContent
+  const fullChain = RunnableSequence.from([
+    {
+      question: (input) => input.question,
+      chat_history: RunnableSequence.from([(input) => input.chat_history, _formatChatHistoryAsMessages]),
+      context: RunnableSequence.from([(input) => {
+        const formattedChatHistory = input.chat_history
+          .map((message: ChatWindowMessage) => `${message.role.toUpperCase()}: ${message.content}`).join('\n')
+        return {
+          question: input.question,
+          chat_history: formattedChatHistory
+        }
+      }, retrievalChain]),
+      prompt: (input) => input.prompt
+    },
+    responseChain,
+    /**
+      * Chat models stream message chunks rather than bytes, so this
+      * output parser handles serialization and encoding.
+      */
+    new BytesOutputParser()
+  ])
+
+  const stream = await fullChain.stream({
+    question: currentMessageContent,
+    chat_history: previousMessages,
+    prompt
   })
 
   return new StreamingTextResponse(stream)
