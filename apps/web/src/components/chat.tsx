@@ -18,12 +18,13 @@ import { createApiCompletion, createBodyCompletion } from '@/lib/utils'
 
 type Props = {
   id: string
+  user: { name: string, username: string } | null
   chats: ChatProps[] | null
   documents: DocumentProps[] | null
   agents: AgentProps[] | null
 }
 
-function Chat ({ chats, agents, documents }: Props) {
+function Chat ({ user, chats, agents, documents }: Props) {
   const [gotMessages, setGotMessages] = useState(false)
   const [selectedChat, setSelectedChat] = useState<ChatProps>(chats?.[0] ?? {
     name: 'New Chat',
@@ -147,6 +148,7 @@ function Chat ({ chats, agents, documents }: Props) {
                   <div className='flex flex-col pb-[60px]'>
                     {messages?.map((message) => (
                       <ChatMessages
+                        user={user}
                         content={message.content}
                         id={message.id}
                         key={message.id}

@@ -5,6 +5,11 @@ import Chat from '@/components/chat'
 export default async function Home () {
   const cookieStore = cookies()
   const supabase = createServerComponentClient({ cookies: () => cookieStore })
+
+  const { data: user } = await supabase.from('users')
+    .select('name, username:user_name')
+    .single()
+
   const { data: chats } = await supabase
     .from('chats')
     .select('user:user_id(vectorProvider:vector_db_selected, dbStatus:db_status), id, name, messages, folderId:folder_id, model, temperature, maxTokens:max_tokens, prompt, isAgent:is_agent, agent:agent_id(id, name, prompt, docsId:docs_id, model, temperature, maxTokens:max_tokens)')
@@ -22,6 +27,7 @@ export default async function Home () {
   return (
     <main className="flex-col flex h-[calc(100vh-57px)] min-w-[1280px] overflow-hidden">
       <Chat
+        user={user}
         agents={agents}
         chats={chats}
         documents={documents}

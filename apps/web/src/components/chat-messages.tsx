@@ -8,7 +8,11 @@ import { Button } from './ui/button'
 import { MemoizedReactMarkdown } from './markdown'
 import { CodeBlock } from './codeblock'
 
-function ChatMessages ({ content, role }: Message) {
+interface Props extends Message {
+  user: { name: string, username: string } | null
+}
+
+function ChatMessages ({ user, content, role }: Props) {
   return (
     <div className={cn({
       'bg-secondary/50': role === 'user',
@@ -20,7 +24,9 @@ function ChatMessages ({ content, role }: Message) {
             <div className="bg-background flex justify-center items-center h-10 w-10 border rounded overflow-hidden">
               <User />
             </div>
-            <h3 className="font-semibold">{role}</h3>
+            <h3 className="font-semibold">
+              {role === 'user' ? (user?.name ?? role) : role}
+            </h3>
           </div>
           <div className="invisible group-hover:visible">
             <Button className="w-8 h-8" size='icon' variant='ghost'>
