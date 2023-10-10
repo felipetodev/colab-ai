@@ -1,4 +1,4 @@
-import type { Document as LDocument } from 'langchain/dist/document'
+import { type Document as LDocument } from 'langchain/document'
 import type { Database } from './database'
 
 export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
