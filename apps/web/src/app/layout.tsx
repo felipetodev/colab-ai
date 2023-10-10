@@ -4,6 +4,7 @@ import { fontMono, fontSans } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { ThemeProvider } from '@/components/theme-provider'
 import MainNav from '@/components/main-nav'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'Colab-AI'
@@ -28,6 +29,7 @@ export default function RootLayout ({
               <MainNav />
               {children}
             </div>
+            <Toaster />
           </div>
         </ThemeProvider>
       </body>

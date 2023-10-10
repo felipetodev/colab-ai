@@ -10,8 +10,10 @@ import {
 import { Textarea } from './ui/textarea'
 import { SubmitButton } from 'src/app/actions/submit-button'
 import { sendFeedback } from 'src/app/actions/send-feedback'
+import { useToast } from '@/components/ui/use-toast'
 
 function FeedbackPopover () {
+  const { toast } = useToast()
   return (
     <Popover>
       <PopoverTrigger className={cn(buttonVariants({ variant: 'outline' }), 'h-7 px-2')}>
@@ -20,6 +22,10 @@ function FeedbackPopover () {
       <PopoverContent side='bottom' className='relative'>
         <form action={async (formData: FormData) => {
           await sendFeedback(formData)
+          toast({
+            variant: 'success',
+            description: 'Thanks for your feedback!'
+          })
         }}>
           <Textarea
             required
