@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { AuthButtonServer } from './auth-button-server'
 import HelpPopover from './help-popover'
+import FeedbackPopover from './feedback-popover'
 
 function MainNav ({
   className,
@@ -32,6 +33,7 @@ function MainNav ({
           </Button>
         </nav>
         <div className="ml-auto flex items-center space-x-4">
+          <FeedbackPopover />
           <HelpPopover />
           <AuthButtonServer />
         </div>
