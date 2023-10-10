@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { HomeIcon, SettingsIcon } from 'lucide-react'
+import { HomeIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { AuthButtonServer } from './auth-button-server'
 import HelpPopover from './help-popover'
 import FeedbackPopover from './feedback-popover'
@@ -18,19 +18,16 @@ function MainNav ({
           {...props}
         >
           <Link
-            className="text-sm font-medium transition-colors hover:text-secondary mr-2"
+            className="text-lg font-semibold transition-colors mr-2"
             href="/"
           >
-            Your workspace
+            Colab-AI
           </Link>
 
-          <Button className="w-8 h-8" size="icon">
-            <HomeIcon className="h-5 w-5" />
-          </Button>
+          <Link href='/' className={cn(buttonVariants({ size: 'sm' }), 'h-7 px-2')}>
+            <HomeIcon className='w-4 h-4' />
+          </Link>
 
-          <Button className="w-8 h-8" size="icon" variant='ghost'>
-            <SettingsIcon className="h-5 w-5" />
-          </Button>
         </nav>
         <div className="ml-auto flex items-center space-x-4">
           <FeedbackPopover />

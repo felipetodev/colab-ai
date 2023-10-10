@@ -25,7 +25,7 @@ export default function RootLayout ({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <div className="relative flex min-h-screen flex-col bg-background">
             <div className="flex-1">
-              <MainNav className="mx-6" />
+              <MainNav />
               {children}
             </div>
           </div>
