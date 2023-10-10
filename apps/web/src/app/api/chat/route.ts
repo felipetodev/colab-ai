@@ -14,8 +14,7 @@ const formatMessage = (message: VercelChatMessage) => {
   return `${message.role}: ${message.content}`
 }
 
-const TEMPLATE = `You are a helpful, friendly AI assistant.
-
+const TEMPLATE = `Given the following instructions answer the question using only this instructions:
 {prompt}
 
 Current conversation:
@@ -41,22 +40,25 @@ export async function POST (req: NextRequest) {
   const { data: chat } = await supabase.from('chats')
     .select('model, temperature, maxTokens:max_tokens, prompt, user:user_id(openaiKey:openai_key, openaiOrg:openai_org)')
     .eq('id', body?.chatId)
+    .limit(1)
+    .maybeSingle()
 
   const {
     user: secrets,
-    model: modelName,
+    model,
     temperature,
-    maxTokens,
+    // @deprecated
+    // maxTokens
     prompt: promptText
-  } = chat?.[0] ?? {} as ChatProps
+  } = chat ?? {} as ChatProps
 
   const prompt = PromptTemplate.fromTemplate(TEMPLATE)
 
-  const model = new ChatOpenAI({
-    modelName,
+  const llm = new ChatOpenAI({
+    modelName: model,
     openAIApiKey: secrets.openaiKey,
     temperature,
-    maxTokens
+    maxTokens: -1
   }, {
     ...(secrets.openAiorg && {
       organization: secrets.openAiorg
@@ -65,11 +67,11 @@ export async function POST (req: NextRequest) {
 
   const outputParser = new BytesOutputParser()
 
-  const chain = prompt.pipe(model).pipe(outputParser)
+  const chain = prompt.pipe(llm).pipe(outputParser)
 
   const stream = await chain.stream({
     chat_history: formattedPreviousMessages.join('\n'),
-    prompt: promptText ?? '',
+    prompt: promptText ?? 'You are a very enthusiastic Colab-AI representative who loves to help people!',
     input: currentMessageContent
   })
 
