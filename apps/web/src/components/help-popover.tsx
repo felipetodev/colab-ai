@@ -11,11 +11,9 @@ import { IconDiscord } from './ui/icons'
 function HelpPopover () {
   return (
     <Popover>
-      <PopoverTrigger className='text-sm'>
-        <div className={cn(buttonVariants({ variant: 'ghost' }), 'h-7 px-2')}>
-          <HelpCircle className='w-4 h-4 mr-1.5' />
-          Help
-        </div>
+      <PopoverTrigger className={cn(buttonVariants({ variant: 'ghost' }), 'h-7 px-2')}>
+        <HelpCircle className='w-4 h-4 mr-1.5' />
+        Help
       </PopoverTrigger>
       <PopoverContent side='bottom' align='end' className='relative'>
         <h5 className='font-semibold'>Need help with your project?</h5>
