@@ -39,7 +39,7 @@ export async function POST (req: Request) {
 
   const docId = body.docsId?.[0]
   // const agentName = body.name
-  const { prompt: agentPrompt, model: agentModel, temperature, maxTokens } = body
+  const { prompt: agentPrompt, model: agentModel, temperature } = body
 
   const cookies = new RequestCookies(req.headers) as any
   const supabase = createServerComponentClient({ cookies: () => cookies })
@@ -51,7 +51,7 @@ export async function POST (req: Request) {
 
   const { data: settings } = await supabase.from('users')
     .select('supabaseUrl:supabase_url, supabaseSecretKey:supabase_secret_key, openaiKey:openai_key, openaiOrg:openai_org')
-    .eq('id', user?.id)
+    .eq('id', user.id)
     .limit(1)
     .maybeSingle()
 
@@ -98,7 +98,7 @@ export async function POST (req: Request) {
     modelName: agentModel,
     openAIApiKey: openaiKey,
     temperature,
-    maxTokens
+    maxTokens: -1
   })
 
   const outputParser = new BytesOutputParser()

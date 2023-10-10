@@ -60,7 +60,7 @@ export async function POST (req: Request) {
 
   const { data: settings } = await supabase.from('users')
     .select('pineconeApiKey:pinecone_key, pineconeEnvironment:pinecone_env, pineconeIndex:pinecone_index, openaiKey:openai_key, openaiOrg:openai_org')
-    .eq('id', user?.id)
+    .eq('id', user.id)
     .limit(1)
     .maybeSingle()
 
@@ -112,8 +112,8 @@ export async function POST (req: Request) {
   const model = new ChatOpenAI({
     modelName: agentModel,
     openAIApiKey: openaiKey,
-    temperature
-    // maxTokens
+    temperature,
+    maxTokens: -1
   }, {
     ...(openaiOrg && { organization: openaiOrg })
   })
