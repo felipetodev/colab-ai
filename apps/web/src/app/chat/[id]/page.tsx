@@ -1,6 +1,6 @@
 import { type Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Chat from '@/components/chat'
 
@@ -11,7 +11,8 @@ export interface ChatPageProps {
 }
 
 export async function generateMetadata ({ params }: ChatPageProps): Promise<Metadata> {
-  const supabase = createServerActionClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
@@ -30,7 +31,8 @@ export async function generateMetadata ({ params }: ChatPageProps): Promise<Meta
 }
 
 export default async function ChatPage ({ params }: ChatPageProps) {
-  const supabase = createServerActionClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const { data: { user } } = await supabase.auth.getUser()
 
   const userMetadata = {
