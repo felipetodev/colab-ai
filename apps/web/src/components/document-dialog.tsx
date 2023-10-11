@@ -18,6 +18,7 @@ import { IconGitHub } from './ui/icons'
 import { Badge } from './ui/badge'
 import { createFileChunks } from 'src/app/actions/create-file-chunks'
 import { SubmitButton } from 'src/app/actions/submit-button'
+import { useToast } from './ui/use-toast'
 
 const SUPPORTED_FILES = [
   '.pdf',
@@ -38,6 +39,7 @@ type TabProps = 'documents' | 'github'
 function DocumentDialog ({ children }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<TabProps>('documents')
+  const { toast } = useToast()
 
   return (
     <Dialog
@@ -49,7 +51,11 @@ function DocumentDialog ({ children }: Props) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
         <form action={async (formData: FormData) => {
-          await createFileChunks(formData)
+          const { status } = await createFileChunks(formData) as { status: number }
+          toast({
+            variant: status >= 400 ? 'destructive' : 'success',
+            description: status >= 400 ? 'Something went wrong' : 'File uploaded successfully'
+          })
           setIsOpen(false)
         }}>
           <Tabs defaultValue="documents" onValueChange={(tab) => setActiveTab(tab as TabProps)} className='mb-4'>
