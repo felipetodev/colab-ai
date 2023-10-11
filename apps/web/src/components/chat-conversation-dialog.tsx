@@ -1,3 +1,4 @@
+import { useRef, useState, useTransition } from 'react'
 import { DialogClose } from '@radix-ui/react-dialog'
 import {
   Dialog,
@@ -10,10 +11,11 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
-import { buttonVariants } from './ui/button'
-import { SubmitButton } from 'src/app/actions/submit-button'
-import { updateChat } from 'src/app/actions/update-chat-settings'
+import { Button, buttonVariants } from './ui/button'
 import { useToast } from './ui/use-toast'
+import { deleteChat, updateChat } from 'src/app/actions/chat'
+import { useRouter } from 'next/navigation'
+import { Spinner } from './ui/icons'
 
 type Props =
   | {
@@ -28,69 +30,103 @@ type Props =
   }
 
 function ChatConversationDialog (props: Props) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [isRemovePending, startRemoveTransition] = useTransition()
   const { type, id, children } = props
+  const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
   const { toast } = useToast()
 
+  const handleDeleteChat = async (e: any) => {
+    e.preventDefault()
+    startRemoveTransition(async () => {
+      await deleteChat(id)
+      // if (result && 'error' in result) {
+      //   do something
+      // }
+
+      router.refresh()
+      router.push('/')
+      toast({ variant: 'success', description: 'Chat deleted successfully' })
+    })
+  }
+
+  const handleUpdateChat = async (e: any) => {
+    e.preventDefault()
+    if (!inputRef.current) return setIsOpen(false)
+
+    const name = inputRef.current.value
+    startRemoveTransition(async () => {
+      await updateChat({ id, name })
+      // if (result && 'error' in result) {
+      //   do something
+      // }
+
+      setIsOpen(false)
+      router.refresh()
+      toast({ variant: 'success', description: 'Chat updated successfully' })
+    })
+  }
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
-        <form action={async (formData: FormData) => {
-          formData.set('id', id)
-          await updateChat(type, formData)
-          toast({
-            variant: 'success',
-            description: `Chat ${type === 'edit' ? 'updated' : 'deleted'} successfully`
-          })
-        }}>
-          {type === 'edit'
+        {type === 'edit'
+          ? (
+            <>
+              <DialogHeader>
+                <DialogTitle>Edit chat</DialogTitle>
+                <DialogDescription>
+                  Update your chat name.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <Input ref={inputRef} name="name" placeholder={props.activeName} />
+              </div>
+            </>
+            )
+          : (
+            <DialogHeader>
+              <DialogTitle>Delete chat</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete this chat?
+              </DialogDescription>
+            </DialogHeader>
+            )}
+        <DialogFooter>
+          {type === 'delete'
             ? (
               <>
-                <DialogHeader>
-                  <DialogTitle>Edit chat</DialogTitle>
-                  <DialogDescription>
-                    Update your chat name.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <Input name="name" placeholder={props.activeName} />
-                </div>
+                <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
+                  Cancel
+                </DialogClose>
+                <Button
+                  disabled={isRemovePending}
+                  variant='destructive'
+                  onClick={handleDeleteChat}
+                >
+                  {isRemovePending ? <Spinner className='animate-spin w-5 h-5' /> : 'Delete'}
+                </Button>
               </>
               )
             : (
-              <DialogHeader>
-                <DialogTitle>Delete chat</DialogTitle>
-                <DialogDescription>
-                  Are you sure you want to delete this chat?
-                </DialogDescription>
-              </DialogHeader>
+              <>
+                <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
+                  Cancel
+                </DialogClose>
+                <Button
+                  disabled={isRemovePending}
+                  className='text-white bg-green-700 hover:bg-green-700/90'
+                  onClick={handleUpdateChat}
+                >
+                  {isRemovePending ? <Spinner className='animate-spin w-5 h-5' /> : 'Save'}
+                </Button>
+              </>
               )}
-          <DialogFooter>
-            {type === 'delete'
-              ? (
-                <>
-                  <DialogClose type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
-                    Cancel
-                  </DialogClose>
-                  <SubmitButton variant='destructive'>
-                    Delete
-                  </SubmitButton>
-                </>
-                )
-              : (
-                <>
-                  <DialogClose type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
-                    Cancel
-                  </DialogClose>
-                  <SubmitButton className='text-white bg-green-700 hover:bg-green-700/90'>
-                    Save
-                  </SubmitButton>
-                </>
-                )}
-          </DialogFooter>
-        </form>
+        </DialogFooter>
       </DialogContent>
     </Dialog >
   )
