@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 import { buttonVariants } from './ui/button'
 import { SubmitButton } from 'src/app/actions/submit-button'
 import { updateChat } from 'src/app/actions/update-chat-settings'
+import { useToast } from './ui/use-toast'
 
 type Props =
   | {
@@ -28,6 +29,7 @@ type Props =
 
 function ChatConversationDialog (props: Props) {
   const { type, id, children } = props
+  const { toast } = useToast()
 
   return (
     <Dialog>
@@ -38,6 +40,10 @@ function ChatConversationDialog (props: Props) {
         <form action={async (formData: FormData) => {
           formData.set('id', id)
           await updateChat(type, formData)
+          toast({
+            variant: 'success',
+            description: `Chat ${type === 'edit' ? 'updated' : 'deleted'} successfully`
+          })
         }}>
           {type === 'edit'
             ? (
