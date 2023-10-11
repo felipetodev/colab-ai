@@ -14,6 +14,7 @@ import Agent from './agent'
 import DocumentDialog from './document-dialog'
 import DocumentFile from './document-file'
 import AgentDialog from './agent-dialog'
+import { SubmitButton } from 'src/app/actions/submit-button'
 
 type TabsView = 'chat' | 'document' | 'agent'
 
@@ -23,7 +24,7 @@ type Props = {
   documents: DocumentProps[]
   selectedChat: ChatProps
   handleSelectChat: (chat: ChatProps) => void
-  handleNewChat: () => void
+  handleNewChat: (formData: FormData) => void
 }
 
 function Sidebar ({
@@ -69,10 +70,12 @@ function Sidebar ({
       {/* Create Chat or Folder */}
       <div className="flex gap-x-2.5">
         {view === 'chat' && (
-          <Button className="gap-x-2 w-full font-semibold" onClick={handleNewChat}>
-            <Plus className="h-5 w-5" />
-            <span>New Chat</span>
-          </Button>
+          <form className='flex w-full'>
+            <SubmitButton className="gap-x-2 w-full font-semibold" formAction={handleNewChat}>
+              <Plus className="h-5 w-5" />
+              <span>New Chat</span>
+            </SubmitButton>
+          </form>
         )}
         {view === 'agent' && (
           <AgentDialog

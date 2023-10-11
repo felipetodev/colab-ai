@@ -1,12 +1,7 @@
 'use client'
 
-import type { Message } from 'ai/react'
-import { useChat } from 'ai/react'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { type ChatProps } from '@/lib/types/chat'
-import type { AgentProps } from '@/lib/types/agent'
-import type { DocumentProps } from '@/lib/types/document'
+import { useChat } from 'ai/react'
 import ChatInput from './chat-input'
 import ChatMessages from './chat-messages'
 import ChatSettings from './chat-settings'
@@ -15,6 +10,11 @@ import Sidebar from './sidebar'
 import ChatSettingsDialog from './chat-settings-dialog'
 import { Badge } from './ui/badge'
 import { createApiCompletion, createBodyCompletion } from '@/lib/utils'
+import { createChat } from 'src/app/actions/create-chat'
+import { type Message } from 'ai/react'
+import { type ChatProps } from '@/lib/types/chat'
+import { type AgentProps } from '@/lib/types/agent'
+import { type DocumentProps } from '@/lib/types/document'
 
 type Props = {
   id: string
@@ -32,7 +32,6 @@ function Chat ({ user, chats, agents, documents }: Props) {
     id: crypto.randomUUID(),
     messages: []
   })
-  const router = useRouter()
 
   const { messages, input, stop, setInput, append, isLoading, setMessages } = useChat({
     api: createApiCompletion({ chat: selectedChat }),
@@ -83,8 +82,6 @@ function Chat ({ user, chats, agents, documents }: Props) {
   }, [gotMessages])
 
   const handleNewChat = async () => {
-    // clean useChat state
-    setMessages([])
     const newChat: ChatProps = {
       id: crypto.randomUUID(),
       name: 'New Chat',
@@ -93,14 +90,9 @@ function Chat ({ user, chats, agents, documents }: Props) {
       temperature: 0.2,
       maxTokens: 2000
     }
-    await fetch('/chats', {
-      method: 'POST',
-      body: JSON.stringify(newChat)
-    })
 
     setSelectedChat(newChat)
-
-    router.refresh()
+    await createChat(newChat) as { status: number }
   }
 
   const onUpdateSelectedChat = (e: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => {
