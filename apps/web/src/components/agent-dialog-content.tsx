@@ -23,9 +23,10 @@ import { type AgentProps } from '@/lib/types/agent'
 import { type DocumentProps } from '@/lib/types/document'
 import { createAgent } from 'src/app/actions/create-agent'
 import { SubmitButton } from '../app/actions/submit-button'
+import { useToast } from './ui/use-toast'
 
 type Props = {
-  type: 'create' | 'update'
+  type: 'create' | 'update' | 'delete'
   agent: AgentProps
   documents: DocumentProps[]
   selectedDocuments: AgentProps['docsId']
@@ -45,6 +46,18 @@ function AgentDialogContent ({
   const router = useRouter()
 
   const avatarPreview = false // TODO: add avatar preview
+  const { toast } = useToast()
+
+  const deleteAgent = async (formData: FormData) => {
+    formData.append('agentId', agent.id)
+    const { status } = await createAgent('delete', formData) as { status: number }
+
+    toast({
+      variant: status >= 400 ? 'destructive' : 'success',
+      description: status >= 400 ? 'Something went wrong' : `Agent ${agent.name} deleted successfully`
+    })
+    handleCloseDialog()
+  }
 
   const docsSelected = documents.filter(d => selectedDocuments.includes(d.id))
   return (
@@ -70,10 +83,18 @@ function AgentDialogContent ({
         action={async (formData) => {
           if (type === 'create') {
             // const folderId = agent.folderId
-            await createAgent(type, formData)
+            const { status } = await createAgent(type, formData) as { status: number }
+            toast({
+              variant: status >= 400 ? 'destructive' : 'success',
+              description: status >= 400 ? 'Something went wrong' : 'Agent created successfully'
+            })
           } else if (type === 'update') {
             formData.append('agentId', agent.id)
-            await createAgent(type, formData)
+            const { status } = await createAgent(type, formData) as { status: number }
+            toast({
+              variant: status >= 400 ? 'destructive' : 'success',
+              description: status >= 400 ? 'Something went wrong' : 'Agent updated successfully'
+            })
           }
 
           router.refresh()
@@ -185,6 +206,12 @@ function AgentDialogContent ({
           </div>
         </div>
         <DialogFooter className='mt-4'>
+          {type !== 'create' && (
+            <Button formAction={deleteAgent} className='mr-auto' variant='destructive'>
+              Delete
+            </Button>
+          )}
+
           <DialogClose type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
           </DialogClose>

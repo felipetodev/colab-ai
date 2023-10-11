@@ -4,7 +4,7 @@ import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
-export const createAgent = async (type: 'create' | 'update', formData: FormData) => {
+export const createAgent = async (type: 'create' | 'update' | 'delete', formData: FormData) => {
   const agentName = formData?.get('agentName')
   // const avatar = formData.get('avatar')
   const prompt = formData.get('prompt')
@@ -22,25 +22,26 @@ export const createAgent = async (type: 'create' | 'update', formData: FormData)
   if (user === null) return { error: 'User not found' }
 
   if (type === 'create') {
-    await supabase
+    const { status, error } = await supabase
       .from('agents')
       .insert({
         user_id: user.id,
         model,
         folder_id: null,
         docs_id: docsIdArray,
-        temperature,
-        max_tokens: maxTokens,
+        temperature: temperature ?? 0.2,
+        max_tokens: maxTokens ?? 4000,
         // avatar,
         name: agentName,
         prompt
       })
 
-    return revalidatePath('/')
+    revalidatePath('/')
+    return { status, error }
   }
 
   if (type === 'update') {
-    await supabase
+    const { status, error } = await supabase
       .from('agents')
       .update({
         name: agentName,
@@ -52,6 +53,18 @@ export const createAgent = async (type: 'create' | 'update', formData: FormData)
       })
       .eq('id', agentId)
 
-    return revalidatePath('/')
+    revalidatePath('/')
+    return { status, error }
+  }
+
+  if (type === 'delete') {
+    console.log({ agentId })
+    const { status, error } = await supabase
+      .from('agents')
+      .delete()
+      .eq('id', agentId)
+
+    revalidatePath('/')
+    return { status, error }
   }
 }
