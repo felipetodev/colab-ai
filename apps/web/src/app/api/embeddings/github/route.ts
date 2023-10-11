@@ -10,7 +10,8 @@ export async function GET (req: Request) {
   const documentId = crypto.randomUUID()
   const url = 'https://github.com/felipetodev/apartment-scraper'
 
-  const supabase = createServerComponentClient({ cookies })
+  const cookieStore = cookies()
+  const supabase = createServerComponentClient({ cookies: () => cookieStore })
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user === null) return NextResponse.json({ error: 'User not found' })

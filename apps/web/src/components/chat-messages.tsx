@@ -9,7 +9,7 @@ import { MemoizedReactMarkdown } from './markdown'
 import { CodeBlock } from './codeblock'
 
 interface Props extends Message {
-  user: { name: string, username: string } | null
+  user: { name: string, username: string, avatarUrl: string } | null
 }
 
 function ChatMessages ({ user, content, role }: Props) {
@@ -22,7 +22,16 @@ function ChatMessages ({ user, content, role }: Props) {
         <div className="flex justify-between items-center mt-4">
           <div className="flex items-center space-x-2">
             <div className="bg-background flex justify-center items-center h-10 w-10 border rounded overflow-hidden">
-              <User />
+              {user?.avatarUrl && role === 'user'
+                ? (
+                  <img
+                    className='block aspect-square w-10 h-10'
+                    src={user.avatarUrl}
+                    alt={user?.username}
+                    title={`@${user?.username}`}
+                  />
+                  )
+                : <User />}
             </div>
             <h3 className="font-semibold">
               {role === 'user' ? (user?.name ?? role) : role}

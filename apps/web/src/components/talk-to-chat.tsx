@@ -8,7 +8,9 @@ import MaxTokensSelector from './max-tokens-selector'
 import { cn } from '@/lib/utils'
 import { type ChatProps } from '@/lib/types/chat'
 import { DialogClose } from '@radix-ui/react-dialog'
-import { updateChat } from 'src/app/actions/update-chat-settings'
+import { SubmitButton } from 'src/app/actions/submit-button'
+import { updateChat } from 'src/app/actions/chat'
+import { useToast } from './ui/use-toast'
 
 type ChatPreferences = Pick<ChatProps, 'model' | 'prompt' | 'temperature' | 'maxTokens'>
 
@@ -25,14 +27,24 @@ function TalkToChat ({ selectedChat, handleModalClose }: Props) {
     temperature: selectedChat.temperature,
     maxTokens: selectedChat.maxTokens
   })
+  const { toast } = useToast()
+
+  const handleChatPreferences = async () => {
+    console.log(chatPreferences)
+    await updateChat({
+      id: selectedChat.id,
+      ...chatPreferences
+    })
+
+    toast({
+      variant: 'success',
+      description: 'Chat preferences updated successfully!'
+    })
+    handleModalClose()
+  }
 
   return (
-    <form action={async (formData) => {
-      await updateChat('edit', formData) // refact updateChat
-      handleModalClose()
-    }}>
-      <input type="hidden" name="id" value={selectedChat?.id} />
-      <input type="hidden" name="chatPreferences" value={JSON.stringify(chatPreferences)} />
+    <form>
       <div className="flex items-center w-full mb-2">
         <h2 className="font-semibold">
           Model
@@ -91,13 +103,13 @@ function TalkToChat ({ selectedChat, handleModalClose }: Props) {
 
       <footer className='flex justify-between pt-4'>
         <div />
-        <div className='space-x-2'>
+        <div className='flex space-x-2'>
           <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
           </DialogClose>
-          <Button type="submit">
+          <SubmitButton formAction={handleChatPreferences}>
             Save preferences
-          </Button>
+          </SubmitButton>
         </div>
       </footer>
     </form>

@@ -10,6 +10,7 @@ export function SubmitButton ({ variant, size, children, ...props }: ButtonProps
   return (
     <Button
       type="submit"
+      disabled={pending}
       variant={variant}
       size={size}
       aria-disabled={pending}
