@@ -3,11 +3,13 @@ import { Label } from './ui/label'
 import { Switch } from './ui/switch'
 import { type ChatProps } from '@/lib/types/chat'
 import { useState } from 'react'
-import { Button, buttonVariants } from './ui/button'
+import { buttonVariants } from './ui/button'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { cn } from '@/lib/utils'
-import { updateChat } from 'src/app/actions/update-chat-settings'
+import { updateChat } from 'src/app/actions/chat'
 import { Badge } from './ui/badge'
+import { useToast } from './ui/use-toast'
+import { SubmitButton } from 'src/app/actions/submit-button'
 
 type TalkAgentProps = {
   agents: AgentProps[]
@@ -17,21 +19,33 @@ type TalkAgentProps = {
 
 function TalkToAgent ({ agents, selectedChat, handleModalClose }: TalkAgentProps) {
   const [agentSelected, setAgentSelected] = useState<ChatProps['agent']>(selectedChat.agent ?? null)
+  const { toast } = useToast()
+
+  const handleUpdateChat = async () => {
+    if (!agentSelected) {
+      return toast({
+        variant: 'destructive',
+        description: 'Please select an agent to talk to with'
+      })
+    }
+
+    await updateChat({
+      id: selectedChat.id,
+      agentId: agentSelected?.id
+    })
+
+    toast({
+      variant: 'success',
+      description: `You are now talking to ${agentSelected?.name}`
+    })
+    handleModalClose()
+  }
 
   return (
-    <form
-      className="w-full space-y-4"
-      action={async (formData) => {
-        if (!agentSelected) return alert('Please select an agent to talk to with')
-        await updateChat('edit', formData) // refact updateChat
-        handleModalClose()
-      }}
-    >
+    <form className="w-full space-y-4">
       <h3 className="mt-6 font-medium">
         Select an agent to talk to with:
       </h3>
-      <input type="hidden" name="id" value={selectedChat?.id} />
-      <input type="hidden" name="agentId" value={agentSelected?.id} />
       <div className="space-y-4">
         {agents.map((agent) => (
           <div key={agent.id} className="flex flex-row items-center justify-between rounded-lg border py-2 px-4">
@@ -56,13 +70,13 @@ function TalkToAgent ({ agents, selectedChat, handleModalClose }: TalkAgentProps
 
       <footer className='flex justify-between pt-4'>
         <div />
-        <div className='space-x-2'>
+        <div className='flex space-x-2'>
           <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
           </DialogClose>
-          <Button type='submit'>
+          <SubmitButton formAction={handleUpdateChat}>
             Save preferences
-          </Button>
+          </SubmitButton>
         </div>
       </footer>
     </form>

@@ -16,7 +16,7 @@ import { Input } from './ui/input'
 import { Label } from './ui/label'
 import { IconGitHub } from './ui/icons'
 import { Badge } from './ui/badge'
-import { createFileChunks } from 'src/app/actions/create-file-chunks'
+import { createFileChunks } from 'src/app/actions/loaders'
 import { SubmitButton } from 'src/app/actions/submit-button'
 import { useToast } from './ui/use-toast'
 

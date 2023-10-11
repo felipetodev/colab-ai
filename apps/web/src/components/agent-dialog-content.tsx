@@ -21,7 +21,7 @@ import DocumentSelector from './document-selector'
 import { Badge } from './ui/badge'
 import { type AgentProps } from '@/lib/types/agent'
 import { type DocumentProps } from '@/lib/types/document'
-import { createAgent } from 'src/app/actions/create-agent'
+import { newAgent, removeAgent, updateAgent } from 'src/app/actions/agent'
 import { SubmitButton } from '../app/actions/submit-button'
 import { useToast } from './ui/use-toast'
 
@@ -48,15 +48,14 @@ function AgentDialogContent ({
   const avatarPreview = false // TODO: add avatar preview
   const { toast } = useToast()
 
-  const deleteAgent = async (formData: FormData) => {
-    formData.append('agentId', agent.id)
-    const { status } = await createAgent('delete', formData) as { status: number }
+  const deleteAgent = async () => {
+    const { status } = await removeAgent(agent.id) as { status: number }
 
+    handleCloseDialog()
     toast({
       variant: status >= 400 ? 'destructive' : 'success',
       description: status >= 400 ? 'Something went wrong' : `Agent ${agent.name} deleted successfully`
     })
-    handleCloseDialog()
   }
 
   const docsSelected = documents.filter(d => selectedDocuments.includes(d.id))
@@ -83,14 +82,14 @@ function AgentDialogContent ({
         action={async (formData) => {
           if (type === 'create') {
             // const folderId = agent.folderId
-            const { status } = await createAgent(type, formData) as { status: number }
+            const { status } = await newAgent(formData) as { status: number }
             toast({
               variant: status >= 400 ? 'destructive' : 'success',
               description: status >= 400 ? 'Something went wrong' : 'Agent created successfully'
             })
           } else if (type === 'update') {
             formData.append('agentId', agent.id)
-            const { status } = await createAgent(type, formData) as { status: number }
+            const { status } = await updateAgent(formData) as { status: number }
             toast({
               variant: status >= 400 ? 'destructive' : 'success',
               description: status >= 400 ? 'Something went wrong' : 'Agent updated successfully'

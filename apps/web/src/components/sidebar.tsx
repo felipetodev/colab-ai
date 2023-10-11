@@ -15,6 +15,7 @@ import DocumentDialog from './document-dialog'
 import DocumentFile from './document-file'
 import AgentDialog from './agent-dialog'
 import { SubmitButton } from 'src/app/actions/submit-button'
+import { createChat } from 'src/app/actions/chat'
 
 type TabsView = 'chat' | 'document' | 'agent'
 
@@ -22,20 +23,29 @@ type Props = {
   chats: ChatProps[]
   agents: AgentProps[]
   documents: DocumentProps[]
-  selectedChat: ChatProps
-  handleSelectChat: (chat: ChatProps) => void
-  handleNewChat: (formData: FormData) => void
+  selectedChat?: ChatProps
 }
 
 function Sidebar ({
   chats,
   agents,
   documents,
-  selectedChat,
-  handleSelectChat,
-  handleNewChat
+  selectedChat
 }: Props) {
   const [view, setView] = useState<TabsView>('chat')
+
+  const handleNewChat = async () => {
+    const newChat: ChatProps = {
+      id: crypto.randomUUID(),
+      name: 'New Chat',
+      messages: [],
+      folderId: null,
+      temperature: 0.2,
+      maxTokens: 2000
+    }
+
+    await createChat(newChat)
+  }
 
   return (
     <aside className="flex flex-col h-full border-r w-full max-w-sm px-4">
@@ -117,10 +127,8 @@ function Sidebar ({
         {view === 'chat' && chats.map((chat) => (
           <ChatConversation
             id={chat.id}
-            isSelected={selectedChat.id === chat.id}
             key={chat.id}
             name={chat.name}
-            onClick={() => handleSelectChat(chat)}
           />
         ))}
 
@@ -134,7 +142,7 @@ function Sidebar ({
 
         {view === 'document' && documents.map((document) => (
           <DocumentFile
-            user={selectedChat.user}
+            user={selectedChat?.user}
             document={document}
             key={document.id}
           />
