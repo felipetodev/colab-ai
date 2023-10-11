@@ -3,30 +3,25 @@ import type { Chat } from '@/lib/types/chat'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import ChatConversationDialog from './chat-conversation-dialog'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 type Props = {
   id: Chat['id']
   name: Chat['name']
-  isSelected: boolean
-  onClick: () => void
 }
 
-function ChatConversation ({ id, name, isSelected, onClick }: Props) {
+function ChatConversation ({ id, name }: Props) {
+  const pathname = usePathname()
+  const chatPath = `/chat/${id}`
   return (
-    <div
-      aria-pressed={isSelected}
+    <Link
+      href={chatPath}
+      aria-pressed={pathname === chatPath}
       className={cn(
         'flex items-center p-1 m-2 rounded-md hover:bg-secondary/40',
-        isSelected && 'bg-secondary'
+        pathname === chatPath && 'bg-secondary'
       )}
-      onClick={onClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          onClick()
-        }
-      }}
-      role="button"
-      tabIndex={0}
     >
       <span className="mr-2 p-2 rounded-md">
         <MessageCircleIcon />
@@ -54,7 +49,7 @@ function ChatConversation ({ id, name, isSelected, onClick }: Props) {
           </Button>
         </ChatConversationDialog>
       </div>
-    </div>
+    </Link>
   )
 }
 
