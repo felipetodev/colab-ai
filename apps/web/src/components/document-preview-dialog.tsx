@@ -16,6 +16,7 @@ import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import { Label } from './ui/label'
 import { Badge } from './ui/badge'
+import { useToast } from './ui/use-toast'
 
 type Props = {
   user: {
@@ -38,9 +39,15 @@ const parseContent = (content: DocumentProps['content']) => {
 function DocumentPreviewDialog ({ user, document, children }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [name, setName] = useState(document.name)
+  const { toast } = useToast()
 
   const handleEmbedding = async () => {
-    if (!user.dbStatus || !user.vectorProvider) return alert('You must connect to a database first')
+    if (!user.dbStatus || !user.vectorProvider) {
+      toast({
+        variant: 'destructive',
+        description: 'You must connect to a database and a vector provider before you can generate embeddings.'
+      })
+    }
     await fetch(`/api/embeddings/${user.vectorProvider}`, {
       method: 'POST',
       body: JSON.stringify({
@@ -54,7 +61,12 @@ function DocumentPreviewDialog ({ user, document, children }: Props) {
   }
 
   const handleDeleteEmbedding = async () => {
-    if (!user.dbStatus || !user.vectorProvider) return alert('You must connect to a database first')
+    if (!user.dbStatus || !user.vectorProvider) {
+      toast({
+        variant: 'destructive',
+        description: 'You must connect to a database and a vector provider before you can generate embeddings.'
+      })
+    }
     await fetch(`/api/embeddings/${user.vectorProvider}`, {
       method: 'DELETE',
       body: JSON.stringify({
