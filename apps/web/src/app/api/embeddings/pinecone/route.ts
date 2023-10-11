@@ -9,10 +9,11 @@ import { PineconeStore } from 'langchain/vectorstores/pinecone'
 export const runtime = 'edge'
 
 export async function POST (req: Request) {
-  const { name, docId, content } = await req.json() as {
+  const { name, docId, content, database } = await req.json() as {
     name: DocumentProps['name']
     docId: DocumentProps['id']
     content: DocumentProps['content']
+    database: DocumentProps['database']
   }
 
   const cookies = new RequestCookies(req.headers) as any
@@ -59,6 +60,7 @@ export async function POST (req: Request) {
   await supabase.from('documents')
     .update({
       name,
+      database,
       is_trained: true,
       embeddings_ids: ['todo'] // fix this later ☝
     })

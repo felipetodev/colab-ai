@@ -9,10 +9,11 @@ import type { DocumentProps } from '@/lib/types/document'
 export const runtime = 'edge'
 
 export async function POST (req: Request) {
-  const { name, docId, content } = await req.json() as {
+  const { name, docId, content, database } = await req.json() as {
     name: DocumentProps['name']
     docId: DocumentProps['id']
     content: DocumentProps['content']
+    database: DocumentProps['database']
   }
 
   const cookies = new RequestCookies(req.headers) as any
@@ -61,7 +62,12 @@ export async function POST (req: Request) {
 
   // update document to trained 'true' status
   await supabase.from('documents')
-    .update({ name, is_trained: true, embeddings_ids: ids })
+    .update({
+      name,
+      database,
+      is_trained: true,
+      embeddings_ids: ids
+    })
     .eq('id', docId)
 
   return NextResponse.json({ finished: true, docId })

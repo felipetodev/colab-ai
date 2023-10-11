@@ -127,6 +127,7 @@ export interface Database {
           embeddings_ids: Json | null
           type: string
           user_id: string | null
+          database: string | null
         }
         Insert: {
           content: Json
@@ -138,6 +139,7 @@ export interface Database {
           embeddings_ids?: Json | null
           type: string
           user_id?: string | null
+          database: string | null
         }
         Update: {
           content?: Json
@@ -149,6 +151,7 @@ export interface Database {
           embeddings_ids?: Json | null
           type?: string
           user_id?: string | null
+          database: string | null
         }
         Relationships: [
           {

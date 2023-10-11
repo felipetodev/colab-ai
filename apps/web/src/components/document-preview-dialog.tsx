@@ -53,7 +53,8 @@ function DocumentPreviewDialog ({ user, document, children }: Props) {
       body: JSON.stringify({
         name: name || document.name,
         docId: document.id,
-        content: document.content
+        content: document.content,
+        database: user.vectorProvider
       })
     })
 
@@ -96,6 +97,9 @@ function DocumentPreviewDialog ({ user, document, children }: Props) {
           <DialogTitle className='flex items-center'>
             {document.name}
             <Badge className='ml-2' variant='secondary'>{document.type}</Badge>
+            {document.database !== null && (
+              <Badge className='ml-2' variant='secondary'>trained in {document.database}</Badge>
+            )}
           </DialogTitle>
           <DialogDescription>
             {document.isTrained

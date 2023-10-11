@@ -15,6 +15,7 @@ export type Document = {
 
 export type DocumentProps = Omit<Document, 'content'> & {
   content: LDocument[]
+  database: 'supabase' | 'pinecone' | null
   user?: {
     id: string
   } | any

@@ -22,7 +22,7 @@ export default async function Home () {
 
   const { data: documents } = await supabase
     .from('documents')
-    .select('id, folderId:folder_id, name, content, type, isTrained:is_trained, createdAt:created_at, embeddedIds:embeddings_ids')
+    .select('id, folderId:folder_id, name, content, type, isTrained:is_trained, createdAt:created_at, embeddedIds:embeddings_ids, database')
 
   return (
     <main className="flex-col flex h-[calc(100vh-57px)] min-w-[1280px] overflow-hidden">
