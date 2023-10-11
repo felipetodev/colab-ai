@@ -1,14 +1,16 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
+import Sidebar from '@/components/sidebar'
 import Chat from '@/components/chat'
+// import { redirect } from 'next/navigation'
 
 export default async function Home () {
   const cookieStore = cookies()
   const supabase = createServerComponentClient({ cookies: () => cookieStore })
 
-  const { data: user } = await supabase.from('users')
-    .select('name, username:user_name')
-    .single()
+  // const { data: user } = await supabase.from('users')
+  //   .select('name, username:user_name')
+  //   .single()
 
   const { data: chats } = await supabase
     .from('chats')
@@ -24,15 +26,30 @@ export default async function Home () {
     .from('documents')
     .select('id, folderId:folder_id, name, content, type, isTrained:is_trained, createdAt:created_at, embeddedIds:embeddings_ids, database')
 
+  // if (chats?.[0]?.messages) {
+  //   redirect(`/chat/${chats?.[0].id}`)
+  // }
+
   return (
     <main className="flex-col flex h-[calc(100vh-57px)] min-w-[1280px] overflow-hidden">
-      <Chat
-        user={user}
-        agents={agents}
-        chats={chats}
-        documents={documents}
-        id={crypto.randomUUID()}
-      />
+      <div className="relative flex h-full overflow-hidden">
+        <Sidebar
+          agents={agents ?? []}
+          chats={chats ?? []}
+          documents={documents ?? []}
+        />
+        <Chat
+          id={crypto.randomUUID()}
+          user={null}
+          agents={agents ?? []}
+          selectedChat={{
+            id: crypto.randomUUID(),
+            name: 'New Chat',
+            folderId: null,
+            messages: []
+          }}
+        />
+      </div>
     </main>
   )
 }

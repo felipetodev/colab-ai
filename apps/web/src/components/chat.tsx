@@ -6,49 +6,30 @@ import ChatInput from './chat-input'
 import ChatMessages from './chat-messages'
 import ChatSettings from './chat-settings'
 import ChatScrollAnchor from './chat-scroll-anchor'
-import Sidebar from './sidebar'
 import ChatSettingsDialog from './chat-settings-dialog'
 import { Badge } from './ui/badge'
 import { createApiCompletion, createBodyCompletion } from '@/lib/utils'
-import { createChat } from 'src/app/actions/create-chat'
 import { type Message } from 'ai/react'
 import { type ChatProps } from '@/lib/types/chat'
 import { type AgentProps } from '@/lib/types/agent'
-import { type DocumentProps } from '@/lib/types/document'
+import { updateChat } from 'src/app/actions/chat'
 
 type Props = {
   id: string
-  user: { name: string, username: string } | null
-  chats: ChatProps[] | null
-  documents: DocumentProps[] | null
+  user: { name: string, username: string, avatarUrl: string } | null
   agents: AgentProps[] | null
+  selectedChat: ChatProps
 }
 
-function Chat ({ user, chats, agents, documents }: Props) {
+function Chat ({ user, selectedChat, agents }: Props) {
   const [gotMessages, setGotMessages] = useState(false)
-  const [selectedChat, setSelectedChat] = useState<ChatProps>(chats?.[0] ?? {
-    name: 'New Chat',
-    folderId: null,
-    id: crypto.randomUUID(),
-    messages: []
-  })
 
-  const { messages, input, stop, setInput, append, isLoading, setMessages } = useChat({
+  const { messages, input, stop, setInput, append, isLoading } = useChat({
     api: createApiCompletion({ chat: selectedChat }),
     body: createBodyCompletion({ chat: selectedChat }),
-    onFinish: () => { setGotMessages(true) }
+    onFinish: () => { setGotMessages(true) },
+    initialMessages: selectedChat.messages
   })
-
-  useEffect(() => {
-    if (selectedChat?.messages.length === 0) return
-    setMessages(selectedChat.messages)
-  }, [selectedChat.id])
-
-  useEffect(() => {
-    // update revalidation changes in chats due server actions
-    if (!chats || chats.length === 0) return
-    setSelectedChat(chats[0])
-  }, [chats])
 
   const handleSend = async (value: string) => {
     const newMessage: Message = {
@@ -56,12 +37,7 @@ function Chat ({ user, chats, agents, documents }: Props) {
       content: value,
       role: 'user'
     }
-    const updatedChat = {
-      ...selectedChat,
-      messages: [...selectedChat.messages, newMessage]
-    }
 
-    setSelectedChat(updatedChat)
     setGotMessages(false)
     await append(newMessage)
   }
@@ -70,97 +46,69 @@ function Chat ({ user, chats, agents, documents }: Props) {
     if (!gotMessages) return
 
     const sendMessages = async () => {
-      await fetch('/chats', {
-        method: 'PUT',
-        body: JSON.stringify({
-          ...selectedChat,
-          messages
-        })
+      await updateChat({
+        ...selectedChat,
+        messages
       })
     }
     void sendMessages()
   }, [gotMessages])
 
-  const handleNewChat = async () => {
-    const newChat: ChatProps = {
-      id: crypto.randomUUID(),
-      name: 'New Chat',
-      messages: [],
-      folderId: null,
-      temperature: 0.2,
-      maxTokens: 2000
-    }
-
-    setSelectedChat(newChat)
-    await createChat(newChat) as { status: number }
-  }
-
+  // TODO: refact this 👈
   const onUpdateSelectedChat = (e: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => {
-    setSelectedChat({
+    console.log({
       ...selectedChat,
       [e.key]: e.value
     })
   }
 
   return (
-    <div className="relative flex h-full overflow-hidden">
-      <Sidebar
-        agents={agents ?? []}
-        chats={chats ?? []}
-        documents={documents ?? []}
-        handleNewChat={handleNewChat}
-        handleSelectChat={setSelectedChat}
-        selectedChat={selectedChat}
-      />
-      <div className="relative flex flex-col justify-between bg-zinc-400 dark:bg-zinc-900 w-full h-full">
-        <div className="relative min-h-full w-full overflow-y-auto">
-          <div className="relative flex min-h-[calc(100vh-90px-60px)] w-full flex-col pb-8">
-
-            {selectedChat.messages.length === 0
-              ? (
-                <ChatSettings
-                  onUpdateSelectedChat={onUpdateSelectedChat}
-                  selectedChat={selectedChat}
-                />
-                )
-              : (
-                <>
-                  <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
-                    <div className="flex items-center space-x-2">
-                      <h1>{selectedChat.name}</h1>
-                      {selectedChat.isAgent && (
-                        <Badge variant='secondary'>{selectedChat.agent.name}</Badge>
-                      )}
-                      <ChatSettingsDialog
-                        agents={agents ?? []}
-                        selectedChat={selectedChat}
-                      />
-                    </div>
-                  </header>
-                  <div className='flex flex-col pb-[60px]'>
-                    {messages?.map((message) => (
-                      <ChatMessages
-                        user={user}
-                        content={message.content}
-                        id={message.id}
-                        key={message.id}
-                        role={message.role}
-                      />
-                    ))}
-                    <ChatScrollAnchor trackVisibility={isLoading} />
+    <div className="relative flex flex-col justify-between bg-zinc-400 dark:bg-zinc-900 w-full h-full">
+      <div className="relative min-h-full w-full overflow-y-auto">
+        <div className="relative flex min-h-[calc(100vh-90px-60px)] w-full flex-col pb-8">
+          {messages?.length === 0
+            ? (
+              <ChatSettings
+                onUpdateSelectedChat={onUpdateSelectedChat}
+                selectedChat={selectedChat}
+              />
+              )
+            : (
+              <>
+                <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
+                  <div className="flex items-center space-x-2">
+                    <h1>{selectedChat.name}</h1>
+                    {selectedChat.isAgent && (
+                      <Badge variant='secondary'>{selectedChat.agent.name}</Badge>
+                    )}
+                    <ChatSettingsDialog
+                      agents={agents ?? []}
+                      selectedChat={selectedChat}
+                    />
                   </div>
-                </>
-                )}
-
-          </div>
-          <ChatInput
-            input={input}
-            isLoading={isLoading}
-            onSubmit={handleSend}
-            setInput={setInput}
-            stop={stop}
-          />
+                </header>
+                <div className='flex flex-col pb-[60px]'>
+                  {messages?.map((message) => (
+                    <ChatMessages
+                      user={user}
+                      content={message.content}
+                      id={message.id}
+                      key={message.id}
+                      role={message.role}
+                    />
+                  ))}
+                  <ChatScrollAnchor trackVisibility={isLoading} />
+                </div>
+              </>
+              )}
         </div>
+        <ChatInput
+          input={input}
+          isLoading={isLoading}
+          onSubmit={handleSend}
+          setInput={setInput}
+          stop={stop}
+        />
       </div>
     </div>
   )
