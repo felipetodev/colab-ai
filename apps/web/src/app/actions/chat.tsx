@@ -5,23 +5,7 @@ import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { type ChatProps } from '@/lib/types/chat'
 import { revalidatePath } from 'next/cache'
-import { type Message } from 'ai/react/dist'
 import { redirect } from 'next/navigation'
-
-type Props = {
-  id: ChatProps['id']
-  name?: string
-  folderId?: string | null
-  model?: string
-  temperature?: number
-  maxTokens?: number
-  prompt?: string
-  isAgent?: boolean
-  agent?: string
-  user?: string
-  messages?: Message[]
-  agentId?: string
-}
 
 export const createChat = async (payload: ChatProps) => {
   const {
@@ -58,7 +42,7 @@ export const createChat = async (payload: ChatProps) => {
   redirect(`/chat/${id}`)
 }
 
-export const updateChat = async (payload: Props) => {
+export const updateChat = async (payload: ChatProps & { agentId: any }) => {
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
