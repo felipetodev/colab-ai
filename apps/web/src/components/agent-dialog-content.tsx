@@ -49,13 +49,10 @@ function AgentDialogContent ({
   const { toast } = useToast()
 
   const deleteAgent = async () => {
-    const { status } = await removeAgent(agent.id) as { status: number }
+    const { status, message } = await removeAgent(agent.id)
 
     handleCloseDialog()
-    toast({
-      variant: status >= 400 ? 'destructive' : 'success',
-      description: status >= 400 ? 'Something went wrong' : `Agent ${agent.name} deleted successfully`
-    })
+    toast({ variant: status, description: message })
   }
 
   const docsSelected = documents.filter(d => selectedDocuments.includes(d.id))
@@ -82,18 +79,12 @@ function AgentDialogContent ({
         action={async (formData) => {
           if (type === 'create') {
             // const folderId = agent.folderId
-            const { status } = await newAgent(formData) as { status: number }
-            toast({
-              variant: status >= 400 ? 'destructive' : 'success',
-              description: status >= 400 ? 'Something went wrong' : 'Agent created successfully'
-            })
+            const { message, status } = await newAgent(formData)
+            toast({ variant: status, description: message })
           } else if (type === 'update') {
             formData.append('agentId', agent.id)
-            const { status } = await updateAgent(formData) as { status: number }
-            toast({
-              variant: status >= 400 ? 'destructive' : 'success',
-              description: status >= 400 ? 'Something went wrong' : 'Agent updated successfully'
-            })
+            const { message, status } = await updateAgent(formData)
+            toast({ variant: status, description: message })
           }
 
           router.refresh()

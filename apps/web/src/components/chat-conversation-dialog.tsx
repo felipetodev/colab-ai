@@ -57,14 +57,11 @@ function ChatConversationDialog (props: Props) {
 
     const name = inputRef.current.value
     startRemoveTransition(async () => {
-      await updateChat({ id, name })
-      // if (result && 'error' in result) {
-      //   do something
-      // }
+      const { message, status } = await updateChat({ id, name })
 
       setIsOpen(false)
       router.refresh()
-      toast({ variant: 'success', description: 'Chat updated successfully' })
+      toast({ variant: status, description: message })
     })
   }
 

@@ -30,7 +30,6 @@ function TalkToChat ({ selectedChat, handleModalClose }: Props) {
   const { toast } = useToast()
 
   const handleChatPreferences = async () => {
-    console.log(chatPreferences)
     await updateChat({
       id: selectedChat.id,
       ...chatPreferences

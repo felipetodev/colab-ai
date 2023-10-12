@@ -7,6 +7,12 @@ import { type ChatProps } from '@/lib/types/chat'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+type ActionResponse = {
+  message?: string
+  status?: 'success' | 'destructive'
+  error?: string
+}
+
 export const createChat = async (payload: ChatProps) => {
   const {
     id,
@@ -23,7 +29,7 @@ export const createChat = async (payload: ChatProps) => {
 
   if (user === null) return { error: 'User not found' }
 
-  const { status, error } = await supabase
+  await supabase
     .from('chats')
     .insert({
       id,
@@ -36,13 +42,11 @@ export const createChat = async (payload: ChatProps) => {
       user_id: user.id
     })
 
-  console.info({ status, error })
-
   revalidatePath('/chat')
   redirect(`/chat/${id}`)
 }
 
-export const updateChat = async (payload: ChatProps & { agentId: any }) => {
+export const updateChat = async (payload: Partial<ChatProps & { agentId: any }>): Promise<ActionResponse> => {
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -60,7 +64,7 @@ export const updateChat = async (payload: ChatProps & { agentId: any }) => {
     ...rest
   } = payload
 
-  const { error, status } = await supabase.from('chats')
+  const { status } = await supabase.from('chats')
     .update({
       is_agent,
       ...folder_id && { folder_id },
@@ -73,8 +77,12 @@ export const updateChat = async (payload: ChatProps & { agentId: any }) => {
     })
     .eq('id', id)
 
-  console.log({ error, status })
   revalidatePath('/')
+
+  return {
+    message: status >= 400 ? 'Error updating chat' : 'Chat updated successfully',
+    status: status >= 400 ? 'destructive' : 'success'
+  }
 }
 
 export const deleteChat = async (id: ChatProps['id']) => {

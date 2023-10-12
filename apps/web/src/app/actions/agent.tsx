@@ -4,7 +4,13 @@ import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
-export const newAgent = async (formData: FormData) => {
+type ActionResponse = {
+  message?: string
+  status?: 'success' | 'destructive'
+  error?: string
+}
+
+export const newAgent = async (formData: FormData): Promise<ActionResponse> => {
   const agentName = formData?.get('agentName')
   // const avatar = formData.get('avatar')
   const prompt = formData.get('prompt')
@@ -20,7 +26,7 @@ export const newAgent = async (formData: FormData) => {
 
   if (user === null) return { error: 'User not found' }
 
-  const { status, error } = await supabase
+  const { status } = await supabase
     .from('agents')
     .insert({
       user_id: user.id,
@@ -35,10 +41,13 @@ export const newAgent = async (formData: FormData) => {
     })
 
   revalidatePath('/')
-  return { status, error }
+  return {
+    message: status >= 400 ? 'Error creating agent' : `Agent ${agentName as string} created successfully`,
+    status: status >= 400 ? 'destructive' : 'success'
+  }
 }
 
-export const updateAgent = async (formData: FormData) => {
+export const updateAgent = async (formData: FormData): Promise<ActionResponse> => {
   const agentName = formData?.get('agentName')
   // const avatar = formData.get('avatar')
   const prompt = formData.get('prompt')
@@ -55,7 +64,7 @@ export const updateAgent = async (formData: FormData) => {
 
   if (user === null) return { error: 'User not found' }
 
-  const { status, error } = await supabase
+  const { status } = await supabase
     .from('agents')
     .update({
       name: agentName,
@@ -68,20 +77,26 @@ export const updateAgent = async (formData: FormData) => {
     .eq('id', agentId)
 
   revalidatePath('/')
-  return { status, error }
+  return {
+    message: status >= 400 ? 'Error updating agent' : `Agent ${agentName as string} updated successfully`,
+    status: status >= 400 ? 'destructive' : 'success'
+  }
 }
 
-export const removeAgent = async (agentId: string) => {
+export const removeAgent = async (agentId: string): Promise<ActionResponse> => {
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user === null) return { error: 'User not found' }
 
-  const { status, error } = await supabase
+  const { status } = await supabase
     .from('agents')
     .delete()
     .eq('id', agentId)
 
   revalidatePath('/')
-  return { status, error }
+  return {
+    message: status >= 400 ? 'Error deleting agent' : 'Agent deleted successfully',
+    status: status >= 400 ? 'destructive' : 'success'
+  }
 }
