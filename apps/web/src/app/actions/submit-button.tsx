@@ -2,6 +2,7 @@
 
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/icons'
+// @ts-expect-error experimental
 import { experimental_useFormStatus as useFormStatus } from 'react-dom'
 
 export function SubmitButton ({ variant, size, children, ...props }: ButtonProps) {
