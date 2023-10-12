@@ -43,18 +43,18 @@ importers:
       '@types/react': ^18.2.22
       '@types/react-dom': ^18.2.7
       '@types/react-syntax-highlighter': ^15.5.7
-      '@typescript-eslint/eslint-plugin': ^6.4.0
+      '@typescript-eslint/eslint-plugin': ^6.7.5
       ai: 2.2.15
       autoprefixer: ^10.4.16
       class-variance-authority: ^0.7.0
       clsx: ^2.0.0
       cmdk: ^0.2.0
       d3-dsv: '2'
-      eslint: ^8.0.1
-      eslint-config-standard-with-typescript: ^39.1.0
-      eslint-plugin-import: ^2.25.2
-      eslint-plugin-n: '^15.0.0 || ^16.0.0 '
-      eslint-plugin-promise: ^6.0.0
+      eslint: ^8.51.0
+      eslint-config-standard-with-typescript: ^39.1.1
+      eslint-plugin-import: ^2.28.1
+      eslint-plugin-n: ^16.2.0
+      eslint-plugin-promise: ^6.1.1
       eslint-plugin-react: ^7.33.2
       langchain: 0.0.166
       lucide-react: ^0.279.0
