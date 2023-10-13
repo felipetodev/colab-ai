@@ -36,6 +36,7 @@ export default async function RootLayout ({
           agents={agents ?? []}
           chats={chats ?? []}
           documents={documents ?? []}
+          userSettings={chats?.[0]?.user}
         />
         {children}
       </div>

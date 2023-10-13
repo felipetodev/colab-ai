@@ -37,6 +37,7 @@ export default async function Home () {
           agents={agents ?? []}
           chats={chats ?? []}
           documents={documents ?? []}
+          userSettings={chats?.[0]?.user}
         />
         <Chat
           id={crypto.randomUUID()}

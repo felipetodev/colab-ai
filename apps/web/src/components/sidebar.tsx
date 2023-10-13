@@ -23,14 +23,14 @@ type Props = {
   chats: ChatProps[]
   agents: AgentProps[]
   documents: DocumentProps[]
-  selectedChat?: ChatProps
+  userSettings?: any
 }
 
 function Sidebar ({
   chats,
   agents,
   documents,
-  selectedChat
+  userSettings
 }: Props) {
   const [view, setView] = useState<TabsView>('chat')
 
@@ -129,6 +129,7 @@ function Sidebar ({
             id={chat.id}
             key={chat.id}
             name={chat.name}
+            isAgent={Boolean(chat?.isAgent)}
           />
         ))}
 
@@ -142,7 +143,7 @@ function Sidebar ({
 
         {view === 'document' && documents.map((document) => (
           <DocumentFile
-            user={selectedChat?.user}
+            userSettings={userSettings}
             document={document}
             key={document.id}
           />

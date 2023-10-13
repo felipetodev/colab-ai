@@ -9,9 +9,10 @@ import { usePathname } from 'next/navigation'
 type Props = {
   id: Chat['id']
   name: Chat['name']
+  isAgent: boolean
 }
 
-function ChatConversation ({ id, name }: Props) {
+function ChatConversation ({ id, name, isAgent }: Props) {
   const pathname = usePathname()
   const chatPath = `/chat/${id}`
   return (
@@ -32,6 +33,7 @@ function ChatConversation ({ id, name }: Props) {
       <div className="ml-auto flex">
         <ChatConversationDialog
           activeName={name}
+          isAgent={isAgent}
           id={id}
           type="edit"
         >

@@ -7,17 +7,17 @@ import { IconGitHub } from './ui/icons'
 
 type Props = {
   document: DocumentProps
-  user: {
+  userSettings?: {
     id: string
     dbStatus: boolean
     vectorProvider: 'pinecone' | 'supabase' | null
   }
 }
 
-function DocumentFile ({ document, user }: Props) {
+function DocumentFile ({ document, userSettings }: Props) {
   return (
     <DocumentPreviewDialog
-      user={user}
+      userSettings={userSettings}
       document={document}
     >
       <div

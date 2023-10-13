@@ -21,10 +21,12 @@ type Props =
   | {
     type: 'delete'
     id: string
+    isAgent?: boolean
     children: React.ReactNode
   } | {
     type: 'edit'
     activeName: string
+    isAgent: boolean
     id: string
     children: React.ReactNode
   }
@@ -32,7 +34,7 @@ type Props =
 function ChatConversationDialog (props: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [isRemovePending, startRemoveTransition] = useTransition()
-  const { type, id, children } = props
+  const { type, id, isAgent, children } = props
   const inputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const { toast } = useToast()
@@ -56,8 +58,9 @@ function ChatConversationDialog (props: Props) {
     if (!inputRef.current) return setIsOpen(false)
 
     const name = inputRef.current.value
+    if (!name) return
     startRemoveTransition(async () => {
-      const { message, status } = await updateChat({ id, name })
+      const { message, status } = await updateChat({ id, name, isAgent })
 
       setIsOpen(false)
       router.refresh()

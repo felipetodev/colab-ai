@@ -19,7 +19,7 @@ import { Badge } from './ui/badge'
 import { useToast } from './ui/use-toast'
 
 type Props = {
-  user: {
+  userSettings?: {
     id: string
     dbStatus: boolean
     vectorProvider: 'pinecone' | 'supabase' | null
@@ -36,25 +36,25 @@ const parseContent = (content: DocumentProps['content']) => {
     .trim()
 }
 
-function DocumentPreviewDialog ({ user, document, children }: Props) {
+function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [name, setName] = useState(document.name)
   const { toast } = useToast()
 
   const handleEmbedding = async () => {
-    if (!user.dbStatus || !user.vectorProvider) {
-      toast({
+    if (!userSettings || !userSettings?.dbStatus || !userSettings?.vectorProvider) {
+      return toast({
         variant: 'destructive',
         description: 'You must connect to a database and a vector provider before you can generate embeddings.'
       })
     }
-    await fetch(`/api/embeddings/${user.vectorProvider}`, {
+    await fetch(`/api/embeddings/${userSettings.vectorProvider}`, {
       method: 'POST',
       body: JSON.stringify({
         name: name || document.name,
         docId: document.id,
         content: document.content,
-        database: user.vectorProvider
+        database: userSettings.vectorProvider
       })
     })
 
@@ -62,13 +62,13 @@ function DocumentPreviewDialog ({ user, document, children }: Props) {
   }
 
   const handleDeleteEmbedding = async () => {
-    if (!user.dbStatus || !user.vectorProvider) {
-      toast({
+    if (!userSettings || !userSettings.dbStatus || !userSettings.vectorProvider) {
+      return toast({
         variant: 'destructive',
         description: 'You must connect to a database and a vector provider before you can generate embeddings.'
       })
     }
-    await fetch(`/api/embeddings/${user.vectorProvider}`, {
+    await fetch(`/api/embeddings/${userSettings.vectorProvider}`, {
       method: 'DELETE',
       body: JSON.stringify({
         docId: document.id,
