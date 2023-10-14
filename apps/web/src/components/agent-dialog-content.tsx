@@ -57,7 +57,7 @@ function AgentDialogContent ({
 
   const docsSelected = documents.filter(d => selectedDocuments.includes(d.id))
   return (
-    <DialogContent className="sm:max-w-2xl overflow-y-auto max-h-[780px]">
+    <DialogContent className="sm:max-w-2xl overflow-y-auto max-h-[785px]">
       <DialogHeader>
         {type === 'create' && (
           <DialogTitle>
