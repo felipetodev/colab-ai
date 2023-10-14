@@ -6,7 +6,8 @@ import {
   AlertDialogTrigger
 } from './ui/alert-dialog'
 import { IconGitHub, IconGoogleAuth, Spinner } from './ui/icons'
-import { Mail } from 'lucide-react'
+import { Bot, Mail } from 'lucide-react'
+import { createBetaAccess } from 'src/app/actions/beta-cookies'
 
 type Props = {
   session: any
@@ -14,7 +15,7 @@ type Props = {
 }
 
 function LoginDialog ({ session, handleSignIn }: Props) {
-  const [isLoading, setIsLoading] = useState({ google: false, github: false })
+  const [isLoading, setIsLoading] = useState({ google: false, github: false, beta: false })
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
@@ -86,6 +87,21 @@ function LoginDialog ({ session, handleSignIn }: Props) {
           <Button className='cursor-not-allowed' variant="outline" type="button" disabled>
             <Mail className="mr-2 h-5 w-5" />{' '}
             Email (soon)
+          </Button>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              setIsLoading({ ...isLoading, beta: true })
+              await createBetaAccess()
+            }}>
+            {isLoading.beta
+              ? (
+                <Spinner className="mr-2 h-4 w-4 animate-spin" />
+                )
+              : (
+                <Bot className="mr-2 h-5 w-5" />
+                )}{' '}
+            Entrar como invitado
           </Button>
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{' '}

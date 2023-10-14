@@ -5,8 +5,10 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 import UserNav from './user-nav'
 import LoginDialog from './login-dialog'
+import { Button } from './ui/button'
+import { removeBetaAccess } from 'src/app/actions/beta-cookies'
 
-export function AuthButtonClient ({ session }: { session: Session | null }) {
+export function AuthButtonClient ({ session, hasOpenBeta }: { session: Session | null, hasOpenBeta: boolean }) {
   const supabase = createClientComponentClient()
   const router = useRouter()
 
@@ -27,19 +29,30 @@ export function AuthButtonClient ({ session }: { session: Session | null }) {
   }
 
   return <>
-    {session !== null
-      ? (
+    {(session !== null) &&
+      (
         <UserNav
           avatarUrl={session.user.user_metadata.avatar_url}
           email={session.user.email}
           handleSignOut={handleSignOut}
           username={session.user.user_metadata.user_name}
         />
-        )
-      : <LoginDialog
-        session={session}
-        handleSignIn={handleSignIn}
-      />
-    }
+      )}
+
+      {!session && hasOpenBeta && (
+        <Button className='px-2 h-7 font-semibold' size='sm' onClick={async () => {
+          await removeBetaAccess()
+          router.refresh()
+        }}>
+          Sign In
+        </Button>
+      )}
+
+    {!session && !hasOpenBeta && (
+      <LoginDialog
+      session={session}
+      handleSignIn={handleSignIn}
+    />
+    )}
   </>
 }
