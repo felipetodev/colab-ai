@@ -22,7 +22,6 @@ import type { PopoverProps } from '@radix-ui/react-popover'
 
 export interface Preset {
   icon: React.ReactNode
-  id: string
   name: string
   active: boolean
 }
@@ -32,7 +31,6 @@ export const models: Preset[] = [
     icon: <span className='grid place-content-center rounded bg-[#1fb88a] h-8 px-1 mr-2'>
       <IconGPT className='w-6 h-6' />
     </span>,
-    id: '9cb0e66a-9937-465d-a188-2c4c4ae2401f',
     name: 'GPT-3.5-turbo',
     active: true
   },
@@ -40,7 +38,6 @@ export const models: Preset[] = [
     icon: <span className='grid place-content-center rounded bg-[#1fb88a] h-8 px-1 mr-2'>
       <IconGPT className='w-6 h-6' />
     </span>,
-    id: '61eb0e32-2391-4cd3-adc3-66efe09bc0b7',
     name: 'GPT-3.5-turbo-16k',
     active: true
   },
@@ -48,7 +45,6 @@ export const models: Preset[] = [
     icon: <span className='grid place-content-center rounded bg-[#ab68ff] h-8 px-1 mr-2'>
       <IconGPT className='w-6 h-6' />
     </span>,
-    id: 'a4e1fa51-f4ce-4e45-892c-224030a00bdd',
     name: 'GPT-4',
     active: true
   }
@@ -59,7 +55,6 @@ export const betaModels: Preset[] = [
     icon: <span className='grid place-content-center rounded bg-[#1fb88a] h-8 px-1 mr-2'>
       <IconGPT className='w-6 h-6' />
     </span>,
-    id: '9cb0e66a-9937-465d-a188-2c4c4ae2401f',
     name: 'GPT-3.5-turbo',
     active: true
   },
@@ -67,7 +62,6 @@ export const betaModels: Preset[] = [
     icon: <span className='grid place-content-center rounded bg-[#1fb88a] h-8 px-1 mr-2'>
       <IconGPT className='w-6 h-6' />
     </span>,
-    id: '61eb0e32-2391-4cd3-adc3-66efe09bc0b7',
     name: 'GPT-3.5-turbo-16k',
     active: false
   },
@@ -75,8 +69,17 @@ export const betaModels: Preset[] = [
     icon: <span className='grid place-content-center rounded bg-[#ab68ff] h-8 px-1 mr-2'>
       <IconGPT className='w-6 h-6' />
     </span>,
-    id: 'a4e1fa51-f4ce-4e45-892c-224030a00bdd',
     name: 'GPT-4',
+    active: false
+  }
+]
+
+export const metaModels: Preset[] = [
+  {
+    icon: <span className='grid place-content-center rounded bg-[#ab68ff] h-8 px-1 mr-2'>
+      <IconGPT className='w-6 h-6' />
+    </span>,
+    name: 'Llama 2 (7b)',
     active: false
   }
 ]
@@ -111,15 +114,15 @@ function ModelSelector ({ isBeta, value, onChange, ...props }: Props) {
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <input type="hidden" name="llmModel" value={selectedPreset.name} />
+      <input type="hidden" name="llmModel" value={selectedPreset.name?.toLowerCase()} />
       <PopoverContent className="w-[620px] p-0">
         <Command>
           <CommandInput placeholder="Search models..." />
           <CommandEmpty>No presets found.</CommandEmpty>
-          <CommandGroup heading="OpenAI Models">
+          <CommandGroup heading="OpenAI models">
             {llms.map((model) => (
               <CommandItem
-                key={model.id}
+                key={model.name}
                 disabled={!model.active}
                 onSelect={() => {
                   onChange && onChange({ key: 'model', value: model.name.toLowerCase() })
@@ -141,7 +144,7 @@ function ModelSelector ({ isBeta, value, onChange, ...props }: Props) {
                 <CheckIcon
                   className={cn(
                     'ml-auto h-4 w-4',
-                    selectedPreset?.id === model.id
+                    selectedPreset?.name === model.name
                       ? 'opacity-100'
                       : 'opacity-0'
                   )}
@@ -149,11 +152,39 @@ function ModelSelector ({ isBeta, value, onChange, ...props }: Props) {
               </CommandItem>
             ))}
           </CommandGroup>
-          {/* <CommandGroup className="pt-0">
-            <CommandItem>
-              More examples
-            </CommandItem>
-          </CommandGroup> */}
+          <CommandGroup heading="Meta models">
+            {metaModels.map((model) => (
+              <CommandItem
+                key={model.name}
+                disabled={!model.active}
+                onSelect={() => {
+                  onChange && onChange({ key: 'model', value: model.name.toLowerCase() })
+                  setSelectedPreset(model)
+                  setOpen(false)
+                }}
+              >
+                {model.active
+                  ? model.icon
+                  : (
+                    <span className='relative'>
+                      {model.icon}
+                      <span className='grid items-center h-8 px-1 mr-2 absolute inset-0 w-full bg-background/70'>
+                        <Lock className="h-6 w-6" />
+                      </span>
+                    </span>
+                    )}
+                {model.name}
+                <CheckIcon
+                  className={cn(
+                    'ml-auto h-4 w-4',
+                    selectedPreset?.name === model.name
+                      ? 'opacity-100'
+                      : 'opacity-0'
+                  )}
+                />
+              </CommandItem>
+            ))}
+          </CommandGroup>
         </Command>
       </PopoverContent>
     </Popover>
