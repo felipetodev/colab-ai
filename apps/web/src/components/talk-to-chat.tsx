@@ -11,49 +11,89 @@ import { DialogClose } from '@radix-ui/react-dialog'
 import { SubmitButton } from 'src/app/actions/submit-button'
 import { updateChat } from 'src/app/actions/chat'
 import { useToast } from './ui/use-toast'
+import { Input } from './ui/input'
+import HoverLabel from './hover-label'
+import { Badge } from './ui/badge'
+import { IconHuggingFace } from './ui/icons'
 
 type ChatPreferences = Pick<ChatProps, 'model' | 'prompt' | 'temperature' | 'maxTokens'>
 
 type Props = {
   selectedChat: ChatProps
+  isBeta?: boolean
   handleModalClose: () => void
 }
 
-function TalkToChat ({ selectedChat, handleModalClose }: Props) {
+function TalkToChat ({ isBeta, selectedChat, handleModalClose }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   const [chatPreferences, setChatPreferences] = useState<ChatPreferences>({
-    model: selectedChat.model,
-    prompt: selectedChat.prompt,
-    temperature: selectedChat.temperature,
-    maxTokens: selectedChat.maxTokens
+    model: selectedChat.model ?? 'gpt-3.5-turbo', // for beta
+    prompt: selectedChat.prompt ?? '', // for beta
+    temperature: selectedChat.temperature ?? 0.2, // for beta
+    maxTokens: selectedChat.maxTokens ?? 3000 // for beta
   })
   const { toast } = useToast()
 
   const handleChatPreferences = async () => {
-    await updateChat({
-      id: selectedChat.id,
-      ...chatPreferences
-    })
+    if (isBeta) {
+      // const file = formData.get('file')
+      // console.log(file)
+      handleModalClose()
+    } else {
+      await updateChat({
+        id: selectedChat.id,
+        ...chatPreferences
+      })
 
-    toast({
-      variant: 'success',
-      description: 'Chat preferences updated successfully!'
-    })
-    handleModalClose()
+      toast({
+        variant: 'success',
+        description: 'Chat preferences updated successfully!'
+      })
+      handleModalClose()
+    }
   }
 
   return (
     <form>
+      {isBeta && (
+        <>
+          <div className="flex items-center w-full mb-2">
+            <HoverLabel>
+              The document that will be used to train the model. Embeddings will be generated with Hugging Face Transformers Embeddings for this Open Beta
+              <IconHuggingFace className='block w-6 h-6' />
+            </HoverLabel>
+            <h2 className="font-semibold">
+              Input{' '}
+              <Badge className='ml-1' variant='secondary'>Beta example</Badge>
+            </h2>
+          </div>
+          <Input
+            className='mb-4'
+            name='file'
+            type='file'
+            accept='.pdf'
+            multiple={false}
+            // onChange={embedPDF}
+          />
+        </>
+      )}
       <div className="flex items-center w-full mb-2">
+        <HoverLabel>
+          The model that will be used to generate responses.
+        </HoverLabel>
         <h2 className="font-semibold">
           Model
         </h2>
       </div>
       <ModelSelector
+        isBeta={isBeta}
         value={chatPreferences?.model ?? ''}
         onChange={({ key, value }) => setChatPreferences({ ...chatPreferences, [key]: value })}
       />
       <div className="flex items-center w-full mb-2">
+        <HoverLabel>
+          This is your prompt. The model will use these as initial instructions to generate a response.
+        </HoverLabel>
         <h2 className="font-semibold">
           Instructions
         </h2>

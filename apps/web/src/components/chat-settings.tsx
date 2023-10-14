@@ -11,11 +11,12 @@ import MaxTokensSelector from './max-tokens-selector'
 import { Button } from './ui/button'
 
 type Props = {
+  isBeta?: boolean
   selectedChat: ChatProps
-  onUpdateSelectedChat: (value: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => void
+  onUpdateSetting: (value: any) => void
 }
 
-function ChatSettings ({ selectedChat, onUpdateSelectedChat }: Props) {
+function ChatSettings ({ isBeta, selectedChat, onUpdateSetting }: Props) {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <div className="bg-background w-full max-w-2xl mx-auto border rounded-lg mt-20 shadow-lg shadow-black/40">
@@ -45,7 +46,7 @@ function ChatSettings ({ selectedChat, onUpdateSelectedChat }: Props) {
             </h2>
           </div>
           {/* Input Selector */}
-          <ModelSelector value={selectedChat.model ?? ''} onChange={onUpdateSelectedChat} />
+          <ModelSelector isBeta={isBeta} value={selectedChat.model ?? ''} onChange={onUpdateSetting} />
           <div className="flex items-center w-full mb-2">
             <HoverCard openDelay={200}>
               <HoverCardTrigger asChild>
@@ -66,7 +67,7 @@ function ChatSettings ({ selectedChat, onUpdateSelectedChat }: Props) {
           <Textarea
             className="resize-none mb-4 h-40"
             onChange={({ target }) => {
-              onUpdateSelectedChat({ key: 'prompt', value: target.value })
+              onUpdateSetting({ key: 'prompt', value: target.value })
             }}
             placeholder="Write your instructions here..."
             value={selectedChat.prompt ?? ''}
@@ -89,11 +90,11 @@ function ChatSettings ({ selectedChat, onUpdateSelectedChat }: Props) {
               <div className="flex flex-col gap-6">
                 <TemperatureSelector
                   defaultValue={[selectedChat.temperature ?? 0.2]}
-                  onChange={onUpdateSelectedChat}
+                  onChange={onUpdateSetting}
                 />
                 <MaxTokensSelector
                   defaultValue={[selectedChat.maxTokens ?? 2000]}
-                  onChange={onUpdateSelectedChat}
+                  onChange={onUpdateSetting}
                 />
               </div>
                 )

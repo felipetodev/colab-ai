@@ -19,13 +19,16 @@ type Props = {
   user: { name: string, username: string, avatarUrl: string } | null
   agents: AgentProps[] | null
   selectedChat: ChatProps
+  isBeta?: boolean
 }
 
-function Chat ({ user, selectedChat, agents }: Props) {
+function Chat ({ user, selectedChat, agents, isBeta }: Props) {
   const [gotMessages, setGotMessages] = useState(false)
 
   const { messages, input, stop, setInput, append, isLoading } = useChat({
-    api: createApiCompletion({ chat: selectedChat }),
+    api: isBeta
+      ? '/api/beta'
+      : createApiCompletion({ chat: selectedChat }),
     body: createBodyCompletion({ chat: selectedChat }),
     onFinish: () => { setGotMessages(true) },
     initialMessages: selectedChat.messages
@@ -43,7 +46,7 @@ function Chat ({ user, selectedChat, agents }: Props) {
   }
 
   useEffect(() => {
-    if (!gotMessages) return
+    if (!gotMessages || isBeta) return
 
     const sendMessages = async () => {
       await updateChat({
@@ -55,11 +58,11 @@ function Chat ({ user, selectedChat, agents }: Props) {
   }, [gotMessages])
 
   // TODO: refact this 👈
-  const onUpdateSelectedChat = (e: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => {
-    console.log({
-      ...selectedChat,
-      [e.key]: e.value
-    })
+  const onUpdateSetting = ({ key, value }: any) => {
+    // setChatState({
+    //   ...selectedChat,
+    //   [key]: value
+    // })
   }
 
   return (
@@ -69,7 +72,8 @@ function Chat ({ user, selectedChat, agents }: Props) {
           {messages?.length === 0
             ? (
               <ChatSettings
-                onUpdateSelectedChat={onUpdateSelectedChat}
+                isBeta={isBeta}
+                onUpdateSetting={onUpdateSetting}
                 selectedChat={selectedChat}
               />
               )
@@ -82,6 +86,7 @@ function Chat ({ user, selectedChat, agents }: Props) {
                       <Badge variant='secondary'>{selectedChat.agent.name}</Badge>
                     )}
                     <ChatSettingsDialog
+                      isBeta={isBeta}
                       agents={agents ?? []}
                       selectedChat={selectedChat}
                     />

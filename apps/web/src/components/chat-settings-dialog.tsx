@@ -19,9 +19,10 @@ import TalkToChat from './talk-to-chat'
 type Props = {
   agents: AgentProps[]
   selectedChat: ChatProps
+  isBeta?: boolean
 }
 
-function ChatSettingsDialog ({ selectedChat, agents }: Props) {
+function ChatSettingsDialog ({ selectedChat, agents, isBeta }: Props) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -39,17 +40,20 @@ function ChatSettingsDialog ({ selectedChat, agents }: Props) {
           </DialogDescription>
         </DialogHeader>
         <Tabs defaultValue={selectedChat.isAgent ? 'agent' : 'chat'}>
-          <TabsList>
+          <TabsList className='relative'>
             <TabsTrigger value="chat">
               Chat
             </TabsTrigger>
-            <TabsTrigger value="agent" className='data-[state=active]:bg-green-700/50'>
+            <TabsTrigger disabled={agents.length === 0} value="agent" className='data-[state=active]:bg-green-700/50'>
               Custom Agent
             </TabsTrigger>
+            <span className="animate-ping absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-400/80" />
+            <span className="absolute -top-1 -right-1 rounded-full h-3 w-3 bg-green-700/80" />
           </TabsList>
 
           <TabsContent value="chat" className='mt-6'>
             <TalkToChat
+              isBeta={isBeta}
               selectedChat={selectedChat}
               handleModalClose={() => setIsOpen(false)}
             />
