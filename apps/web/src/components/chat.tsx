@@ -79,7 +79,7 @@ function Chat ({ user, selectedChat, agents, isBeta }: Props) {
               )
             : (
               <>
-                <header className="z-40 sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
+                <header className="z-40 backdrop-blur-sm sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                   <div className="flex items-center space-x-2">
                     <h1>{selectedChat.name}</h1>
                     {selectedChat.isAgent && (
