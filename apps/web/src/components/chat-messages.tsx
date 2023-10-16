@@ -9,10 +9,11 @@ import { MemoizedReactMarkdown } from './markdown'
 import { CodeBlock } from './codeblock'
 
 interface Props extends Message {
+  agentName: string
   user: { name: string, username: string, avatarUrl: string } | null
 }
 
-function ChatMessages ({ user, content, role }: Props) {
+function ChatMessages ({ user, agentName, content, role }: Props) {
   return (
     <div className={cn({
       'bg-secondary/50': role === 'user',
@@ -34,7 +35,8 @@ function ChatMessages ({ user, content, role }: Props) {
                 : <User />}
             </div>
             <h3 className="font-semibold">
-              {role === 'user' ? (user?.name ?? role) : role}
+              {role === 'user' && (user?.name ?? role)}
+              {role === 'assistant' && (agentName || role)}
             </h3>
           </div>
           <div className="invisible group-hover:visible">
