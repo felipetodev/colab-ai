@@ -82,3 +82,26 @@ export const createFileChunks = async (formData: FormData) => {
 
   return { status }
 }
+
+export const createTranscription = async (formData: FormData) => {
+  const supabase = createServerActionClient({ cookies })
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user === null) return { error: 'User not found' }
+
+  const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY!}`
+    },
+    body: formData
+  })
+
+  const { text = '', error } = await response.json()
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { transcription: text }
+}
