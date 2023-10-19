@@ -17,6 +17,7 @@ import { Textarea } from './ui/textarea'
 import { Label } from './ui/label'
 import { Badge } from './ui/badge'
 import { useToast } from './ui/use-toast'
+import { Spinner } from './ui/icons'
 
 type Props = {
   userSettings?: {
@@ -37,6 +38,7 @@ const parseContent = (content: DocumentProps['content']) => {
 }
 
 function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
+  const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [name, setName] = useState(document.name)
   const { toast } = useToast()
@@ -48,6 +50,7 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
         description: 'You must connect to a database and a vector provider before you can generate embeddings.'
       })
     }
+    setIsLoading(true)
     await fetch(`/api/embeddings/${userSettings.vectorProvider}`, {
       method: 'POST',
       body: JSON.stringify({
@@ -57,6 +60,7 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
         database: userSettings.vectorProvider
       })
     })
+      .finally(() => setIsLoading(false))
 
     setIsOpen(false)
   }
@@ -68,6 +72,7 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
         description: 'You must connect to a database and a vector provider before you can generate embeddings.'
       })
     }
+    setIsLoading(true)
     await fetch(`/api/embeddings/${userSettings.vectorProvider}`, {
       method: 'DELETE',
       body: JSON.stringify({
@@ -75,6 +80,7 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
         ids: document.embeddedIds
       })
     })
+      .finally(() => setIsLoading(false))
 
     setIsOpen(false)
   }
@@ -137,7 +143,7 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
               Delete
             </Button>
             : <div />}
-          <div className="sm:space-x-2">
+          <div className="flex sm:space-x-2">
             <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
               Cancel
             </DialogClose>
@@ -149,7 +155,7 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
                 )
               : (
                 <Button className="bg-green-700 text-white hover:bg-green-700/90" onClick={handleEmbedding}>
-                  Generate Embeddings
+                  {isLoading ? <Spinner className='w-6 h-6 animate-spin' /> : 'Generate Embeddings'}
                 </Button>
                 )}
           </div>
