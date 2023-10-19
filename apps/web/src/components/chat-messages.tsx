@@ -3,7 +3,7 @@ import { User, Copy } from 'lucide-react'
 import type { Message } from 'ai/react'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import { cn, createSupabaseUrl } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
 import { MemoizedReactMarkdown } from './markdown'
 import { CodeBlock } from './codeblock'
@@ -38,7 +38,7 @@ function ChatMessages ({ user, agentName, agentAvatarUrl, content, role }: Props
                 (
                   <img
                     className='block aspect-square w-10 h-10'
-                    src={createSupabaseUrl(agentAvatarUrl)}
+                    src={agentAvatarUrl}
                     alt={agentName}
                     title={agentName}
                   />

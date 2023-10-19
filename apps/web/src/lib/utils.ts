@@ -39,7 +39,9 @@ export function createBodyCompletion ({ chat }: { chat: ChatProps }) {
   }
 }
 
+const supabaseUrl = process.env.SUPABASE_PROJECT_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL
+
 export function createSupabaseUrl (name: string) {
   if (!name) return ''
-  return `https://xrtuwugpioxoncenmpoi.supabase.co/storage/v1/object/public/agents-avatar/${name}`
+  return `${supabaseUrl}/storage/v1/object/public/agents-avatar/${name}`
 }

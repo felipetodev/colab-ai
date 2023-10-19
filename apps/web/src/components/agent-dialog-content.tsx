@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { cn, createSupabaseUrl } from '@/lib/utils'
+import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
@@ -110,7 +110,7 @@ function AgentDialogContent ({
                   <img
                     alt="avatar"
                     className="block aspect-square h-full w-full object-cover"
-                    src={createSupabaseUrl(agent.avatarUrl!) || imagePreview!}
+                    src={agent.avatarUrl! || imagePreview!}
                   />
                   )
                 : (

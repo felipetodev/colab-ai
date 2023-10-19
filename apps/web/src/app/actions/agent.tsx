@@ -3,6 +3,7 @@
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
+import { createSupabaseUrl } from '@/lib/utils'
 
 type ActionResponse = {
   message?: string
@@ -84,7 +85,7 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
       model,
       prompt,
       docs_id: docsIdArray,
-      ...(imgUrl && { avatar_url: imgUrl }),
+      ...(imgUrl && { avatar_url: createSupabaseUrl(imgUrl) }),
       ...(temperature && { temperature }),
       ...(maxTokens && { max_tokens: maxTokens })
     })
