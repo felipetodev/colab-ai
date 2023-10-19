@@ -42,10 +42,10 @@ function AgentDialogContent ({
   handleSelectDocuments,
   handleCloseDialog
 }: Props) {
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isOpenSettings, setIsOpenSettings] = useState(false)
   const router = useRouter()
 
-  const avatarPreview = false // TODO: add avatar preview
   const { toast } = useToast()
 
   const deleteAgent = async () => {
@@ -105,12 +105,12 @@ function AgentDialogContent ({
           <div className="space-y-2 flex flex-col justify-center">
             <Label className='max-w-max' htmlFor="dropzone-file">Avatar</Label>
             <Label className="bg-neutral-800/20 flex flex-col items-center justify-center w-20 h-20 border rounded cursor-pointer overflow-hidden" htmlFor="dropzone-file">
-              {avatarPreview
+              {imagePreview
                 ? (
                   <img
                     alt="avatar"
-                    className="block h-full w-full object-cover"
-                    src={avatarPreview}
+                    className="block aspect-square h-full w-full object-cover"
+                    src={imagePreview}
                   />
                   )
                 : (
@@ -124,7 +124,15 @@ function AgentDialogContent ({
                 accept="image/jpeg, image/png, image/webp, image/jpg"
                 className="hidden"
                 id="dropzone-file"
-                // onChange={({ target }) => {}}
+                onChange={({ target }) => {
+                  if (target.files?.length === 0) {
+                    return setImagePreview(null)
+                  }
+                  const file = target.files?.[0]
+                  if (file) {
+                    setImagePreview(URL.createObjectURL(file))
+                  }
+                }}
                 type="file"
               />
             </Label>
