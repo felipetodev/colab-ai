@@ -154,7 +154,11 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
                 </Button>
                 )
               : (
-                <Button className="bg-green-700 text-white hover:bg-green-700/90" onClick={handleEmbedding}>
+                <Button
+                  disabled={isLoading}
+                  className="bg-green-700 text-white hover:bg-green-700/90"
+                  onClick={handleEmbedding}
+                >
                   {isLoading ? <Spinner className='w-6 h-6 animate-spin' /> : 'Generate Embeddings'}
                 </Button>
                 )}
