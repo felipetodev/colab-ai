@@ -67,7 +67,7 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
 
   // refact this, try to use a relation from supabase or something similar
   let imgUrl = ''
-  if ((avatar as File).size > 0 && !avatarUrl) {
+  if ((avatar as File)?.size > 0 && !avatarUrl) {
     console.log('here 👇👇👇👇')
     const { data } = await supabase.storage
       .from('agents-avatar')
