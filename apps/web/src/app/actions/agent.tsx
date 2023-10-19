@@ -53,7 +53,7 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
   const prompt = formData.get('prompt')
   const temperature = formData.get('temperature')
   const maxTokens = formData.get('maxTokens')
-  const model = formData.get('modelTest')
+  const model = formData.get('llmModel')
   const docsId = formData.get('docsId')
   const agentId = formData.get('agentId')
 
