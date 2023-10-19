@@ -105,12 +105,12 @@ function AgentDialogContent ({
           <div className="space-y-2 flex flex-col justify-center">
             <Label className='max-w-max' htmlFor="dropzone-file">Avatar</Label>
             <Label className="bg-neutral-800/20 flex flex-col items-center justify-center w-20 h-20 border rounded cursor-pointer overflow-hidden" htmlFor="dropzone-file">
-              {(agent.avatarUrl || imagePreview)
+              {(agent.avatarUrl! || imagePreview)
                 ? (
                   <img
                     alt="avatar"
                     className="block aspect-square h-full w-full object-cover"
-                    src={createSupabaseUrl(agent.avatarUrl) || imagePreview!}
+                    src={createSupabaseUrl(agent.avatarUrl!) || imagePreview!}
                   />
                   )
                 : (
