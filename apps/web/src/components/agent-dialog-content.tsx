@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog'
-import { cn } from '@/lib/utils'
+import { cn, createSupabaseUrl } from '@/lib/utils'
 import { Button, buttonVariants } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
@@ -105,12 +105,12 @@ function AgentDialogContent ({
           <div className="space-y-2 flex flex-col justify-center">
             <Label className='max-w-max' htmlFor="dropzone-file">Avatar</Label>
             <Label className="bg-neutral-800/20 flex flex-col items-center justify-center w-20 h-20 border rounded cursor-pointer overflow-hidden" htmlFor="dropzone-file">
-              {imagePreview
+              {(agent.avatarUrl || imagePreview)
                 ? (
                   <img
                     alt="avatar"
                     className="block aspect-square h-full w-full object-cover"
-                    src={imagePreview}
+                    src={createSupabaseUrl(agent.avatarUrl) || imagePreview!}
                   />
                   )
                 : (
@@ -118,23 +118,26 @@ function AgentDialogContent ({
                     <ImagePlus className="w-5 h-5" />
                   </div>
                   )}
-              <input
-                name="avatar"
-                multiple={false}
-                accept="image/jpeg, image/png, image/webp, image/jpg"
-                className="hidden"
-                id="dropzone-file"
-                onChange={({ target }) => {
-                  if (target.files?.length === 0) {
-                    return setImagePreview(null)
-                  }
-                  const file = target.files?.[0]
-                  if (file) {
-                    setImagePreview(URL.createObjectURL(file))
-                  }
-                }}
-                type="file"
-              />
+              {!agent.avatarUrl && (
+                <input
+                  name="avatar"
+                  multiple={false}
+                  accept="image/jpeg, image/png, image/webp, image/jpg"
+                  className="hidden"
+                  id="dropzone-file"
+                  onChange={({ target }) => {
+                    if (target.files?.length === 0) {
+                      return setImagePreview(null)
+                    }
+                    const file = target.files?.[0]
+                    if (file) {
+                      setImagePreview(URL.createObjectURL(file))
+                    }
+                  }}
+                  type="file"
+                />
+              )}
+              <input name="avatarUrl" type="hidden" value={agent?.avatarUrl} />
             </Label>
           </div>
 

@@ -49,7 +49,8 @@ export const newAgent = async (formData: FormData): Promise<ActionResponse> => {
 
 export const updateAgent = async (formData: FormData): Promise<ActionResponse> => {
   const agentName = formData?.get('agentName')
-  // const avatar = formData.get('avatar')
+  const avatar = formData.get('avatar')
+  const avatarUrl = formData.get('avatarUrl')
   const prompt = formData.get('prompt')
   const temperature = formData.get('temperature')
   const maxTokens = formData.get('maxTokens')
@@ -64,6 +65,18 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
 
   if (user === null) return { error: 'User not found' }
 
+  // refact this, try to use a relation from supabase or something similar
+  let imgUrl = ''
+  if ((avatar as File).size > 0 && !avatarUrl) {
+    console.log('here 👇👇👇👇')
+    const { data } = await supabase.storage
+      .from('agents-avatar')
+      .upload(agentId as string, avatar as File)
+
+    imgUrl = data?.path ?? ''
+    // console.log(data, error)
+  }
+
   const { status } = await supabase
     .from('agents')
     .update({
@@ -71,6 +84,7 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
       model,
       prompt,
       docs_id: docsIdArray,
+      ...(imgUrl && { avatar_url: imgUrl }),
       ...(temperature && { temperature }),
       ...(maxTokens && { max_tokens: maxTokens })
     })

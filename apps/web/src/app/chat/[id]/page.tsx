@@ -47,13 +47,13 @@ export default async function ChatPage ({ params }: ChatPageProps) {
 
   const { data: chat } = await supabase
     .from('chats')
-    .select('user:user_id(vectorProvider:vector_db_selected, dbStatus:db_status), id, name, messages, folderId:folder_id, model, temperature, maxTokens:max_tokens, prompt, isAgent:is_agent, agent:agent_id(id, name, prompt, docsId:docs_id, model, temperature, maxTokens:max_tokens)')
+    .select('user:user_id(vectorProvider:vector_db_selected, dbStatus:db_status), id, name, messages, folderId:folder_id, model, temperature, maxTokens:max_tokens, prompt, isAgent:is_agent, agent:agent_id(id, name, prompt, docsId:docs_id, model, temperature, maxTokens:max_tokens, avatarUrl:avatar_url)')
     .eq('id', params.id)
     .maybeSingle()
 
   const { data: agents } = await supabase
     .from('agents')
-    .select('id, folderId:folder_id, name, model, temperature, maxTokens:max_tokens, prompt, docsId:docs_id')
+    .select('id, folderId:folder_id, name, model, temperature, maxTokens:max_tokens, prompt, avatarUrl:avatar_url, docsId:docs_id')
     .order('updated_at', { ascending: false })
 
   if (!chat || chat == null) {

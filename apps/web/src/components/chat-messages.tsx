@@ -3,17 +3,18 @@ import { User, Copy } from 'lucide-react'
 import type { Message } from 'ai/react'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import { cn } from '@/lib/utils'
+import { cn, createSupabaseUrl } from '@/lib/utils'
 import { Button } from './ui/button'
 import { MemoizedReactMarkdown } from './markdown'
 import { CodeBlock } from './codeblock'
 
 interface Props extends Message {
   agentName: string
+  agentAvatarUrl: string
   user: { name: string, username: string, avatarUrl: string } | null
 }
 
-function ChatMessages ({ user, agentName, content, role }: Props) {
+function ChatMessages ({ user, agentName, agentAvatarUrl, content, role }: Props) {
   return (
     <div className={cn({
       'bg-secondary/50': role === 'user',
@@ -33,6 +34,15 @@ function ChatMessages ({ user, agentName, content, role }: Props) {
                   />
                   )
                 : <User />}
+              {agentAvatarUrl && role === 'assistant' &&
+                (
+                  <img
+                    className='block aspect-square w-10 h-10'
+                    src={createSupabaseUrl(agentAvatarUrl)}
+                    alt={agentName}
+                    title={agentName}
+                  />
+                )}
             </div>
             <h3 className="font-semibold">
               {role === 'user' && (user?.name ?? role)}

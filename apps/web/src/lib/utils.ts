@@ -38,3 +38,8 @@ export function createBodyCompletion ({ chat }: { chat: ChatProps }) {
     }
   }
 }
+
+export function createSupabaseUrl (name: string) {
+  if (!name) return ''
+  return `https://xrtuwugpioxoncenmpoi.supabase.co/storage/v1/object/public/agents-avatar/${name}`
+}

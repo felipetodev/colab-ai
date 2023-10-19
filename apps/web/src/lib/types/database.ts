@@ -22,6 +22,7 @@ export interface Database {
           temperature: number
           updated_at: string
           user_id: string
+          avatar_url: string
         }
         Insert: {
           created_at?: string
@@ -35,6 +36,7 @@ export interface Database {
           temperature: number
           updated_at?: string
           user_id: string
+          avatar_url: string
         }
         Update: {
           created_at?: string
@@ -48,6 +50,7 @@ export interface Database {
           temperature?: number
           updated_at?: string
           user_id?: string
+          avatar_url: string
         }
         Relationships: [
           {

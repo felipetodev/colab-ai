@@ -12,6 +12,7 @@ export type Agent = {
   maxTokens?: Tables<'agents'>['max_tokens']
   prompt?: Tables<'agents'>['prompt']
   docsId: Tables<'agents'>['docs_id']
+  avatarUrl: Tables<'agents'>['avatar_url']
 }
 
 export type AgentProps = Omit<Agent, 'docsId'> & {

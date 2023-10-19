@@ -14,7 +14,7 @@ export default async function Home () {
 
   const { data: agents } = await supabase
     .from('agents')
-    .select('id, folderId:folder_id, name, model, temperature, maxTokens:max_tokens, prompt, docsId:docs_id')
+    .select('id, folderId:folder_id, name, model, temperature, maxTokens:max_tokens, prompt, avatarUrl:avatar_url, docsId:docs_id')
     .order('updated_at', { ascending: false })
 
   const { data: documents } = await supabase
