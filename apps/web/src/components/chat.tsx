@@ -96,7 +96,7 @@ function Chat ({ user, selectedChat, agents, isBeta }: Props) {
                   {messages?.map((message) => (
                     <ChatMessages
                       user={user}
-                      agentAvatarUrl={selectedChat.agent.avatarUrl}
+                      agentAvatarUrl={selectedChat.isAgent ? selectedChat.agent.avatarUrl : ''}
                       agentName={selectedChat.isAgent ? selectedChat.agent.name : ''}
                       content={message.content}
                       id={message.id}
