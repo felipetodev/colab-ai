@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { User, Copy } from 'lucide-react'
 import type { Message } from 'ai/react'
+import { User, Copy, Check } from 'lucide-react'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
 import { MemoizedReactMarkdown } from './markdown'
 import { CodeBlock } from './codeblock'
+import { useCopyToClipboard } from 'src/hooks/use-copy-to-clipboard'
 
 interface Props extends Message {
   agentName: string
@@ -15,6 +15,11 @@ interface Props extends Message {
 }
 
 function ChatMessages ({ user, agentName, agentAvatarUrl, content, role }: Props) {
+  const { isCopied, copyToClipboard } = useCopyToClipboard({ timeout: 2000 })
+  const onCopy = () => {
+    if (isCopied) return
+    copyToClipboard(content)
+  }
   return (
     <div className={cn({
       'bg-secondary/50': role === 'user',
@@ -50,9 +55,17 @@ function ChatMessages ({ user, agentName, agentAvatarUrl, content, role }: Props
             </h3>
           </div>
           <div className="invisible group-hover:visible">
-            <Button className="w-8 h-8" size='icon' variant='ghost'>
-              <Copy className="w-4 h-4" />
-            </Button>
+            {isCopied
+              ? (
+                <Button className="w-8 h-8" size='icon' variant='ghost' onClick={onCopy}>
+                  <Check className='w-4 h-4' />
+                </Button>
+                )
+              : (
+                <Button className="w-8 h-8" size='icon' variant='ghost' onClick={onCopy}>
+                  <Copy className="w-4 h-4" />
+                </Button>
+                )}
           </div>
         </div>
         <div className="flex-1 mt-5 mb-12 space-y-2 overflow-hidden">
