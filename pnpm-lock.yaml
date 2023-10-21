@@ -12,7 +12,7 @@ importers:
       eslint: 8.51.0
       prettier: 3.0.3
       tsconfig: link:packages/tsconfig
-      turbo: 1.10.15
+      turbo: 1.10.16
 
   apps/web:
     specifiers:
@@ -36,6 +36,7 @@ importers:
       '@radix-ui/react-switch': ^1.0.3
       '@radix-ui/react-tabs': ^1.0.4
       '@radix-ui/react-toast': ^1.1.5
+      '@radix-ui/react-tooltip': ^1.0.7
       '@supabase/auth-helpers-nextjs': 0.8.1
       '@supabase/supabase-js': 2.38.0
       '@tailwindcss/typography': ^0.5.10
@@ -101,6 +102,7 @@ importers:
       '@radix-ui/react-switch': 1.0.3_zo3molnjqtxyyo4ci7nabn2mgy
       '@radix-ui/react-tabs': 1.0.4_zo3molnjqtxyyo4ci7nabn2mgy
       '@radix-ui/react-toast': 1.1.5_zo3molnjqtxyyo4ci7nabn2mgy
+      '@radix-ui/react-tooltip': 1.0.7_zo3molnjqtxyyo4ci7nabn2mgy
       '@supabase/auth-helpers-nextjs': 0.8.1_2vyqjlqmusnm2qp5obbp2a4xrm
       '@supabase/supabase-js': 2.38.0
       ai: 2.2.15_g3ugqmsbrythcn7swauvkhn27m
@@ -1752,6 +1754,38 @@ packages:
       '@radix-ui/react-use-callback-ref': 1.0.1_u7aq4l6gggvglb3rj6bw7hbzrq
       '@radix-ui/react-use-controllable-state': 1.0.1_u7aq4l6gggvglb3rj6bw7hbzrq
       '@radix-ui/react-use-layout-effect': 1.0.1_u7aq4l6gggvglb3rj6bw7hbzrq
+      '@radix-ui/react-visually-hidden': 1.0.3_zo3molnjqtxyyo4ci7nabn2mgy
+      '@types/react': 18.2.29
+      '@types/react-dom': 18.2.14
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /@radix-ui/react-tooltip/1.0.7_zo3molnjqtxyyo4ci7nabn2mgy:
+    resolution: {integrity: sha512-lPh5iKNFVQ/jav/j6ZrWq3blfDJ0OH9R6FlNUHPMqdLuQ9vwDgFsRxvl8b7Asuy5c8xmoojHUxKHQSOAvMHxyw==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.23.2
+      '@radix-ui/primitive': 1.0.1
+      '@radix-ui/react-compose-refs': 1.0.1_u7aq4l6gggvglb3rj6bw7hbzrq
+      '@radix-ui/react-context': 1.0.1_u7aq4l6gggvglb3rj6bw7hbzrq
+      '@radix-ui/react-dismissable-layer': 1.0.5_zo3molnjqtxyyo4ci7nabn2mgy
+      '@radix-ui/react-id': 1.0.1_u7aq4l6gggvglb3rj6bw7hbzrq
+      '@radix-ui/react-popper': 1.1.3_zo3molnjqtxyyo4ci7nabn2mgy
+      '@radix-ui/react-portal': 1.0.4_zo3molnjqtxyyo4ci7nabn2mgy
+      '@radix-ui/react-presence': 1.0.1_zo3molnjqtxyyo4ci7nabn2mgy
+      '@radix-ui/react-primitive': 1.0.3_zo3molnjqtxyyo4ci7nabn2mgy
+      '@radix-ui/react-slot': 1.0.2_u7aq4l6gggvglb3rj6bw7hbzrq
+      '@radix-ui/react-use-controllable-state': 1.0.1_u7aq4l6gggvglb3rj6bw7hbzrq
       '@radix-ui/react-visually-hidden': 1.0.3_zo3molnjqtxyyo4ci7nabn2mgy
       '@types/react': 18.2.29
       '@types/react-dom': 18.2.14
@@ -8746,64 +8780,64 @@ packages:
       typescript: 4.9.5
     dev: true
 
-  /turbo-darwin-64/1.10.15:
-    resolution: {integrity: sha512-Sik5uogjkRTe1XVP9TC2GryEMOJCaKE2pM/O9uLn4koQDnWKGcLQv+mDU+H+9DXvKLnJnKCD18OVRkwK5tdpoA==}
+  /turbo-darwin-64/1.10.16:
+    resolution: {integrity: sha512-+Jk91FNcp9e9NCLYlvDDlp2HwEDp14F9N42IoW3dmHI5ZkGSXzalbhVcrx3DOox3QfiNUHxzWg4d7CnVNCuuMg==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64/1.10.15:
-    resolution: {integrity: sha512-xwqyFDYUcl2xwXyGPmHkmgnNm4Cy0oNzMpMOBGRr5x64SErS7QQLR4VHb0ubiR+VAb8M+ECPklU6vD1Gm+wekg==}
+  /turbo-darwin-arm64/1.10.16:
+    resolution: {integrity: sha512-jqGpFZipIivkRp/i+jnL8npX0VssE6IAVNKtu573LXtssZdV/S+fRGYA16tI46xJGxSAivrZ/IcgZrV6Jk80bw==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64/1.10.15:
-    resolution: {integrity: sha512-dM07SiO3RMAJ09Z+uB2LNUSkPp3I1IMF8goH5eLj+d8Kkwoxd/+qbUZOj9RvInyxU/IhlnO9w3PGd3Hp14m/nA==}
+  /turbo-linux-64/1.10.16:
+    resolution: {integrity: sha512-PpqEZHwLoizQ6sTUvmImcRmACyRk9EWLXGlqceogPZsJ1jTRK3sfcF9fC2W56zkSIzuLEP07k5kl+ZxJd8JMcg==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64/1.10.15:
-    resolution: {integrity: sha512-MkzKLkKYKyrz4lwfjNXH8aTny5+Hmiu4SFBZbx+5C0vOlyp6fV5jZANDBvLXWiDDL4DSEAuCEK/2cmN6FVH1ow==}
+  /turbo-linux-arm64/1.10.16:
+    resolution: {integrity: sha512-TMjFYz8to1QE0fKVXCIvG/4giyfnmqcQIwjdNfJvKjBxn22PpbjeuFuQ5kNXshUTRaTJihFbuuCcb5OYFNx4uw==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64/1.10.15:
-    resolution: {integrity: sha512-3TdVU+WEH9ThvQGwV3ieX/XHebtYNHv9HARHauPwmVj3kakoALkpGxLclkHFBLdLKkqDvmHmXtcsfs6cXXRHJg==}
+  /turbo-windows-64/1.10.16:
+    resolution: {integrity: sha512-+jsf68krs0N66FfC4/zZvioUap/Tq3sPFumnMV+EBo8jFdqs4yehd6+MxIwYTjSQLIcpH8KoNMB0gQYhJRLZzw==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64/1.10.15:
-    resolution: {integrity: sha512-l+7UOBCbfadvPMYsX08hyLD+UIoAkg6ojfH+E8aud3gcA1padpjCJTh9gMpm3QdMbKwZteT5uUM+wyi6Rbbyww==}
+  /turbo-windows-arm64/1.10.16:
+    resolution: {integrity: sha512-sKm3hcMM1bl0B3PLG4ifidicOGfoJmOEacM5JtgBkYM48ncMHjkHfFY7HrJHZHUnXM4l05RQTpLFoOl/uIo2HQ==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo/1.10.15:
-    resolution: {integrity: sha512-mKKkqsuDAQy1wCCIjCdG+jOCwUflhckDMSRoeBPcIL/CnCl7c5yRDFe7SyaXloUUkt4tUR0rvNIhVCcT7YeQpg==}
+  /turbo/1.10.16:
+    resolution: {integrity: sha512-2CEaK4FIuSZiP83iFa9GqMTQhroW2QryckVqUydmg4tx78baftTOS0O+oDAhvo9r9Nit4xUEtC1RAHoqs6ZEtg==}
     hasBin: true
     optionalDependencies:
-      turbo-darwin-64: 1.10.15
-      turbo-darwin-arm64: 1.10.15
-      turbo-linux-64: 1.10.15
-      turbo-linux-arm64: 1.10.15
-      turbo-windows-64: 1.10.15
-      turbo-windows-arm64: 1.10.15
+      turbo-darwin-64: 1.10.16
+      turbo-darwin-arm64: 1.10.16
+      turbo-linux-64: 1.10.16
+      turbo-linux-arm64: 1.10.16
+      turbo-windows-64: 1.10.16
+      turbo-windows-arm64: 1.10.16
     dev: true
 
   /type-check/0.4.0:
