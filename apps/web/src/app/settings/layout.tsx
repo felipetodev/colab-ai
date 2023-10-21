@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { SidebarNav } from './components/sidebar-nav'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'Colab-AI | Settings'
@@ -60,6 +61,7 @@ export default async function SettingsLayout ({ children }: SettingsLayoutProps)
           {children}
         </div>
       </div>
+      <Toaster />
     </div>
   )
 }
