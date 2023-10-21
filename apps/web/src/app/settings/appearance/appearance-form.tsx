@@ -19,6 +19,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { updateSettings } from 'src/app/actions/settings'
 import { useToast } from '@/components/ui/use-toast'
 import { SubmitButton } from 'src/app/actions/submit-button'
+import { useTheme } from 'next-themes'
 
 const appearanceFormSchema = z.object({
   theme: z.enum(['light', 'dark'], {
@@ -38,6 +39,7 @@ const defaultValues: Partial<AppearanceFormValues> = {
 }
 
 export function AppearanceForm ({ appearance }: any) {
+  const { setTheme } = useTheme()
   const { toast } = useToast()
   const form = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
@@ -98,7 +100,10 @@ export function AppearanceForm ({ appearance }: any) {
                 name="theme"
                 className="grid max-w-md grid-cols-2 gap-8 pt-2"
                 defaultValue={field.value}
-                onValueChange={field.onChange}
+                onValueChange={(value) => {
+                  setTheme(value)
+                  field.onChange(value)
+                }}
               >
                 <FormItem>
                   <FormLabel className="[&:has([data-state=checked])>div]:border-primary">

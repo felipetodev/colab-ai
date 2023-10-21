@@ -23,7 +23,7 @@ export default function RootLayout ({
         fontSans.variable,
         fontMono.variable
       )}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="relative flex min-h-screen flex-col bg-background">
             <div className="flex-1">
               <MainNav />
