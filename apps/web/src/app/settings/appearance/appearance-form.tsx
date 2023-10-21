@@ -5,7 +5,7 @@ import { ChevronDownIcon } from '@radix-ui/react-icons'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { cn } from '@/lib/utils'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Form,
   FormControl,
@@ -16,6 +16,9 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { updateSettings } from 'src/app/actions/settings'
+import { useToast } from '@/components/ui/use-toast'
+import { SubmitButton } from 'src/app/actions/submit-button'
 
 const appearanceFormSchema = z.object({
   theme: z.enum(['light', 'dark'], {
@@ -34,19 +37,24 @@ const defaultValues: Partial<AppearanceFormValues> = {
   theme: 'dark'
 }
 
-export function AppearanceForm () {
+export function AppearanceForm ({ appearance }: any) {
+  const { toast } = useToast()
   const form = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
-    defaultValues
+    defaultValues: {
+      ...defaultValues,
+      ...appearance
+    }
   })
-
-  function onSubmit (data: AppearanceFormValues) {
-    console.log(data)
-  }
 
   return (
     <Form {...form}>
-      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+      className="space-y-8"
+      action={async (formData: FormData) => {
+        const { message, status } = await updateSettings(formData)
+        toast({ variant: status, description: message })
+      }}>
         <FormField
           control={form.control}
           name="font"
@@ -87,6 +95,7 @@ export function AppearanceForm () {
               </FormDescription>
               <FormMessage />
               <RadioGroup
+                name="theme"
                 className="grid max-w-md grid-cols-2 gap-8 pt-2"
                 defaultValue={field.value}
                 onValueChange={field.onChange}
@@ -148,7 +157,9 @@ export function AppearanceForm () {
           )}
         />
 
-        <Button type="submit">Update preferences</Button>
+        <SubmitButton>
+          Update preferences
+        </SubmitButton>
       </form>
     </Form>
   )
