@@ -16,7 +16,7 @@ type Props = {
 }
 
 function VoiceInput ({ isLoading, onRecording, onRecordingComplete }: Props) {
-  const [showTooltip, setShowTooltip] = useState(true)
+  const [showTooltip, setShowTooltip] = useState(false)
   const {
     isRecording,
     recordingBlob,
