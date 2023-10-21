@@ -3,8 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
   Form,
@@ -20,6 +18,9 @@ import { IconOpenAI } from '@/components/ui/icons'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { SubmitButton } from 'src/app/actions/submit-button'
+import { updateSettings } from 'src/app/actions/settings'
+import { useToast } from '@/components/ui/use-toast'
 
 const profileFormSchema = z.object({
   openaiKey: z.string(),
@@ -36,27 +37,23 @@ const profileFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 export function ProjectForm ({ defaultValues }: { defaultValues: ProfileFormValues }) {
-  const router = useRouter()
+  const { toast } = useToast()
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
     mode: 'onChange'
   })
 
-  async function onSubmit (data: ProfileFormValues) {
-    await fetch('/api/settings', {
-      method: 'PUT',
-      body: JSON.stringify(data)
-    })
-
-    router.refresh()
-  }
-
   const activeUserDatabase = form.watch('dbStatus')
 
   return (
     <Form {...form}>
-      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+      className="space-y-8"
+      action={async (formData: FormData) => {
+        const { message, status } = await updateSettings(formData)
+        toast({ variant: status, description: message })
+      }}>
         <FormField
           control={form.control}
           name="openaiKey"
@@ -199,7 +196,9 @@ export function ProjectForm ({ defaultValues }: { defaultValues: ProfileFormValu
           )}
         </Tabs>
 
-        <Button type="submit">Update settings</Button>
+        <SubmitButton>
+          Update settings
+        </SubmitButton>
       </form>
     </Form>
   )
