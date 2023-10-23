@@ -107,6 +107,7 @@ export function ProjectForm ({ defaultValues }: { defaultValues: ProfileFormValu
               <img alt="supabase-vectorpg" className="h-8" src="/supabase-logo.svg" />
             </TabsTrigger>
           </TabsList>
+          <input type="hidden" name="vectorDBSelected" value={form.watch('vectorDBSelected') ?? ''} />
           <TabsContent value="pinecone">
             <FormField
               control={form.control}
