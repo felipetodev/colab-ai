@@ -19,7 +19,7 @@ importers:
       '@edge-runtime/cookies': ^4.0.0
       '@hookform/resolvers': 3.3.1
       '@next/eslint-plugin-next': ^13.4.19
-      '@pinecone-database/pinecone': 1.1.0
+      '@pinecone-database/pinecone': 1.1.1
       '@radix-ui/react-alert-dialog': ^1.0.5
       '@radix-ui/react-avatar': ^1.0.3
       '@radix-ui/react-dialog': ^1.0.4
@@ -85,7 +85,7 @@ importers:
     dependencies:
       '@edge-runtime/cookies': 4.0.2
       '@hookform/resolvers': 3.3.1_react-hook-form@7.46.2
-      '@pinecone-database/pinecone': 1.1.0
+      '@pinecone-database/pinecone': 1.1.1
       '@radix-ui/react-alert-dialog': 1.0.5_4s4xqdzi7v7cvkwemc5brwkohy
       '@radix-ui/react-avatar': 1.0.4_4s4xqdzi7v7cvkwemc5brwkohy
       '@radix-ui/react-dialog': 1.0.5_4s4xqdzi7v7cvkwemc5brwkohy
@@ -110,7 +110,7 @@ importers:
       clsx: 2.0.0
       cmdk: 0.2.0_gxgmllcfuy2ev7cw5fu3ycsnd4
       d3-dsv: 2.0.0
-      langchain: 0.0.166_q5kiem53ldk732smbtr5xfwsjy
+      langchain: 0.0.166_sx5o5ljcfkxibapr7zzbbhqo5e
       lucide-react: 0.279.0_react@18.2.0
       mammoth: 1.6.0
       next: 13.5.6_biqbaboplfbrettd7655fr4n2y
@@ -724,8 +724,8 @@ packages:
     resolution: {integrity: sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==}
     dev: false
 
-  /@pinecone-database/pinecone/1.1.0:
-    resolution: {integrity: sha512-THg+D3cSYVCMmphroOEBQOU9UsOhABYcrExZyurcz8cZ3znipDyJuiX9F3CavysnQa5DTzQEZxcH1YmEMGW8mg==}
+  /@pinecone-database/pinecone/1.1.1:
+    resolution: {integrity: sha512-8af+2fAAkkHC1BIe+op8Tk4YLvJYK1qM2ITuwVmFdNVcHG6oHdXlZdR8GGdOLfYSVuLf4aZid7xhjYUSBqux8Q==}
     engines: {node: '>=14.0.0'}
     dependencies:
       '@edge-runtime/types': 2.2.5
@@ -5652,7 +5652,7 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /langchain/0.0.166_q5kiem53ldk732smbtr5xfwsjy:
+  /langchain/0.0.166_sx5o5ljcfkxibapr7zzbbhqo5e:
     resolution: {integrity: sha512-ZO3hwZmvMaeR2bcGJGjyt8llCkzeGVso0c1KAj+StHZhf/piDgRMlxEL+4Hb8iFVCZboT228MY7xdgjaSGDMsg==}
     engines: {node: '>=18'}
     peerDependencies:
@@ -5929,7 +5929,7 @@ packages:
         optional: true
     dependencies:
       '@anthropic-ai/sdk': 0.6.8
-      '@pinecone-database/pinecone': 1.1.0
+      '@pinecone-database/pinecone': 1.1.1
       '@supabase/supabase-js': 2.38.0
       ansi-styles: 5.2.0
       binary-extensions: 2.2.0
