@@ -22,9 +22,9 @@ export function createApiCompletion ({ chat }: { chat: ChatProps }) {
 }
 
 export function createBodyCompletion ({ chat }: { chat: ChatProps }) {
-  const { isAgent, user: { vectorProvider, dbStatus } = {} } = chat
+  const { isAgent, agent, user: { vectorProvider, dbStatus } = {} } = chat
 
-  if (!isAgent || !vectorProvider || !dbStatus) {
+  if (!isAgent || !vectorProvider || !dbStatus || !agent) {
     return { chatId: chat?.id }
   } else {
     return {

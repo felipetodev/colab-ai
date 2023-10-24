@@ -82,7 +82,7 @@ function Chat ({ user, selectedChat, agents, isBeta }: Props) {
                 <header className="z-40 backdrop-blur-sm sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                   <div className="flex items-center space-x-2">
                     <h1>{selectedChat.name}</h1>
-                    {selectedChat.isAgent && (
+                    {selectedChat.agent && (
                       <Badge variant='secondary'>{selectedChat.agent.name}</Badge>
                     )}
                     <ChatSettingsDialog
@@ -96,8 +96,8 @@ function Chat ({ user, selectedChat, agents, isBeta }: Props) {
                   {messages?.map((message) => (
                     <ChatMessages
                       user={user}
-                      agentAvatarUrl={selectedChat.isAgent ? selectedChat.agent.avatarUrl : ''}
-                      agentName={selectedChat.isAgent ? selectedChat.agent.name : ''}
+                      agentAvatarUrl={selectedChat.agent ? selectedChat.agent.avatarUrl : ''}
+                      agentName={selectedChat.agent ? selectedChat.agent.name : ''}
                       content={message.content}
                       id={message.id}
                       key={message.id}
