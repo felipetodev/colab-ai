@@ -11,13 +11,20 @@ import {
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import type { DocumentProps } from '@/lib/types/document'
-import { Button, buttonVariants } from './ui/button'
+import { buttonVariants } from './ui/button'
 import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import { Label } from './ui/label'
 import { Badge } from './ui/badge'
 import { useToast } from './ui/use-toast'
-import { Spinner } from './ui/icons'
+import { SubmitButton } from 'src/app/actions/submit-button'
+import {
+  createPineconeEmbeddings,
+  createSupaEmbeddings,
+  deletePineconeEmbeddings,
+  deleteSupaEmbeddings,
+  updateEmbedding
+} from 'src/app/actions/embeddings'
 
 type Props = {
   userSettings?: {
@@ -38,7 +45,6 @@ const parseContent = (content: DocumentProps['content']) => {
 }
 
 function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
-  const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [name, setName] = useState(document.name)
   const { toast } = useToast()
@@ -50,17 +56,20 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
         description: 'You must connect to a database and a vector provider before you can generate embeddings.'
       })
     }
-    setIsLoading(true)
-    await fetch(`/api/embeddings/${userSettings.vectorProvider}`, {
-      method: 'POST',
-      body: JSON.stringify({
-        name: name || document.name,
-        docId: document.id,
-        content: document.content,
-        database: userSettings.vectorProvider
-      })
-    })
-      .finally(() => setIsLoading(false))
+
+    const { vectorProvider } = userSettings
+    const payload = {
+      name: name || document.name,
+      id: document.id,
+      content: document.content,
+      database: userSettings.vectorProvider
+    }
+
+    const { status, message } = vectorProvider === 'supabase'
+      ? await createSupaEmbeddings(payload)
+      : await createPineconeEmbeddings(payload)
+
+    toast({ variant: status, description: message })
 
     setIsOpen(false)
   }
@@ -69,18 +78,40 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
     if (!userSettings || !userSettings.dbStatus || !userSettings.vectorProvider) {
       return toast({
         variant: 'destructive',
-        description: 'You must connect to a database and a vector provider before you can generate embeddings.'
+        description: 'You must connect to a database and a vector provider before you can delete embeddings.'
       })
     }
-    setIsLoading(true)
-    await fetch(`/api/embeddings/${userSettings.vectorProvider}`, {
-      method: 'DELETE',
-      body: JSON.stringify({
-        docId: document.id,
-        ids: document.embeddedIds
+
+    const { vectorProvider } = userSettings
+    const payload = {
+      id: document.id,
+      ids: document.embeddedIds as any
+    }
+
+    const { status, message } = vectorProvider === 'supabase'
+      ? await deleteSupaEmbeddings(payload)
+      : await deletePineconeEmbeddings(payload)
+
+    toast({ variant: status, description: message })
+
+    setIsOpen(false)
+  }
+
+  const handleDocumentName = async () => {
+    if (!userSettings || !userSettings.dbStatus || !userSettings.vectorProvider) {
+      return toast({
+        variant: 'destructive',
+        description: 'You must connect to a database and a vector provider before you can update embeddings.'
       })
+    }
+
+    // REFACT: update supa db and vector db 🚧🚧🚧🚧
+    const { status, message } = await updateEmbedding({
+      name,
+      id: document.id
     })
-      .finally(() => setIsLoading(false))
+
+    toast({ variant: status, description: message })
 
     setIsOpen(false)
   }
@@ -115,7 +146,7 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
               : <>You must train this file before you can use it in an agent.</>}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-y-3">
+        <form className='flex flex-col gap-y-3'>
           <div>
             <Label htmlFor="name">Name</Label>
             <Input
@@ -136,34 +167,33 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
               value={parseContent(document.content)}
             />
           </div>
-        </div>
-        <DialogFooter className="!justify-between">
-          {document.isTrained
-            ? <Button onClick={handleDeleteEmbedding} variant='destructive'>
-              Delete
-            </Button>
-            : <div />}
-          <div className="flex sm:space-x-2">
-            <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
-              Cancel
-            </DialogClose>
+          <DialogFooter className="!justify-between">
             {document.isTrained
-              ? (
-                <Button className="bg-green-700 text-white hover:bg-green-700/90">
-                  Save Changes
-                </Button>
-                )
-              : (
-                <Button
-                  disabled={isLoading}
-                  className="bg-green-700 text-white hover:bg-green-700/90"
-                  onClick={handleEmbedding}
-                >
-                  {isLoading ? <Spinner className='w-6 h-6 animate-spin' /> : 'Generate Embeddings'}
-                </Button>
-                )}
-          </div>
-        </DialogFooter>
+              ? <SubmitButton formAction={handleDeleteEmbedding} variant='destructive'>
+                Delete
+              </SubmitButton>
+              : <div />}
+            <div className="flex sm:space-x-2">
+              <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
+                Cancel
+              </DialogClose>
+              {document.isTrained
+                ? (
+                  <SubmitButton formAction={handleDocumentName} className="bg-green-700 text-white hover:bg-green-700/90">
+                    Save Changes
+                  </SubmitButton>
+                  )
+                : (
+                  <SubmitButton
+                    className="bg-green-700 text-white hover:bg-green-700/90"
+                    formAction={handleEmbedding}
+                  >
+                    Generate Embeddings
+                  </SubmitButton>
+                  )}
+            </div>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog >
   )
