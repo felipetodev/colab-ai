@@ -50,3 +50,14 @@ export function createSupabaseUrl (name: string) {
   if (!name) return ''
   return `${supabaseUrl}/storage/v1/object/public/agents-avatar/${name}`
 }
+
+export function formatMimeType (type: string) {
+  const mimeTypes = {
+    'application/pdf': 'pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+    'text/csv': 'csv',
+    'text/plain': 'txt'
+  }
+
+  return mimeTypes[type as keyof typeof mimeTypes] ?? type
+}

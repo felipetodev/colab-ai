@@ -8,6 +8,7 @@ import { DocxLoader } from 'langchain/document_loaders/fs/docx'
 import { CSVLoader } from 'langchain/document_loaders/fs/csv'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { TextLoader } from 'langchain/document_loaders/fs/text'
+import { formatMimeType } from '@/lib/utils'
 
 export const createFileChunks = async (formData: FormData) => {
   const name = formData.get('name')
@@ -74,7 +75,7 @@ export const createFileChunks = async (formData: FormData) => {
     user_id: user.id,
     id: documentId,
     name,
-    type,
+    type: formatMimeType(type),
     content: formattedDocs
   })
 
