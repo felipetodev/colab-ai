@@ -1,14 +1,4 @@
 import { useRef, useState, useTransition } from 'react'
-import { DialogClose } from '@radix-ui/react-dialog'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from './ui/button'
@@ -16,6 +6,16 @@ import { useToast } from './ui/use-toast'
 import { deleteChat, updateChat } from 'src/app/actions/chat'
 import { useRouter } from 'next/navigation'
 import { Spinner } from './ui/icons'
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogDescription,
+  AlertDialogTitle
+} from './ui/alert-dialog'
 
 type Props =
   | {
@@ -47,6 +47,7 @@ function ChatConversationDialog (props: Props) {
       //   do something
       // }
 
+      setIsOpen(false)
       router.refresh()
       router.push('/')
       toast({ variant: 'success', description: 'Chat deleted successfully' })
@@ -69,40 +70,42 @@ function ChatConversationDialog (props: Props) {
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+      <AlertDialogTrigger asChild>
         {children}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-xl">
+      </AlertDialogTrigger>
+      <AlertDialogContent className="sm:max-w-xl">
         {type === 'edit'
           ? (
             <>
-              <DialogHeader>
-                <DialogTitle>Edit chat</DialogTitle>
-                <DialogDescription>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Edit chat</AlertDialogTitle>
+                <AlertDialogDescription>
                   Update your chat name.
-                </DialogDescription>
-              </DialogHeader>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
               <div className="grid gap-4 py-4">
                 <Input ref={inputRef} name="name" placeholder={props.activeName} />
               </div>
             </>
             )
           : (
-            <DialogHeader>
-              <DialogTitle>Delete chat</DialogTitle>
-              <DialogDescription>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete chat</AlertDialogTitle>
+              <AlertDialogDescription>
                 Are you sure you want to delete this chat?
-              </DialogDescription>
-            </DialogHeader>
+                This will permanently delete your chat message and remove your
+                data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
             )}
-        <DialogFooter>
+        <AlertDialogFooter>
           {type === 'delete'
             ? (
               <>
-                <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
+                <AlertDialogCancel disabled={isRemovePending} className={cn(buttonVariants({ variant: 'secondary' }))}>
                   Cancel
-                </DialogClose>
+                </AlertDialogCancel>
                 <Button
                   disabled={isRemovePending}
                   variant='destructive'
@@ -114,9 +117,9 @@ function ChatConversationDialog (props: Props) {
               )
             : (
               <>
-                <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
+                <AlertDialogCancel disabled={isRemovePending} className={cn(buttonVariants({ variant: 'secondary' }))}>
                   Cancel
-                </DialogClose>
+                </AlertDialogCancel>
                 <Button
                   disabled={isRemovePending}
                   className='text-white bg-green-700 hover:bg-green-700/90'
@@ -126,9 +129,9 @@ function ChatConversationDialog (props: Props) {
                 </Button>
               </>
               )}
-        </DialogFooter>
-      </DialogContent>
-    </Dialog >
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }
 
