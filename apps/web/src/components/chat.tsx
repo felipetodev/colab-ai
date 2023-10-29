@@ -24,14 +24,14 @@ type Props = {
 }
 
 function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
-  const [newChat, setNewChat] = useState<ChatProps>(selectedChat)
+  const [chat, setChat] = useState<ChatProps>(selectedChat)
   const [gotMessages, setGotMessages] = useState(false)
 
   const { messages, input, stop, setInput, append, isLoading } = useChat({
     api: isBeta
       ? '/api/beta'
-      : createApiCompletion({ chat: isNewChat ? newChat : selectedChat }),
-    body: createBodyCompletion({ chat: isNewChat ? newChat : selectedChat }),
+      : createApiCompletion({ chat }),
+    body: createBodyCompletion({ chat }),
     onFinish: () => { setGotMessages(true) },
     initialMessages: selectedChat.messages
   })
@@ -53,11 +53,11 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
     const sendMessages = async () => {
       isNewChat
         ? await createChat({
-          ...newChat,
+          ...chat,
           messages
         })
         : await updateChat({
-          ...selectedChat,
+          ...chat,
           messages
         })
     }
@@ -65,7 +65,7 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
   }, [gotMessages])
 
   const onUpdateSetting = ({ key, value }: any) => {
-    setNewChat(prev => ({
+    setChat(prev => ({
       ...prev,
       // ...key === 'agent' && { isAgent: true },
       [key]: value
@@ -81,7 +81,7 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
               <ChatSettings
                 isBeta={isBeta}
                 onUpdateSetting={onUpdateSetting}
-                selectedChat={newChat}
+                selectedChat={chat}
               />
               )
             : (
@@ -95,7 +95,8 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
                     <ChatSettingsDialog
                       isBeta={isBeta}
                       agents={agents ?? []}
-                      selectedChat={selectedChat}
+                      selectedChat={chat}
+                      onUpdateSetting={onUpdateSetting}
                     />
                   </div>
                 </header>

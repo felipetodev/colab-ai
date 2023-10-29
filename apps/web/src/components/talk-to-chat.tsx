@@ -16,22 +16,15 @@ import HoverLabel from './hover-label'
 import { Badge } from './ui/badge'
 import { IconHuggingFace } from './ui/icons'
 
-type ChatPreferences = Pick<ChatProps, 'model' | 'prompt' | 'temperature' | 'maxTokens'>
-
 type Props = {
   selectedChat: ChatProps
   isBeta?: boolean
   handleModalClose: () => void
+  onUpdateSetting: (value: any) => void
 }
 
-function TalkToChat ({ isBeta, selectedChat, handleModalClose }: Props) {
+function TalkToChat ({ isBeta, selectedChat, handleModalClose, onUpdateSetting }: Props) {
   const [isOpen, setIsOpen] = useState(false)
-  const [chatPreferences, setChatPreferences] = useState<ChatPreferences>({
-    model: selectedChat.model ?? 'gpt-3.5-turbo', // for beta
-    prompt: selectedChat.prompt ?? '', // for beta
-    temperature: selectedChat.temperature ?? 0.2, // for beta
-    maxTokens: selectedChat.maxTokens ?? 3000 // for beta
-  })
   const { toast } = useToast()
 
   const handleChatPreferences = async () => {
@@ -40,10 +33,7 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose }: Props) {
       // console.log(file)
       handleModalClose()
     } else {
-      await updateChat({
-        id: selectedChat.id,
-        ...chatPreferences
-      })
+      await updateChat(selectedChat)
 
       toast({
         variant: 'success',
@@ -87,8 +77,10 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose }: Props) {
       </div>
       <ModelSelector
         isBeta={isBeta}
-        value={chatPreferences?.model ?? ''}
-        onChange={({ key, value }) => setChatPreferences({ ...chatPreferences, [key]: value })}
+        value={selectedChat?.model ?? ''}
+        onChange={({ key, value }) => {
+          onUpdateSetting({ key, value })
+        }}
       />
       <div className="flex items-center w-full mb-2">
         <HoverLabel>
@@ -101,10 +93,10 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose }: Props) {
       <Textarea
         className="resize-none mb-4 h-40"
         onChange={({ target }) => {
-          setChatPreferences({ ...chatPreferences, prompt: target.value })
+          onUpdateSetting({ key: 'prompt', value: target.value })
         }}
         placeholder="Write your instructions here..."
-        value={chatPreferences.prompt ?? ''}
+        value={selectedChat.prompt ?? ''}
       />
 
       <div className="w-full">
@@ -124,15 +116,15 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose }: Props) {
           ? (
             <div className="flex flex-col gap-6">
               <TemperatureSelector
-                defaultValue={[chatPreferences.temperature ?? 0.2]}
+                defaultValue={[selectedChat.temperature ?? 0.2]}
                 onChange={(e) => {
-                  setChatPreferences({ ...chatPreferences, temperature: e.value })
+                  onUpdateSetting({ key: 'temperature', value: e.value })
                 }}
               />
               <MaxTokensSelector
-                defaultValue={[chatPreferences.maxTokens ?? 2000]}
+                defaultValue={[selectedChat.maxTokens ?? 2000]}
                 onChange={(e) => {
-                  setChatPreferences({ ...chatPreferences, maxTokens: e.value })
+                  onUpdateSetting({ key: 'maxTokens', value: e.value })
                 }}
               />
             </div>
