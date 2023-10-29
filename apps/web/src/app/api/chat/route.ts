@@ -24,7 +24,14 @@ User: {input}
 AI:`
 
 export async function POST (req: NextRequest) {
-  const body = await req.json() as { messages?: VercelChatMessage[], chatId?: string }
+  const body = await req.json() as {
+    messages?: VercelChatMessage[]
+    model?: string
+    chatId?: string
+    prompt?: string
+    temperature?: number
+  }
+
   const messages = body.messages ?? []
   const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
   const currentMessageContent = messages[messages.length - 1].content
@@ -55,12 +62,12 @@ export async function POST (req: NextRequest) {
   const prompt = PromptTemplate.fromTemplate(TEMPLATE)
 
   const llm = new ChatOpenAI({
-    modelName: model,
-    openAIApiKey: secrets.openaiKey,
-    temperature,
+    modelName: model ?? body?.model ?? 'gpt-3.5-turbo',
+    openAIApiKey: secrets?.openaiKey ?? process.env.OPENAI_API_KEY,
+    temperature: temperature ?? body?.temperature ?? 0.2,
     maxTokens: -1
   }, {
-    ...(secrets.openAiorg && {
+    ...(secrets?.openAiorg && {
       organization: secrets.openAiorg
     })
   })
@@ -71,7 +78,7 @@ export async function POST (req: NextRequest) {
 
   const stream = await chain.stream({
     chat_history: formattedPreviousMessages.join('\n'),
-    prompt: promptText ?? 'You are a very enthusiastic Colab-AI representative who loves to help people!',
+    prompt: promptText ?? body?.prompt ?? 'You are a very enthusiastic Colab-AI representative who loves to help people!',
     input: currentMessageContent
   })
 

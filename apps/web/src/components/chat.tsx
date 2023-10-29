@@ -8,11 +8,11 @@ import ChatSettings from './chat-settings'
 import ChatScrollAnchor from './chat-scroll-anchor'
 import ChatSettingsDialog from './chat-settings-dialog'
 import { Badge } from './ui/badge'
+import { createChat, updateChat } from 'src/app/actions/chat'
 import { createApiCompletion, createBodyCompletion } from '@/lib/utils'
 import { type Message } from 'ai/react'
 import { type ChatProps } from '@/lib/types/chat'
 import { type AgentProps } from '@/lib/types/agent'
-import { updateChat } from 'src/app/actions/chat'
 
 type Props = {
   id: string
@@ -20,16 +20,18 @@ type Props = {
   agents: AgentProps[] | null
   selectedChat: ChatProps
   isBeta?: boolean
+  isNewChat?: boolean
 }
 
-function Chat ({ user, selectedChat, agents, isBeta }: Props) {
+function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
+  const [newChat, setNewChat] = useState<ChatProps>(selectedChat)
   const [gotMessages, setGotMessages] = useState(false)
 
   const { messages, input, stop, setInput, append, isLoading } = useChat({
     api: isBeta
       ? '/api/beta'
-      : createApiCompletion({ chat: selectedChat }),
-    body: createBodyCompletion({ chat: selectedChat }),
+      : createApiCompletion({ chat: isNewChat ? newChat : selectedChat }),
+    body: createBodyCompletion({ chat: isNewChat ? newChat : selectedChat }),
     onFinish: () => { setGotMessages(true) },
     initialMessages: selectedChat.messages
   })
@@ -49,20 +51,25 @@ function Chat ({ user, selectedChat, agents, isBeta }: Props) {
     if (!gotMessages || isBeta) return
 
     const sendMessages = async () => {
-      await updateChat({
-        ...selectedChat,
-        messages
-      })
+      isNewChat
+        ? await createChat({
+          ...newChat,
+          messages
+        })
+        : await updateChat({
+          ...selectedChat,
+          messages
+        })
     }
     void sendMessages()
   }, [gotMessages])
 
-  // TODO: refact this 👈
   const onUpdateSetting = ({ key, value }: any) => {
-    // setChatState({
-    //   ...selectedChat,
-    //   [key]: value
-    // })
+    setNewChat(prev => ({
+      ...prev,
+      // ...key === 'agent' && { isAgent: true },
+      [key]: value
+    }))
   }
 
   return (
@@ -74,7 +81,7 @@ function Chat ({ user, selectedChat, agents, isBeta }: Props) {
               <ChatSettings
                 isBeta={isBeta}
                 onUpdateSetting={onUpdateSetting}
-                selectedChat={selectedChat}
+                selectedChat={newChat}
               />
               )
             : (
@@ -82,7 +89,7 @@ function Chat ({ user, selectedChat, agents, isBeta }: Props) {
                 <header className="z-40 backdrop-blur-sm sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                   <div className="flex items-center space-x-2">
                     <h1>{selectedChat.name}</h1>
-                    {selectedChat.agent && (
+                    {selectedChat?.isAgent && (
                       <Badge variant='secondary'>{selectedChat.agent.name}</Badge>
                     )}
                     <ChatSettingsDialog

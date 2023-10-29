@@ -25,7 +25,12 @@ export function createBodyCompletion ({ chat }: { chat: ChatProps }) {
   const { isAgent, agent, user: { vectorProvider, dbStatus } = {} } = chat
 
   if (!isAgent || !vectorProvider || !dbStatus || !agent) {
-    return { chatId: chat?.id }
+    return {
+      chatId: chat?.id,
+      ...chat?.model && { model: chat.model },
+      ...chat?.prompt && { prompt: chat.prompt },
+      ...chat?.temperature && { temperature: chat.temperature }
+    }
   } else {
     return {
       name: chat.agent.name,

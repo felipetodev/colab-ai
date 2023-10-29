@@ -17,29 +17,35 @@ export const createChat = async (payload: ChatProps) => {
   const {
     id,
     name,
+    prompt,
     messages,
-    temperature,
+    temperature = 0.2,
     model = 'gpt-3.5-turbo',
     folderId: folder_id,
-    maxTokens: max_tokens
+    maxTokens: max_tokens = 2000
   } = payload
+
+  const message = messages[0]?.content
 
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (user === null) return { error: 'User not found' }
+  if (user === null) return { error: 'Unauthorized' }
 
   await supabase
     .from('chats')
     .insert({
       id,
-      name,
       model,
       messages,
       folder_id,
       max_tokens,
       temperature,
-      user_id: user.id
+      user_id: user.id,
+      ...prompt && { prompt },
+      ...message
+        ? { name: message.split(' ', 10).join(' ') }
+        : { name }
     })
 
   revalidatePath('/chat')
@@ -50,7 +56,7 @@ export const updateChat = async (payload: Partial<ChatProps & { agentId: any }>)
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (user === null) return { error: 'User not found' }
+  if (user === null) return { error: 'Unauthorized' }
 
   const {
     id,
@@ -89,7 +95,7 @@ export const deleteChat = async (id: ChatProps['id']) => {
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (user === null) return { error: 'User not found' }
+  if (user === null) return { error: 'Unauthorized' }
 
   await supabase.from('chats')
     .delete()
