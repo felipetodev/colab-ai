@@ -34,7 +34,7 @@ function ChatSettingsDialog ({ selectedChat, agents, isBeta }: Props) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{selectedChat.name}</DialogTitle>
+          <DialogTitle className='max-w-[36ch] truncate'>{selectedChat.name}</DialogTitle>
           <DialogDescription>
             Make changes to your chat settings.
           </DialogDescription>
