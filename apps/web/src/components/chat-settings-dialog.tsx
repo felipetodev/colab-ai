@@ -66,6 +66,7 @@ function ChatSettingsDialog ({ selectedChat, agents, isBeta, onUpdateSetting }: 
               agents={agents}
               selectedChat={selectedChat}
               handleModalClose={() => setIsOpen(false)}
+              onUpdateSetting={onUpdateSetting}
             />
           </TabsContent>
         </Tabs>

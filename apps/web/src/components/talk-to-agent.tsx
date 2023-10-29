@@ -15,9 +15,10 @@ type TalkAgentProps = {
   agents: AgentProps[]
   selectedChat: ChatProps
   handleModalClose: () => void
+  onUpdateSetting: (value: any) => void
 }
 
-function TalkToAgent ({ agents, selectedChat, handleModalClose }: TalkAgentProps) {
+function TalkToAgent ({ agents, selectedChat, handleModalClose, onUpdateSetting }: TalkAgentProps) {
   const [agentSelected, setAgentSelected] = useState<ChatProps['agent']>(selectedChat.agent ?? null)
   const { toast } = useToast()
 
@@ -29,14 +30,16 @@ function TalkToAgent ({ agents, selectedChat, handleModalClose }: TalkAgentProps
       })
     }
 
-    await updateChat({
+    const { message, status } = await updateChat({
       id: selectedChat.id,
       agentId: agentSelected?.id
     })
 
+    onUpdateSetting({ key: 'agent', value: agentSelected })
+
     toast({
-      variant: 'success',
-      description: `You are now talking to ${agentSelected?.name}`
+      variant: status,
+      description: message
     })
     handleModalClose()
   }

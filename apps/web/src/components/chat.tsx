@@ -67,7 +67,7 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
   const onUpdateSetting = ({ key, value }: any) => {
     setChat(prev => ({
       ...prev,
-      // ...key === 'agent' && { isAgent: true },
+      ...key === 'agent' && { isAgent: !!value },
       [key]: value
     }))
   }

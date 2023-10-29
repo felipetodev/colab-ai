@@ -33,11 +33,16 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose, onUpdateSetting }
       // console.log(file)
       handleModalClose()
     } else {
-      await updateChat(selectedChat)
+      const { status, message } = await updateChat({
+        ...selectedChat,
+        isAgent: false,
+        agentId: null
+      })
+      onUpdateSetting({ key: 'agent', value: null })
 
       toast({
-        variant: 'success',
-        description: 'Chat preferences updated successfully!'
+        variant: status,
+        description: message
       })
       handleModalClose()
     }

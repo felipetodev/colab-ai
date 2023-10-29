@@ -73,10 +73,10 @@ export const updateChat = async (payload: Partial<ChatProps & { agentId: any }>)
   const { status } = await supabase.from('chats')
     .update({
       is_agent,
+      agent_id: agentId,
       ...folder_id && { folder_id },
       ...max_tokens && { max_tokens },
       ...(agentId && { is_agent: !!agentId }),
-      ...(agentId && { agent_id: agentId }),
       // if its a new chat, set the model to the default
       ...model ? { model } : { model: 'gpt-3.5-turbo' },
       ...rest
