@@ -24,6 +24,8 @@ function LoginDialog ({ session, handleSignIn }: Props) {
     }
   }, [session])
 
+  const disabled = isLoading.google || isLoading.github || isLoading.beta
+
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
@@ -41,7 +43,7 @@ function LoginDialog ({ session, handleSignIn }: Props) {
           <Button
             variant="outline"
             type="button"
-            disabled={isLoading.google}
+            disabled={disabled}
             onClick={() => {
               handleSignIn('google')
               setIsLoading({ ...isLoading, google: true })
@@ -59,7 +61,7 @@ function LoginDialog ({ session, handleSignIn }: Props) {
           <Button
             variant="outline"
             type="button"
-            disabled={isLoading.github}
+            disabled={disabled}
             onClick={() => {
               setIsLoading({ ...isLoading, github: true })
               handleSignIn('github')
@@ -89,6 +91,7 @@ function LoginDialog ({ session, handleSignIn }: Props) {
             Email (soon)
           </Button>
           <Button
+            disabled={disabled}
             variant="outline"
             onClick={async () => {
               setIsLoading({ ...isLoading, beta: true })
