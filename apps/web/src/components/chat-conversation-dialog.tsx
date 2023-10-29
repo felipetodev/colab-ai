@@ -85,7 +85,7 @@ function ChatConversationDialog (props: Props) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="grid gap-4 py-4">
-                <Input ref={inputRef} name="name" placeholder={props.activeName} />
+                <Input ref={inputRef} name="name" placeholder={props.activeName} className='truncate' />
               </div>
             </>
             )

@@ -44,7 +44,7 @@ export const createChat = async (payload: ChatProps) => {
       user_id: user.id,
       ...prompt && { prompt },
       ...message
-        ? { name: message.split(' ', 10).join(' ') }
+        ? { name: message.split(' ', 20).join(' ') }
         : { name }
     })
 
