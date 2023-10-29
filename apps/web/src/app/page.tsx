@@ -6,6 +6,13 @@ import Chat from '@/components/chat'
 export default async function Home () {
   const cookieStore = cookies()
   const supabase = createServerComponentClient({ cookies: () => cookieStore })
+  const { data: { user } } = await supabase.auth.getUser()
+
+  const userMetadata = {
+    name: user?.user_metadata?.full_name,
+    avatarUrl: user?.user_metadata?.avatar_url ?? user?.user_metadata?.picture,
+    username: user?.user_metadata?.user_name
+  }
 
   const [
     { data: chats },
@@ -37,13 +44,15 @@ export default async function Home () {
           userSettings={chats?.[0]?.user}
         />
         <Chat
+          isNewChat
           isBeta={isBeta}
           id={crypto.randomUUID()}
-          user={null}
+          user={userMetadata}
           agents={agents ?? []}
           selectedChat={{
             id: crypto.randomUUID(),
             name: 'New Chat',
+            prompt: '',
             folderId: null,
             messages: []
           }}
