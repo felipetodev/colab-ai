@@ -4,7 +4,7 @@ import Textarea from 'react-textarea-autosize'
 import { useEnterSubmit } from '../hooks/use-enter-submit'
 import { Button } from './ui/button'
 import type { UseChatHelpers } from 'ai/react'
-import { Spinner } from './ui/icons'
+import { IconEnter, Spinner } from './ui/icons'
 import { createTranscription } from 'src/app/actions/loaders'
 import dynamic from 'next/dynamic'
 
@@ -91,16 +91,10 @@ function ChatInput ({
             type='submit'
             variant='secondary'
           >
-            {/* v0.dev Icon */}
             {(isLoading || isRecording)
-              ? (
-                <Spinner className="w-4 h-4 animate-spin" />
-                )
-              : (
-                <svg fill="none" height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg">
-                  <path clipRule="evenodd" d="M13.5 3V2.25H15V3V10C15 10.5523 14.5522 11 14 11H3.56062L5.53029 12.9697L6.06062 13.5L4.99996 14.5607L4.46963 14.0303L1.39641 10.9571C1.00588 10.5666 1.00588 9.93342 1.39641 9.54289L4.46963 6.46967L4.99996 5.93934L6.06062 7L5.53029 7.53033L3.56062 9.5H13.5V3Z" fill="currentColor" fillRule="evenodd" />
-                </svg>
-                )}
+              ? <Spinner className="w-4 h-4 animate-spin" />
+              : <IconEnter />
+            }
           </Button>
         </form>
       </div>
