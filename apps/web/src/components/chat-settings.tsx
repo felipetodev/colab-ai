@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { InfoCircledIcon } from '@radix-ui/react-icons'
 import { ChevronRightIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { ChatProps } from '@/lib/types/chat'
 import ModelSelector from './model-selector'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card'
-import { Textarea } from './ui/textarea'
 import TemperatureSelector from './temperature-selector'
 import MaxTokensSelector from './max-tokens-selector'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card'
+import { Textarea } from './ui/textarea'
 import { Button } from './ui/button'
+import { cn } from '@/lib/utils'
+import { type ChatProps } from '@/lib/types/chat'
 
 type Props = {
   isBeta?: boolean
@@ -18,6 +18,7 @@ type Props = {
 
 function ChatSettings ({ isBeta, selectedChat, onUpdateSetting }: Props) {
   const [isOpen, setIsOpen] = useState(false)
+
   return (
     <div className="bg-background w-full max-w-2xl mx-auto border rounded-lg mt-20 shadow-lg shadow-black/40">
       <div className="flex flex-col items-center justify-center">
@@ -27,7 +28,7 @@ function ChatSettings ({ isBeta, selectedChat, onUpdateSetting }: Props) {
           </h1>
         </header>
 
-        <div className="flex flex-col items-center w-full p-6">
+        <div className="flex flex-col w-full p-6">
           <div className="flex items-center w-full mb-2">
             <HoverCard openDelay={200}>
               <HoverCardTrigger asChild>
@@ -87,16 +88,16 @@ function ChatSettings ({ isBeta, selectedChat, onUpdateSetting }: Props) {
             </Button>
             {isOpen
               ? (
-              <div className="flex flex-col gap-6">
-                <TemperatureSelector
-                  defaultValue={[selectedChat.temperature ?? 0.2]}
-                  onChange={onUpdateSetting}
-                />
-                <MaxTokensSelector
-                  defaultValue={[selectedChat.maxTokens ?? 2000]}
-                  onChange={onUpdateSetting}
-                />
-              </div>
+                <div className="flex flex-col gap-6">
+                  <TemperatureSelector
+                    defaultValue={[selectedChat.temperature ?? 0.2]}
+                    onChange={onUpdateSetting}
+                  />
+                  <MaxTokensSelector
+                    defaultValue={[selectedChat.maxTokens ?? 2000]}
+                    onChange={onUpdateSetting}
+                  />
+                </div>
                 )
               : null}
           </div>
