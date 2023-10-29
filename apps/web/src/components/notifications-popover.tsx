@@ -10,8 +10,11 @@ import {
 function NotificationPopover () {
   return (
     <Popover>
-      <PopoverTrigger className={cn(buttonVariants({ variant: 'outline' }), 'h-9 px-2 aspect-square rounded-full')}>
+      <PopoverTrigger className={cn(buttonVariants({ variant: 'outline' }), 'relative h-9 px-2 aspect-square rounded-full')}>
         <BellIcon className='w-4 h-4' />
+        {/* <span className='flex items-center justify-center absolute -top-0.5 -right-1 rounded-full bg-destructive text-[10px] h-4 w-4'>
+          3
+        </span> */}
       </PopoverTrigger>
       <PopoverContent side='bottom' align='end'>
         <p className='text-xs'>

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { ViewVerticalIcon } from '@radix-ui/react-icons'
 import { Plus, Archive, MessageSquare, File, User } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -57,24 +56,24 @@ function Sidebar ({
         >
           <div className="flex py-2">
             <TabsList className="w-full h-full">
-              <TabsTrigger className="w-full py-2.5" title="Chats" value="chat">
+              <TabsTrigger className="w-full py-2" title="Chats" value="chat">
                 <span className="sr-only">Chat</span>
                 <MessageSquare />
               </TabsTrigger>
-              <TabsTrigger className="w-full py-2.5" title="Agents" value="agent">
+              <TabsTrigger className="w-full py-2" title="Agents" value="agent">
                 <span className="sr-only">Agents</span>
                 <User />
               </TabsTrigger>
-              <TabsTrigger className="w-full py-2.5" title="Documents" value="document">
+              <TabsTrigger className="w-full py-2" title="Documents" value="document">
                 <span className="sr-only">Documents</span>
                 <File />
               </TabsTrigger>
             </TabsList>
           </div>
         </Tabs>
-        <Button variant='ghost'>
+        {/* <Button variant='ghost'>
           <ViewVerticalIcon className="h-5 w-5" />
-        </Button>
+        </Button> */}
       </div>
 
       {/* Create Chat or Folder */}
