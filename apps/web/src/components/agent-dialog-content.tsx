@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { DialogClose } from '@radix-ui/react-dialog'
 import { ChevronRightIcon, ImagePlus, X } from 'lucide-react'
 import {
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogCancel
+} from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from './ui/button'
 import { Input } from './ui/input'
@@ -57,24 +57,24 @@ function AgentDialogContent ({
 
   const docsSelected = documents.filter(d => selectedDocuments.includes(d.id))
   return (
-    <DialogContent className="sm:max-w-2xl overflow-y-auto max-h-[785px]">
-      <DialogHeader>
+    <AlertDialogContent className="sm:max-w-2xl overflow-y-auto max-h-[795px]">
+      <AlertDialogHeader>
         {type === 'create' && (
-          <DialogTitle>
+          <AlertDialogTitle>
             Create New Agent
-          </DialogTitle>
+          </AlertDialogTitle>
         )}
         {type === 'update' && (
           <>
-            <DialogTitle>
+            <AlertDialogTitle>
               [Agent]: {agent.name}
-            </DialogTitle>
-            <DialogDescription>
+            </AlertDialogTitle>
+            <AlertDialogDescription>
               Create your agent assistant.
-            </DialogDescription>
+            </AlertDialogDescription>
           </>
         )}
-      </DialogHeader>
+      </AlertDialogHeader>
       <form
         action={async (formData) => {
           if (type === 'create') {
@@ -206,16 +206,16 @@ function AgentDialogContent ({
               : null}
           </div>
         </div>
-        <DialogFooter className='mt-4'>
+        <AlertDialogFooter className='mt-4'>
           {type !== 'create' && (
             <Button formAction={deleteAgent} className='mr-auto' variant='destructive'>
               Delete
             </Button>
           )}
 
-          <DialogClose type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
+          <AlertDialogCancel type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
             Cancel
-          </DialogClose>
+          </AlertDialogCancel>
           {type === 'create' && (
             <SubmitButton className='text-white bg-green-700 hover:bg-green-700/90'>
               Create Agent
@@ -226,9 +226,9 @@ function AgentDialogContent ({
               Save Agent
             </SubmitButton>
           )}
-        </DialogFooter>
+        </AlertDialogFooter>
       </form>
-    </DialogContent>
+    </AlertDialogContent>
   )
 }
 

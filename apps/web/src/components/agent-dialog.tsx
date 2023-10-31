@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import {
-  Dialog,
-  DialogTrigger
-} from '@/components/ui/dialog'
+  AlertDialog,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
 import type { AgentProps } from '@/lib/types/agent'
 import type { DocumentProps } from '@/lib/types/document'
 import AgentDialogContent from './agent-dialog-content'
@@ -19,16 +19,16 @@ function AgentDialog ({ type, agent, documents, children }: Props) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <Dialog
+    <AlertDialog
       open={isOpen}
       onOpenChange={(open) => {
         setSelectedDocuments(agent.docsId)
         setIsOpen(open)
       }}
     >
-      <DialogTrigger asChild>
+      <AlertDialogTrigger asChild>
         {children}
-      </DialogTrigger>
+      </AlertDialogTrigger>
       <AgentDialogContent
         type={type}
         agent={agent}
@@ -37,7 +37,7 @@ function AgentDialog ({ type, agent, documents, children }: Props) {
         handleSelectDocuments={setSelectedDocuments}
         handleCloseDialog={() => setIsOpen(false)}
       />
-    </Dialog >
+    </AlertDialog>
   )
 }
 

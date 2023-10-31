@@ -1,14 +1,14 @@
-import { DialogClose } from '@radix-ui/react-dialog'
 import { useState } from 'react'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  AlertDialogCancel
+} from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button, buttonVariants } from './ui/button'
@@ -42,14 +42,14 @@ function DocumentDialog ({ children }: Props) {
   const { toast } = useToast()
 
   return (
-    <Dialog
+    <AlertDialog
       open={isOpen}
       onOpenChange={setIsOpen}
     >
-      <DialogTrigger asChild>
+      <AlertDialogTrigger asChild>
         {children}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
+      </AlertDialogTrigger>
+      <AlertDialogContent className="sm:max-w-2xl">
         <form action={async (formData: FormData) => {
           const { status } = await createFileChunks(formData) as { status: number }
           toast({
@@ -59,23 +59,23 @@ function DocumentDialog ({ children }: Props) {
           setIsOpen(false)
         }}>
           <Tabs defaultValue="documents" onValueChange={(tab) => setActiveTab(tab as TabProps)} className='mb-4'>
-            <DialogHeader>
-              <DialogTitle>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
                 <TabsList>
                   <TabsTrigger value="documents">Upload file</TabsTrigger>
                   <TabsTrigger value="github">Connect GitHub repo</TabsTrigger>
                 </TabsList>
-              </DialogTitle>
-            </DialogHeader>
+              </AlertDialogTitle>
+            </AlertDialogHeader>
             <TabsContent className="text-sm" value="documents">
-              <DialogDescription className="mb-6">
+              <AlertDialogDescription className="mb-6">
                 Upload file to use in chat conversation. Supported file extensions:
                 {SUPPORTED_FILES.map((file) => (
                   <Badge key={file} variant='secondary' className='mx-1'>
                     {file}
                   </Badge>
                 ))}
-              </DialogDescription>
+              </AlertDialogDescription>
               <div className="flex flex-col gap-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
@@ -99,9 +99,9 @@ function DocumentDialog ({ children }: Props) {
               </div>
             </TabsContent>
             <TabsContent className="text-sm" value="github">
-              <DialogDescription className="mb-6">
+              <AlertDialogDescription className="mb-6">
                 Sync files from a GitHub repo.
-              </DialogDescription>
+              </AlertDialogDescription>
               <div className="flex flex-col gap-y-4">
                 <div className="flex items-end gap-x-2">
                   <div className="flex-1 space-y-2">
@@ -134,19 +134,19 @@ function DocumentDialog ({ children }: Props) {
               </div>
             </TabsContent>
           </Tabs>
-          <DialogFooter>
-            <DialogClose type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
+          <AlertDialogFooter>
+            <AlertDialogCancel type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
               Cancel
-            </DialogClose>
+            </AlertDialogCancel>
             <SubmitButton
               className="text-white bg-green-700 hover:bg-green-700/90"
             >
               {activeTab === 'documents' ? 'Upload' : 'Connect'}
             </SubmitButton>
-          </DialogFooter>
+          </AlertDialogFooter>
         </form>
-      </DialogContent>
-    </Dialog >
+      </AlertDialogContent>
+    </AlertDialog >
   )
 }
 
