@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
 import {
   Form,
   FormControl,
@@ -49,6 +50,10 @@ export function ProfileForm ({ user }: { user: ProfileFormValues }) {
 
   return (
     <Form {...form}>
+      <div className='mt-8'>
+        <h3 className='text-sm font-semibold'>Subscription</h3>
+        <Badge variant='secondary' className='mt-2'>Free</Badge>
+      </div>
       <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
