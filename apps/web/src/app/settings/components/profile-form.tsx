@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -15,14 +14,6 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
-import type { User } from '@/lib/types/user'
 
 const profileFormSchema = z.object({
   username: z
@@ -42,10 +33,13 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-export function ProfileForm ({ username }: { username: User['user_name'] }) {
+export function ProfileForm ({ user }: { user: ProfileFormValues }) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: { username: username ?? '' },
+    defaultValues: {
+      username: user.username,
+      email: user.email
+    },
     mode: 'onChange'
   })
 
@@ -64,7 +58,7 @@ export function ProfileForm ({ username }: { username: User['user_name'] }) {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="colabot" {...field} />
+                <Input placeholder="@colab-ai" {...field} />
               </FormControl>
               <FormDescription>
                 This is your public display name.
@@ -75,31 +69,19 @@ export function ProfileForm ({ username }: { username: User['user_name'] }) {
         />
         <FormField
           control={form.control}
+          disabled
           name="email"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
-              <Select defaultValue={field.value} onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@colabot.com</SelectItem>
-                  <SelectItem value="m@google.com">m@openai.com</SelectItem>
-                  <SelectItem value="m@support.com">colab.ai@support.com</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                You can manage verified email addresses in your{' '}
-                <Link href="/examples/forms">email settings</Link>.
-              </FormDescription>
+              <FormControl>
+                <Input placeholder="colab-ai@org.com" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Update profile</Button>
+        <Button disabled type="submit">Update profile</Button>
       </form>
     </Form>
   )
