@@ -4,6 +4,7 @@ import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { createSupabaseUrl } from '@/lib/utils'
+import { validateNewAgent, validateUpdateAgent } from '@/lib/schemas/agent'
 
 type ActionResponse = {
   message?: string
@@ -12,66 +13,83 @@ type ActionResponse = {
 }
 
 export const newAgent = async (formData: FormData): Promise<ActionResponse> => {
-  const agentName = formData?.get('agentName')
-  // const avatar = formData.get('avatar')
-  const prompt = formData.get('prompt')
-  const temperature = formData.get('temperature')
-  const maxTokens = formData.get('maxTokens')
-  const model = formData.get('llmModel')
-  const docsId = formData.get('docsId')
-
-  const docsIdArray = docsId ? (docsId as string).split(',') : []
-
-  const supabase = createServerActionClient({ cookies })
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (user === null) return { error: 'User not found' }
-
-  const { status } = await supabase
-    .from('agents')
-    .insert({
-      user_id: user.id,
-      model,
-      folder_id: null, // refact this
-      docs_id: docsIdArray,
-      temperature: temperature ?? 0.2,
-      max_tokens: maxTokens ?? 4000,
-      // avatar,
-      name: agentName,
-      prompt
-    })
-
-  revalidatePath('/')
-  return {
-    message: status >= 400 ? 'Error creating agent' : `Agent ${agentName as string} created successfully`,
-    status: status >= 400 ? 'destructive' : 'success'
-  }
-}
-
-export const updateAgent = async (formData: FormData): Promise<ActionResponse> => {
-  const agentName = formData?.get('agentName')
   const avatar = formData.get('avatar')
   const avatarUrl = formData.get('avatarUrl')
-  const prompt = formData.get('prompt')
-  const temperature = formData.get('temperature')
-  const maxTokens = formData.get('maxTokens')
-  const model = formData.get('llmModel')
-  const docsId = formData.get('docsId')
-  const agentId = formData.get('agentId')
 
-  const docsIdArray = docsId ? (docsId as string).split(',') : []
+  const result = validateNewAgent({
+    name: formData.get('agentName'),
+    prompt: formData.get('prompt'),
+    temperature: formData.get('temperature') ?? 0.2,
+    max_tokens: formData.get('maxTokens') ?? 4000,
+    model: formData.get('llmModel'),
+    docs_id: JSON.parse(formData.get('docsId') as string)
+  })
+
+  if (!result.success) return { message: 'Error creating agent', status: 'destructive' }
 
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (user === null) return { error: 'User not found' }
+  if (user === null) return { error: 'Unauthorized' }
+
+  const agentId = crypto.randomUUID()
 
   // refact this, try to use a relation from supabase or something similar
   let imgUrl = ''
   if ((avatar as File)?.size > 0 && !avatarUrl) {
     const { data } = await supabase.storage
       .from('agents-avatar')
-      .upload(agentId as string, avatar as File)
+      .upload(agentId, avatar as File)
+
+    imgUrl = data?.path ?? ''
+  }
+
+  const { status } = await supabase
+    .from('agents')
+    .insert({
+      id: agentId,
+      user_id: user.id,
+      folder_id: null, // refact this
+      ...(imgUrl && { avatar_url: createSupabaseUrl(imgUrl) }),
+      ...result.data
+    })
+
+  revalidatePath('/')
+  return {
+    message: status >= 400 ? 'Error creating agent' : `Agent ${result.data.name} created successfully`,
+    status: status >= 400 ? 'destructive' : 'success'
+  }
+}
+
+export const updateAgent = async (formData: FormData): Promise<ActionResponse> => {
+  const avatar = formData.get('avatar')
+  const avatarUrl = formData.get('avatarUrl')
+
+  const result = validateUpdateAgent({
+    name: formData.get('agentName'),
+    prompt: formData.get('prompt'),
+    temperature: formData.get('temperature'),
+    max_tokens: formData.get('maxTokens'),
+    model: formData.get('llmModel'),
+    docs_id: JSON.parse(formData.get('docsId') as string),
+    agentId: formData.get('agentId')
+  })
+
+  if (!result.success) return { message: 'Error updating agent', status: 'destructive' }
+
+  const { agentId, temperature, max_tokens: maxTokens, ...restData } = result.data
+
+  const supabase = createServerActionClient({ cookies })
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (user === null) return { error: 'Unauthorized' }
+
+  // refact this, try to use a relation from supabase or something similar
+  let imgUrl = ''
+  if ((avatar as File)?.size > 0 && !avatarUrl) {
+    const { data } = await supabase.storage
+      .from('agents-avatar')
+      .upload(agentId, avatar as File)
 
     imgUrl = data?.path ?? ''
     // console.log(data, error)
@@ -80,10 +98,7 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
   const { status } = await supabase
     .from('agents')
     .update({
-      name: agentName,
-      model,
-      prompt,
-      docs_id: docsIdArray,
+      ...restData,
       ...(imgUrl && { avatar_url: createSupabaseUrl(imgUrl) }),
       ...(temperature && { temperature }),
       ...(maxTokens && { max_tokens: maxTokens })
@@ -92,7 +107,7 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
 
   revalidatePath('/')
   return {
-    message: status >= 400 ? 'Error updating agent' : `Agent ${agentName as string} updated successfully`,
+    message: status >= 400 ? 'Error updating agent' : `Agent ${restData.name} updated successfully`,
     status: status >= 400 ? 'destructive' : 'success'
   }
 }
@@ -101,7 +116,7 @@ export const removeAgent = async (agentId: string): Promise<ActionResponse> => {
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (user === null) return { error: 'User not found' }
+  if (user === null) return { error: 'Unauthorized' }
 
   const { status } = await supabase
     .from('agents')

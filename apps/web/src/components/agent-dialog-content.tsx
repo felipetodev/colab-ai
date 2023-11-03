@@ -160,7 +160,7 @@ function AgentDialogContent ({
                   <X className='ml-2 w-3 h-3' />
                 </Badge>
               ))}
-              <input type="hidden" name="docsId" value={selectedDocuments} />
+              <input type="hidden" name="docsId" value={JSON.stringify(selectedDocuments)} />
             </div>
           </div>
           <div className="space-y-2">
@@ -208,9 +208,9 @@ function AgentDialogContent ({
         </div>
         <AlertDialogFooter className='mt-4'>
           {type !== 'create' && (
-            <Button formAction={deleteAgent} className='mr-auto' variant='destructive'>
+            <SubmitButton formAction={deleteAgent} className='mr-auto' variant='destructive'>
               Delete
-            </Button>
+            </SubmitButton>
           )}
 
           <AlertDialogCancel type="button" className={cn(buttonVariants({ variant: 'secondary' }))}>
