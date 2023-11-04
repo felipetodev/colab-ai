@@ -15,12 +15,14 @@ type ActionResponse = {
 export const newAgent = async (formData: FormData): Promise<ActionResponse> => {
   const avatar = formData.get('avatar')
   const avatarUrl = formData.get('avatarUrl')
+  const temp = formData.get('temperature')
+  const maxT = formData.get('maxTokens')
 
   const result = validateNewAgent({
     name: formData.get('agentName'),
     prompt: formData.get('prompt'),
-    temperature: formData.get('temperature') ?? 0.2,
-    max_tokens: formData.get('maxTokens') ?? 4000,
+    temperature: typeof temp === 'string' ? Number(temp) : 0.2,
+    max_tokens: typeof maxT === 'string' ? Number(maxT) : 4000,
     model: formData.get('llmModel'),
     docs_id: JSON.parse(formData.get('docsId') as string)
   })
@@ -64,12 +66,14 @@ export const newAgent = async (formData: FormData): Promise<ActionResponse> => {
 export const updateAgent = async (formData: FormData): Promise<ActionResponse> => {
   const avatar = formData.get('avatar')
   const avatarUrl = formData.get('avatarUrl')
+  const temp = formData.get('temperature')
+  const maxT = formData.get('maxTokens')
 
   const result = validateUpdateAgent({
     name: formData.get('agentName'),
     prompt: formData.get('prompt'),
-    temperature: formData.get('temperature'),
-    max_tokens: formData.get('maxTokens'),
+    temperature: typeof temp === 'string' ? Number(temp) : 0.2,
+    max_tokens: typeof maxT === 'string' ? Number(maxT) : 4000,
     model: formData.get('llmModel'),
     docs_id: JSON.parse(formData.get('docsId') as string),
     agentId: formData.get('agentId')
