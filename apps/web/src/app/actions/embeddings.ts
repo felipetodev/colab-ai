@@ -69,7 +69,7 @@ export const createSupaEmbeddings = async (payload: Props): Promise<ActionRespon
         ...metadata,
         name
       },
-      pageContent: pageContent.replace(/\n/g, ' ')
+      pageContent
     }
   })
 
