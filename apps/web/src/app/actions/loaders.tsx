@@ -60,7 +60,10 @@ export const createFileChunks = async (formData: FormData) => {
   const allowedMimeTypes = ['application/pdf', 'text/csv', 'audio/mpeg', 'text/plain']
   const needsSplitting = !allowedMimeTypes.includes(type)
 
-  const textSplitter = new RecursiveCharacterTextSplitter()
+  const textSplitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 500,
+    chunkOverlap: 50
+  })
   const docs = needsSplitting ? await textSplitter.splitDocuments(document) : document
   const formattedDocs = docs.map(({ pageContent, metadata }) => ({
     pageContent: pageContent.replace(/\n/g, ' '),
