@@ -2,27 +2,22 @@ import type { Message as VercelChatMessage } from 'ai'
 import { createClient } from '@supabase/supabase-js'
 import { SupabaseVectorStore, type SupabaseFilterRPCCall } from 'langchain/vectorstores/supabase'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
-import { PromptTemplate } from 'langchain/prompts'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { BytesOutputParser } from 'langchain/schema/output_parser'
+import { BytesOutputParser, StringOutputParser } from 'langchain/schema/output_parser'
 import { StreamingTextResponse } from 'ai'
 import { RequestCookies } from '@edge-runtime/cookies'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { RunnableSequence } from 'langchain/schema/runnable'
 import { type AgentProps } from '@/lib/types/agent'
+import {
+  type ChatWindowMessage,
+  _formatChatHistoryAsMessages,
+  createRetrievalChain,
+  parsePrevMessages,
+  responseChainPrompt
+} from '@/lib/utils.langchain'
 
 export const runtime = 'edge'
-
-const TEMPLATE = `You are a representative who loves to help people!
-Given the following sections from the documentation (preceded by a section id), answer the question using only that information, outputted in Markdown format.
-
-Here is some context which might contain valuable information to answer the question:
-{prompt}
-
-Current conversation:
-{chat_history}
-
-User: {input}
-AI:`
 
 export async function POST (req: Request) {
   const body = await req.json() as {
@@ -34,7 +29,7 @@ export async function POST (req: Request) {
     maxTokens?: AgentProps['maxTokens']
   }
   const messages = body.messages ?? []
-  // const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage)
+  const previousMessages = parsePrevMessages(messages.slice(0, -1))
   const currentMessageContent = messages[messages.length - 1].content
 
   const docId = body.docsId?.[0]
@@ -73,42 +68,59 @@ export async function POST (req: Request) {
     openaiOrg ? { organization: openaiOrg } : {}
   )
 
-  const store = new SupabaseVectorStore(embeddings, {
-    client,
-    tableName: 'embeddings'
-  })
-
   const funcFilter: SupabaseFilterRPCCall = (rpc) =>
     rpc
       .filter('metadata->>id', 'eq', docId)
-  // .filter("metadata.loc->pageNumber::int", "eq", 2)
 
-  const docs = await store.similaritySearch(currentMessageContent, 4, funcFilter)
+  const vectorStore = new SupabaseVectorStore(embeddings, {
+    client,
+    tableName: 'embeddings',
+    filter: funcFilter
+  })
 
-  const content = docs.map(({ pageContent, metadata }) => {
-    if (!metadata?.loc?.pageNumber) return pageContent
-    return `-----\nPAGE ${metadata?.loc?.pageNumber}\n\n${pageContent}\nEND PAGE ${metadata?.loc?.pageNumber}\n-----`
-  }).join('\n\n')
+  // const docs = await vectorStore.similaritySearch(currentMessageContent, 4, funcFilter)
 
-  console.log(content)
-
-  const prompt = PromptTemplate.fromTemplate(TEMPLATE)
-
-  const model = new ChatOpenAI({
+  const llm = new ChatOpenAI({
     modelName: agentModel,
     openAIApiKey: openaiKey,
     temperature,
     maxTokens: -1
   })
 
-  const outputParser = new BytesOutputParser()
+  const retrievalChain = createRetrievalChain(
+    llm,
+    vectorStore.asRetriever(),
+    previousMessages
+  )
 
-  const chain = prompt.pipe(model).pipe(outputParser)
+  const responseChain = RunnableSequence.from([
+    responseChainPrompt,
+    llm,
+    new StringOutputParser()
+  ])
 
-  const stream = await chain.stream({
-    prompt: agentPrompt ?? '',
-    chat_history: content,
-    input: currentMessageContent
+  const fullChain = RunnableSequence.from([
+    {
+      question: (input) => input.question,
+      chat_history: RunnableSequence.from([(input) => input.chat_history, _formatChatHistoryAsMessages]),
+      context: RunnableSequence.from([(input) => {
+        const formattedChatHistory = input.chat_history
+          .map((message: ChatWindowMessage) => `${message.role.toUpperCase()}: ${message.content}`).join('\n')
+        return {
+          question: input.question,
+          chat_history: formattedChatHistory
+        }
+      }, retrievalChain]),
+      prompt: (input) => input.prompt
+    },
+    responseChain,
+    new BytesOutputParser()
+  ])
+
+  const stream = await fullChain.stream({
+    question: currentMessageContent,
+    chat_history: previousMessages,
+    prompt: agentPrompt
   })
 
   return new StreamingTextResponse(stream)
