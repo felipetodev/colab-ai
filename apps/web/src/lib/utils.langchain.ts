@@ -84,7 +84,9 @@ export const responseChainPrompt = ChatPromptTemplate.fromMessages<{
 const formatDocs = (docs: Document[]) => {
   // here's the context provided from Pinecone
   return docs
-    .map((doc, i) => `<doc id='${doc.metadata?.refId ?? i}'>${doc.pageContent}</doc>`)
+    .map((doc, i) => (
+      `<doc id='${doc.metadata?.refId ?? i}' title='${doc.metadata?.name ?? ''}'>${doc.pageContent}</doc>`
+    ))
     .join('\n')
 }
 
