@@ -57,7 +57,7 @@ importers:
       eslint-plugin-n: ^16.2.0
       eslint-plugin-promise: ^6.1.1
       eslint-plugin-react: ^7.33.2
-      langchain: 0.0.166
+      langchain: 0.0.180
       lucide-react: ^0.279.0
       mammoth: 1.6.0
       next: ^14.0.0
@@ -110,7 +110,7 @@ importers:
       clsx: 2.0.0
       cmdk: 0.2.0_gxgmllcfuy2ev7cw5fu3ycsnd4
       d3-dsv: 2.0.0
-      langchain: 0.0.166_sx5o5ljcfkxibapr7zzbbhqo5e
+      langchain: 0.0.180_sx5o5ljcfkxibapr7zzbbhqo5e
       lucide-react: 0.279.0_react@18.2.0
       mammoth: 1.6.0
       next: 14.0.0_biqbaboplfbrettd7655fr4n2y
@@ -2215,7 +2215,6 @@ packages:
 
   /@types/node/17.0.45:
     resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
-    dev: true
 
   /@types/node/18.18.6:
     resolution: {integrity: sha512-wf3Vz+jCmOQ2HV1YUJuCWdL64adYxumkrxtc+H1VUQlnQI04+5HtH+qZCOE21lBE7gIrt+CwX2Wv8Acrw5Ak6w==}
@@ -2291,7 +2290,7 @@ packages:
   /@types/websocket/1.0.8:
     resolution: {integrity: sha512-wvkOpWApbuxVfHhSQ1XrjVN4363vsfLJwEo4AboIZk0g1vJA5nmLp8GXUHuIdf4/Fe7+/V0Efe2HvWiLqHtlqw==}
     dependencies:
-      '@types/node': 20.8.7
+      '@types/node': 17.0.45
     dev: false
 
   /@typescript-eslint/eslint-plugin/6.8.0_m2kbbauopoy6dieinh5t3rpgni:
@@ -5652,8 +5651,8 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /langchain/0.0.166_sx5o5ljcfkxibapr7zzbbhqo5e:
-    resolution: {integrity: sha512-ZO3hwZmvMaeR2bcGJGjyt8llCkzeGVso0c1KAj+StHZhf/piDgRMlxEL+4Hb8iFVCZboT228MY7xdgjaSGDMsg==}
+  /langchain/0.0.180_sx5o5ljcfkxibapr7zzbbhqo5e:
+    resolution: {integrity: sha512-/70mZsBAUcGZHiHTEs0pO1+xyVwj4X1FMl2LmTuBv83/+yNYkAJJg5+rLI9u6Obj7ZcsoNmqIPpsOL5rx2yJww==}
     engines: {node: '>=18'}
     peerDependencies:
       '@aws-crypto/sha256-js': ^5.0.0
@@ -5670,13 +5669,13 @@ packages:
       '@cloudflare/ai': ^1.0.12
       '@elastic/elasticsearch': ^8.4.0
       '@getmetal/metal-sdk': '*'
-      '@getzep/zep-js': ^0.7.0
-      '@gomomento/sdk': ^1.41.2
-      '@gomomento/sdk-core': ^1.41.2
-      '@gomomento/sdk-web': ^1.41.2
+      '@getzep/zep-js': ^0.9.0
+      '@gomomento/sdk': ^1.44.1
+      '@gomomento/sdk-core': ^1.44.1
+      '@gomomento/sdk-web': ^1.44.1
       '@google-ai/generativelanguage': ^0.2.1
       '@google-cloud/storage': ^6.10.1
-      '@huggingface/inference': ^1.5.1
+      '@huggingface/inference': ^2.6.4
       '@mozilla/readability': '*'
       '@notionhq/client': ^2.2.10
       '@opensearch-project/opensearch': '*'
@@ -5694,20 +5693,26 @@ packages:
       '@tensorflow/tfjs-converter': '*'
       '@tensorflow/tfjs-core': '*'
       '@upstash/redis': ^1.20.6
+      '@vercel/kv': ^0.2.3
       '@vercel/postgres': ^0.5.0
       '@writerai/writer-sdk': ^0.40.2
       '@xata.io/client': ^0.25.1
       '@xenova/transformers': ^2.5.4
       '@zilliz/milvus2-sdk-node': '>=2.2.7'
       apify-client: ^2.7.1
+      assemblyai: ^2.0.2
       axios: '*'
-      cassandra-driver: ^4.6.4
+      cassandra-driver: ^4.7.2
       cheerio: ^1.0.0-rc.12
       chromadb: '*'
+      closevector-common: 0.1.0-alpha.1
+      closevector-node: 0.1.0-alpha.10
+      closevector-web: 0.1.0-alpha.16
       cohere-ai: '>=6.0.0'
+      convex: ^1.3.1
       d3-dsv: ^2.0.0
       epub2: ^3.0.1
-      faiss-node: ^0.3.0
+      faiss-node: ^0.5.1
       fast-xml-parser: ^4.2.7
       firebase-admin: ^11.9.0
       google-auth-library: ^8.9.0
@@ -5717,7 +5722,7 @@ packages:
       ignore: ^5.2.0
       ioredis: ^5.3.2
       jsdom: '*'
-      llmonitor: '*'
+      llmonitor: ^0.5.8
       lodash: ^4.17.21
       mammoth: '*'
       mongodb: ^5.2.0
@@ -5729,7 +5734,7 @@ packages:
       peggy: ^3.0.2
       pg: ^8.11.0
       pg-copy-streams: ^6.0.5
-      pickleparser: ^0.1.0
+      pickleparser: ^0.2.1
       playwright: ^1.32.1
       portkey-ai: ^0.1.11
       puppeteer: ^19.7.2
@@ -5744,6 +5749,7 @@ packages:
       voy-search: 0.6.2
       weaviate-ts-client: ^1.4.0
       web-auth-library: ^1.0.3
+      ws: ^8.14.2
       youtube-transcript: ^1.0.6
       youtubei.js: ^5.8.0
     peerDependenciesMeta:
@@ -5823,6 +5829,8 @@ packages:
         optional: true
       '@upstash/redis':
         optional: true
+      '@vercel/kv':
+        optional: true
       '@vercel/postgres':
         optional: true
       '@writerai/writer-sdk':
@@ -5835,6 +5843,8 @@ packages:
         optional: true
       apify-client:
         optional: true
+      assemblyai:
+        optional: true
       axios:
         optional: true
       cassandra-driver:
@@ -5843,7 +5853,15 @@ packages:
         optional: true
       chromadb:
         optional: true
+      closevector-common:
+        optional: true
+      closevector-node:
+        optional: true
+      closevector-web:
+        optional: true
       cohere-ai:
+        optional: true
+      convex:
         optional: true
       d3-dsv:
         optional: true
@@ -5922,6 +5940,8 @@ packages:
       weaviate-ts-client:
         optional: true
       web-auth-library:
+        optional: true
+      ws:
         optional: true
       youtube-transcript:
         optional: true
