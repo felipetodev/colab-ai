@@ -89,7 +89,7 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
                 <header className="z-40 backdrop-blur-sm sticky top-0 flex h-[50px] justify-center items-center border-b px-4 py-3 bg-background/70">
                   <div className="flex items-center space-x-2">
                     <h1 className='max-w-[30ch] truncate'>{selectedChat.name}</h1>
-                    {selectedChat?.isAgent && (
+                    {(selectedChat.agent && selectedChat?.isAgent) && (
                       <Badge variant='secondary'>{selectedChat.agent.name}</Badge>
                     )}
                     <ChatSettingsDialog
