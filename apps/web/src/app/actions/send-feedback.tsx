@@ -4,24 +4,31 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-export const sendFeedback = async (formData: FormData) => {
+type ActionResponse = {
+  message: string
+  status: 'success' | 'destructive'
+}
+
+export const sendFeedback = async (formData: FormData): Promise<ActionResponse> => {
   const feedback = formData.get('feedback')
 
-  if (typeof feedback !== 'string') {
+  if (!feedback || typeof feedback !== 'string') {
     return {
-      error: 'Feedback must be only plain text'
+      status: 'destructive',
+      message: 'Feedback must be only plain text'
     }
   }
 
-  const { data, error } = await resend.emails.send({
-    from: 'Colab-AI [Feedback] <colabot.org@gmail.com>',
+  const { error } = await resend.emails.send({
+    from: 'Colab-AI [Feedback] <feedback@colab-ai.com>',
     to: 'colabot.org@gmail.com',
     reply_to: 'fe.ossandon.u@gmail.com',
     subject: 'Feedback',
     text: feedback
   })
 
-  console.log({ data, error })
-
-  return { success: true }
+  return {
+    message: error ? 'Oops! Something went wrong' : 'Thanks for your feedback!',
+    status: error ? 'destructive' : 'success'
+  }
 }

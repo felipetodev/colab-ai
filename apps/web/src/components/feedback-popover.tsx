@@ -21,10 +21,10 @@ function FeedbackPopover () {
       </PopoverTrigger>
       <PopoverContent side='bottom' className='relative'>
         <form action={async (formData: FormData) => {
-          await sendFeedback(formData)
+          const { status, message } = await sendFeedback(formData)
           toast({
-            variant: 'success',
-            description: 'Thanks for your feedback!'
+            variant: status,
+            description: message
           })
         }}>
           <Textarea
