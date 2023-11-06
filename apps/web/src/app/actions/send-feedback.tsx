@@ -25,11 +25,15 @@ export const sendFeedback = async (formData: FormData): Promise<ActionResponse> 
   }
 
   const { error } = await resend.emails.send({
-    from: `Colab-AI [Feedback] <${user?.email ?? 'feedback@colab-ai.com'}>`,
+    from: 'Colab-AI [Feedback] <feedback@colab-ai.com>',
     to: 'colabot.org@gmail.com',
     reply_to: 'fe.ossandon.u@gmail.com',
     subject: 'Feedback',
-    text: feedback
+    // improve this with https://react.email
+    text: `
+      Feedback from ${user?.email ?? 'Unknown user'}:
+      ${feedback}
+    `
   })
 
   return {
