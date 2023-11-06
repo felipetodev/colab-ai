@@ -12,11 +12,11 @@ import { formatMimeType } from '@/lib/utils'
 
 export const createFileChunks = async (formData: FormData) => {
   const name = formData.get('name')
-  const file = formData.get('file')
+  const file = formData.get('file') as File
 
   if (!file) throw new Error('File not found')
 
-  const type = (file as File).type
+  const type = file.type
 
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
@@ -53,7 +53,7 @@ export const createFileChunks = async (formData: FormData) => {
     }
   }
 
-  const loader = new Loader(file as File)
+  const loader = new Loader(file)
   const document = await loader.load()
 
   // pdf, csv, text, don't need splitting
@@ -77,7 +77,7 @@ export const createFileChunks = async (formData: FormData) => {
   const { status } = await supabase.from('documents').insert({
     user_id: user.id,
     id: documentId,
-    name,
+    name: name ?? file.name,
     type: formatMimeType(type),
     content: formattedDocs
   })
