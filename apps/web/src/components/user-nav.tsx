@@ -37,6 +37,7 @@ function UserNav ({
           <Avatar className="h-8 w-8">
             <AvatarImage alt={username ?? 'new-user'} src={avatarUrl} />
             <AvatarFallback className="uppercase">
+              {/* auth with google has no user_name */}
               {username?.slice(0, 2) ?? ''}
             </AvatarFallback>
           </Avatar>

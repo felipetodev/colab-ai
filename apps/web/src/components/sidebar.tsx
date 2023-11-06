@@ -138,21 +138,21 @@ function Sidebar ({
 
       {/* Chats List */}
       <div className="h-full rounded-md border mb-2 overflow-y-auto">
-        {view === 'chat' && filteredChats.length > 0
-          ? filteredChats.map((chat) => (
+        {view === 'chat' && filteredChats.length > 0 &&
+          filteredChats.map((chat) => (
             <ChatConversation
               id={chat.id}
               key={chat.id}
               name={chat.name}
               isAgent={Boolean(chat?.isAgent)}
             />
-          ))
-          : (
-            <div className="flex flex-col items-center justify-center h-full">
-              <span className="text-gray-400 text-sm">No chats found</span>
-            </div>
-            )}
+          ))}
 
+        {view === 'chat' && filteredChats.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full">
+            <span className="text-gray-400 text-sm">No chats found</span>
+          </div>
+        )}
         {view === 'agent' && agents.map((agent) => (
           <Agent
             agent={agent}
