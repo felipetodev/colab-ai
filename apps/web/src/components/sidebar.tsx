@@ -148,7 +148,7 @@ function Sidebar ({
             />
           ))}
 
-        {view === 'chat' && filteredChats.length === 0 && (
+        {view === 'chat' && searchTerm && filteredChats.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full">
             <span className="text-gray-400 text-sm">No chats found</span>
           </div>
