@@ -30,8 +30,8 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
   const { messages, input, stop, setInput, append, isLoading } = useChat({
     api: isBeta
       ? '/api/beta'
-      : createApiCompletion({ chat }),
-    body: createBodyCompletion({ chat }),
+      : createApiCompletion({ chat: isNewChat ? chat : selectedChat }),
+    body: createBodyCompletion({ chat: isNewChat ? chat : selectedChat }),
     onFinish: () => { setGotMessages(true) },
     initialMessages: selectedChat.messages
   })
@@ -57,7 +57,7 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
           messages
         })
         : await updateChat({
-          ...chat,
+          ...selectedChat,
           messages
         })
     }
@@ -95,8 +95,7 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
                     <ChatSettingsDialog
                       isBeta={isBeta}
                       agents={agents ?? []}
-                      selectedChat={chat}
-                      onUpdateSetting={onUpdateSetting}
+                      selectedChat={selectedChat}
                     />
                   </div>
                 </header>

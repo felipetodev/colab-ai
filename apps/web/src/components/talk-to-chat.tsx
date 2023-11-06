@@ -20,10 +20,10 @@ type Props = {
   selectedChat: ChatProps
   isBeta?: boolean
   handleModalClose: () => void
-  onUpdateSetting: (value: any) => void
 }
 
-function TalkToChat ({ isBeta, selectedChat, handleModalClose, onUpdateSetting }: Props) {
+function TalkToChat ({ isBeta, selectedChat, handleModalClose }: Props) {
+  const [chatSettings, setChatSettings] = useState(selectedChat)
   const [isOpen, setIsOpen] = useState(false)
   const { toast } = useToast()
 
@@ -34,11 +34,10 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose, onUpdateSetting }
       handleModalClose()
     } else {
       const { status, message } = await updateChat({
-        ...selectedChat,
+        ...chatSettings,
         isAgent: false,
         agentId: null
       })
-      onUpdateSetting({ key: 'agent', value: null })
 
       toast({
         variant: status,
@@ -82,9 +81,9 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose, onUpdateSetting }
       </div>
       <ModelSelector
         isBeta={isBeta}
-        value={selectedChat?.model ?? ''}
-        onChange={({ key, value }) => {
-          onUpdateSetting({ key, value })
+        value={chatSettings?.model ?? ''}
+        onChange={({ value }) => {
+          setChatSettings({ ...chatSettings, model: value })
         }}
       />
       <div className="flex items-center w-full mb-2">
@@ -98,10 +97,10 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose, onUpdateSetting }
       <Textarea
         className="resize-none mb-4 h-40"
         onChange={({ target }) => {
-          onUpdateSetting({ key: 'prompt', value: target.value })
+          setChatSettings({ ...chatSettings, prompt: target.value })
         }}
         placeholder="Write your instructions here..."
-        value={selectedChat.prompt ?? ''}
+        value={chatSettings.prompt ?? ''}
       />
 
       <div className="w-full">
@@ -121,15 +120,15 @@ function TalkToChat ({ isBeta, selectedChat, handleModalClose, onUpdateSetting }
           ? (
             <div className="flex flex-col gap-6">
               <TemperatureSelector
-                defaultValue={[selectedChat.temperature ?? 0.2]}
+                defaultValue={[chatSettings.temperature ?? 0.2]}
                 onChange={(e) => {
-                  onUpdateSetting({ key: 'temperature', value: e.value })
+                  setChatSettings({ ...chatSettings, temperature: e.value })
                 }}
               />
               <MaxTokensSelector
-                defaultValue={[selectedChat.maxTokens ?? 2000]}
+                defaultValue={[chatSettings.maxTokens ?? 2000]}
                 onChange={(e) => {
-                  onUpdateSetting({ key: 'maxTokens', value: e.value })
+                  setChatSettings({ ...chatSettings, maxTokens: e.value })
                 }}
               />
             </div>

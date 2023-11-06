@@ -20,10 +20,9 @@ type Props = {
   agents: AgentProps[]
   selectedChat: ChatProps
   isBeta?: boolean
-  onUpdateSetting: (value: any) => void
 }
 
-function ChatSettingsDialog ({ selectedChat, agents, isBeta, onUpdateSetting }: Props) {
+function ChatSettingsDialog ({ selectedChat, agents, isBeta }: Props) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -57,7 +56,6 @@ function ChatSettingsDialog ({ selectedChat, agents, isBeta, onUpdateSetting }: 
               isBeta={isBeta}
               selectedChat={selectedChat}
               handleModalClose={() => setIsOpen(false)}
-              onUpdateSetting={onUpdateSetting}
             />
           </TabsContent>
 
@@ -66,7 +64,6 @@ function ChatSettingsDialog ({ selectedChat, agents, isBeta, onUpdateSetting }: 
               agents={agents}
               selectedChat={selectedChat}
               handleModalClose={() => setIsOpen(false)}
-              onUpdateSetting={onUpdateSetting}
             />
           </TabsContent>
         </Tabs>

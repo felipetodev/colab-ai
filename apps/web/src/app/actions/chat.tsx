@@ -78,12 +78,12 @@ export const updateChat = async (payload: Partial<ChatProps & { agentId: any }>)
       ...max_tokens && { max_tokens },
       ...(agentId && { is_agent: !!agentId }),
       // if its a new chat, set the model to the default
-      ...model ? { model } : { model: 'gpt-3.5-turbo' },
+      ...model && { model },
       ...rest
     })
     .eq('id', id)
 
-  revalidatePath('/')
+  revalidatePath(`/chat/${id}`)
 
   return {
     message: status >= 400 ? 'Error updating chat' : 'Chat updated successfully',
