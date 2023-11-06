@@ -11,8 +11,9 @@ import { TextLoader } from 'langchain/document_loaders/fs/text'
 import { formatMimeType } from '@/lib/utils'
 
 export const createFileChunks = async (formData: FormData) => {
-  const name = formData.get('name')
   const file = formData.get('file') as File
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const name = formData.get('name') || file.name
 
   if (!file) throw new Error('File not found')
 
@@ -77,7 +78,7 @@ export const createFileChunks = async (formData: FormData) => {
   const { status } = await supabase.from('documents').insert({
     user_id: user.id,
     id: documentId,
-    name: name ?? file.name,
+    name,
     type: formatMimeType(type),
     content: formattedDocs
   })
