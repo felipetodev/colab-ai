@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus, Archive, MessageSquare, File, User } from 'lucide-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -32,6 +32,8 @@ function Sidebar ({
   userSettings
 }: Props) {
   const [view, setView] = useState<TabsView>('chat')
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [filteredChats, setFilteredChats] = useState<ChatProps[]>(chats)
 
   const handleNewChat = async () => {
     const newChat: ChatProps = {
@@ -45,6 +47,15 @@ function Sidebar ({
 
     await createChat(newChat)
   }
+
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = chats.filter(chat => chat.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      setFilteredChats(filtered)
+    } else {
+      setFilteredChats(chats)
+    }
+  }, [searchTerm])
 
   return (
     <aside className="flex flex-col h-full border-r w-full max-w-sm px-4">
@@ -118,19 +129,29 @@ function Sidebar ({
 
       {/* Search Chats Input */}
       <div className="py-2">
-        <Input placeholder="Search chats..." type="text" />
+        <Input
+          onChange={({ target }) => setSearchTerm(target.value)}
+          placeholder="Search chats..."
+          type="text"
+        />
       </div>
 
       {/* Chats List */}
-      <div className="h-full rounded-md border mb-2">
-        {view === 'chat' && chats.map((chat) => (
-          <ChatConversation
-            id={chat.id}
-            key={chat.id}
-            name={chat.name}
-            isAgent={Boolean(chat?.isAgent)}
-          />
-        ))}
+      <div className="h-full rounded-md border mb-2 overflow-y-auto">
+        {view === 'chat' && filteredChats.length > 0
+          ? filteredChats.map((chat) => (
+            <ChatConversation
+              id={chat.id}
+              key={chat.id}
+              name={chat.name}
+              isAgent={Boolean(chat?.isAgent)}
+            />
+          ))
+          : (
+            <div className="flex flex-col items-center justify-center h-full">
+              <span className="text-gray-400 text-sm">No chats found</span>
+            </div>
+            )}
 
         {view === 'agent' && agents.map((agent) => (
           <Agent
