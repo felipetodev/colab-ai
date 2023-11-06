@@ -35,9 +35,9 @@ function UserNav ({
       <DropdownMenuTrigger asChild>
         <Button className="relative h-8 w-8 rounded-full" variant="ghost">
           <Avatar className="h-8 w-8">
-            <AvatarImage alt={username} src={avatarUrl} />
+            <AvatarImage alt={username ?? 'new-user'} src={avatarUrl} />
             <AvatarFallback className="uppercase">
-              {username.slice(0, 2)}
+              {username?.slice(0, 2) ?? ''}
             </AvatarFallback>
           </Avatar>
         </Button>
