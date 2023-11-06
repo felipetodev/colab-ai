@@ -1,5 +1,7 @@
 'use server'
 
+import { createServerActionClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -10,6 +12,9 @@ type ActionResponse = {
 }
 
 export const sendFeedback = async (formData: FormData): Promise<ActionResponse> => {
+  const supabase = createServerActionClient({ cookies })
+  const { data: { user } } = await supabase.auth.getUser()
+
   const feedback = formData.get('feedback')
 
   if (!feedback || typeof feedback !== 'string') {
@@ -20,7 +25,7 @@ export const sendFeedback = async (formData: FormData): Promise<ActionResponse> 
   }
 
   const { error } = await resend.emails.send({
-    from: 'Colab-AI [Feedback] <feedback@colab-ai.com>',
+    from: `Colab-AI [Feedback] <${user?.email ?? 'feedback@colab-ai.com'}>`,
     to: 'colabot.org@gmail.com',
     reply_to: 'fe.ossandon.u@gmail.com',
     subject: 'Feedback',
