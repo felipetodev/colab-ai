@@ -18,6 +18,7 @@ import { Label } from './ui/label'
 import { Badge } from './ui/badge'
 import { useToast } from './ui/use-toast'
 import { SubmitButton } from 'src/app/actions/submit-button'
+import { deleteDocument } from 'src/app/actions/document'
 import {
   createPineconeEmbeddings,
   createSupaEmbeddings,
@@ -97,6 +98,13 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
     setIsOpen(false)
   }
 
+  const handleDeleteDocument = async () => {
+    const { status, message } = await deleteDocument({ id: document.id })
+    toast({ variant: status, description: message })
+
+    setIsOpen(false)
+  }
+
   const handleDocumentName = async () => {
     if (!userSettings || !userSettings.dbStatus || !userSettings.vectorProvider) {
       return toast({
@@ -170,9 +178,11 @@ function DocumentPreviewDialog ({ userSettings, document, children }: Props) {
           <DialogFooter className="!justify-between">
             {document.isTrained
               ? <SubmitButton formAction={handleDeleteEmbedding} variant='destructive'>
-                Delete
+                Delete Embeddings
               </SubmitButton>
-              : <div />}
+              : <SubmitButton formAction={handleDeleteDocument} variant='destructive'>
+                Delete Document
+              </SubmitButton>}
             <div className="flex sm:space-x-2">
               <DialogClose className={cn(buttonVariants({ variant: 'secondary' }))}>
                 Cancel
