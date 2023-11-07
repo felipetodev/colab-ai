@@ -1,19 +1,21 @@
+import OpenAI from 'openai'
+
 export const runtime = 'edge'
 
 export async function POST (req: Request) {
   const { text } = await req.json()
-  // ID of voice to be used for speech
-  const voiceId = '21m00Tcm4TlvDq8ikWAM'
 
-  const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'xi-api-key': process.env.ELEVEN_LABS_API_KEY!
-    },
-    body: JSON.stringify({ text, model_id: 'eleven_multilingual_v2' })
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
   })
-  const audioBlob = await response.blob()
+
+  const response = await openai.audio.speech.create({
+    model: 'tts-1',
+    voice: 'alloy',
+    input: text
+  })
+
+  const audioBlob = await response.arrayBuffer()
 
   return new Response(audioBlob, {
     headers: {
