@@ -26,6 +26,13 @@ export interface Preset {
   active: boolean
 }
 
+const parsedValues = (value: string) => {
+  if (value === 'gpt-4-1106-preview') {
+    return 'GPT-4-turbo'
+  }
+  return value
+}
+
 export const models: Preset[] = [
   {
     icon: <span className='grid place-content-center rounded bg-[#1fb88a] h-8 px-1 mr-2'>
@@ -53,7 +60,7 @@ export const models: Preset[] = [
       <IconGPT className='w-6 h-6' />
     </span>,
     name: 'GPT-4-turbo',
-    active: false
+    active: true
   }
 ]
 
@@ -78,6 +85,13 @@ export const betaModels: Preset[] = [
     </span>,
     name: 'GPT-4',
     active: false
+  },
+  {
+    icon: <span className='grid place-content-center rounded bg-[#ab68ff] h-8 px-1 mr-2'>
+      <IconGPT className='w-6 h-6' />
+    </span>,
+    name: 'GPT-4-turbo',
+    active: false
   }
 ]
 
@@ -94,7 +108,7 @@ export const metaModels: Preset[] = [
 interface Props extends PopoverProps {
   value: string
   isBeta?: boolean
-  onChange?: (model: { key: 'model' | 'temperature' | 'maxTokens' | 'prompt', value: any }) => void
+  onChange?: (model: any) => void
 }
 
 function ModelSelector ({ isBeta, value, onChange, ...props }: Props) {
@@ -102,7 +116,7 @@ function ModelSelector ({ isBeta, value, onChange, ...props }: Props) {
   const [selectedPreset, setSelectedPreset] = React.useState<Preset>(
     isBeta
       ? betaModels.find((m) => m.name.toLowerCase() === value.toLowerCase()) ?? betaModels[0]
-      : models.find((m) => m.name.toLowerCase() === value.toLowerCase()) ?? models[0]
+      : models.find((m) => m.name.toLowerCase() === parsedValues(value).toLowerCase()) ?? models[0]
   )
 
   const llms = isBeta ? betaModels : models
@@ -132,7 +146,11 @@ function ModelSelector ({ isBeta, value, onChange, ...props }: Props) {
                 key={model.name}
                 disabled={!model.active}
                 onSelect={() => {
-                  onChange && onChange({ key: 'model', value: model.name.toLowerCase() })
+                  if (model.name === 'GPT-4-turbo') {
+                    onChange && onChange({ key: 'model', value: 'gpt-4-1106-preview' })
+                  } else {
+                    onChange && onChange({ key: 'model', value: model.name.toLowerCase() })
+                  }
                   setSelectedPreset(model)
                   setOpen(false)
                 }}
@@ -148,6 +166,27 @@ function ModelSelector ({ isBeta, value, onChange, ...props }: Props) {
                     </span>
                     )}
                 {model.name}
+                {model.name === 'GPT-4-turbo' && (
+                  <span
+                    className="ml-2 inline-flex items-center justify-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-emerald-700 dark:bg-emerald-700 dark:text-emerald-100"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="-ms-1 me-1.5 h-4 w-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+
+                    <p className="whitespace-nowrap text-xs">new</p>
+                  </span>)}
                 <CheckIcon
                   className={cn(
                     'ml-auto h-4 w-4',
