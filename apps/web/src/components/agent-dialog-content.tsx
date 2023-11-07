@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { newAgent, removeAgent, updateAgent } from 'src/app/actions/agent'
+import { SubmitButton } from '../app/actions/submit-button'
 import { ChevronRightIcon, ImagePlus, X } from 'lucide-react'
 import {
   AlertDialogContent,
@@ -9,21 +11,19 @@ import {
   AlertDialogTitle,
   AlertDialogCancel
 } from '@/components/ui/alert-dialog'
-import { cn } from '@/lib/utils'
-import { Button, buttonVariants } from './ui/button'
-import { Input } from './ui/input'
 import { Textarea } from './ui/textarea'
 import ModelSelector from './model-selector'
 import TemperatureSelector from './temperature-selector'
-import MaxTokensSelector from './max-tokens-selector'
-import { Label } from './ui/label'
+import ReferencesSelector from './references-selector'
 import DocumentSelector from './document-selector'
 import { Badge } from './ui/badge'
+import { Label } from './ui/label'
+import { Button, buttonVariants } from './ui/button'
+import { Input } from './ui/input'
+import { useToast } from './ui/use-toast'
+import { cn } from '@/lib/utils'
 import { type AgentProps } from '@/lib/types/agent'
 import { type DocumentProps } from '@/lib/types/document'
-import { newAgent, removeAgent, updateAgent } from 'src/app/actions/agent'
-import { SubmitButton } from '../app/actions/submit-button'
-import { useToast } from './ui/use-toast'
 
 type Props = {
   type: 'create' | 'update' | 'delete'
@@ -57,7 +57,7 @@ function AgentDialogContent ({
 
   const docsSelected = documents.filter(d => selectedDocuments.includes(d.id))
   return (
-    <AlertDialogContent className="sm:max-w-2xl overflow-y-auto max-h-[795px]">
+    <AlertDialogContent className="sm:max-w-2xl max-h-[795px] overflow-y-auto">
       <AlertDialogHeader>
         {type === 'create' && (
           <AlertDialogTitle>
@@ -197,9 +197,10 @@ function AgentDialogContent ({
                 <div className="flex flex-col gap-6 my-6">
                   <TemperatureSelector
                     defaultValue={[agent.temperature ?? 0.2]}
+                    hoverSide='right'
                   />
-                  <MaxTokensSelector
-                    defaultValue={[agent.maxTokens ?? 2000]}
+                  <ReferencesSelector
+                    defaultValue={[agent.references ?? 3]}
                   />
                 </div>
                 )

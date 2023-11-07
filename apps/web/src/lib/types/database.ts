@@ -20,6 +20,7 @@ export interface Database {
           name: string
           prompt: string
           temperature: number
+          references: number
           updated_at: string
           user_id: string
           avatar_url: string
@@ -34,6 +35,7 @@ export interface Database {
           name: string
           prompt: string
           temperature: number
+          references: number
           updated_at?: string
           user_id: string
           avatar_url: string
@@ -48,6 +50,7 @@ export interface Database {
           name?: string
           prompt?: string
           temperature?: number
+          references: number
           updated_at?: string
           user_id?: string
           avatar_url: string

@@ -21,7 +21,7 @@ export default async function Home () {
   ] = await Promise.all([
     supabase
       .from('chats')
-      .select('user:user_id(vectorProvider:vector_db_selected, dbStatus:db_status), id, name, messages, folderId:folder_id, model, temperature, maxTokens:max_tokens, prompt, isAgent:is_agent, agent:agent_id(id, name, prompt, docsId:docs_id, model, temperature, maxTokens:max_tokens)')
+      .select('user:user_id(vectorProvider:vector_db_selected, dbStatus:db_status), id, name, messages, folderId:folder_id, model, temperature, maxTokens:max_tokens, prompt, isAgent:is_agent, agent:agent_id(id, name, prompt, docsId:docs_id, model, references, temperature, maxTokens:max_tokens)')
       .order('updated_at', { ascending: false }),
     supabase
       .from('agents')
@@ -35,29 +35,27 @@ export default async function Home () {
   const isBeta = Boolean(cookieStore.get('invitedId'))
 
   return (
-    <main className="flex-col flex h-[calc(100vh-57px)] min-w-[1280px] overflow-hidden">
-      <div className="relative flex h-full overflow-hidden">
-        <Sidebar
-          agents={agents ?? []}
-          chats={chats ?? []}
-          documents={documents ?? []}
-          userSettings={chats?.[0]?.user}
-        />
-        <Chat
-          isNewChat
-          isBeta={isBeta}
-          id={crypto.randomUUID()}
-          user={userMetadata}
-          agents={agents ?? []}
-          selectedChat={{
-            id: crypto.randomUUID(),
-            name: 'New Chat',
-            prompt: '',
-            folderId: null,
-            messages: []
-          }}
-        />
-      </div>
-    </main>
+    <div className="relative flex h-full overflow-hidden">
+      <Sidebar
+        agents={agents ?? []}
+        chats={chats ?? []}
+        documents={documents ?? []}
+        userSettings={chats?.[0]?.user}
+      />
+      <Chat
+        isNewChat
+        isBeta={isBeta}
+        id={crypto.randomUUID()}
+        user={userMetadata}
+        agents={agents ?? []}
+        selectedChat={{
+          id: crypto.randomUUID(),
+          name: 'New Chat',
+          prompt: '',
+          folderId: null,
+          messages: []
+        }}
+      />
+    </div>
   )
 }

@@ -27,6 +27,7 @@ export async function POST (req: Request) {
     model?: AgentProps['model']
     temperature?: AgentProps['temperature']
     maxTokens?: AgentProps['maxTokens']
+    references?: AgentProps['references']
   }
   const messages = body.messages ?? []
   const previousMessages = parsePrevMessages(messages.slice(0, -1))
@@ -34,7 +35,7 @@ export async function POST (req: Request) {
 
   const docId = body.docsId?.[0]
   // const agentName = body.name
-  const { prompt: agentPrompt, model: agentModel, temperature } = body
+  const { prompt: agentPrompt, model: agentModel, temperature, references } = body
 
   const cookies = new RequestCookies(req.headers) as any
   const supabase = createServerComponentClient({ cookies: () => cookies })
@@ -89,7 +90,9 @@ export async function POST (req: Request) {
 
   const retrievalChain = createRetrievalChain(
     llm,
-    vectorStore.asRetriever(),
+    vectorStore.asRetriever({
+      k: references ?? 3
+    }),
     previousMessages
   )
 

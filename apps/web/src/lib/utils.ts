@@ -38,8 +38,8 @@ export function createBodyCompletion ({ chat }: { chat: ChatProps }) {
       prompt: chat.agent?.prompt,
       model: chat.agent?.model,
       temperature: chat.agent?.temperature,
-      maxTokens: chat.agent?.maxTokens
-      // references:
+      maxTokens: chat.agent?.maxTokens,
+      references: chat.agent?.references
     }
   }
 }

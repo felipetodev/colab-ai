@@ -27,7 +27,9 @@ export default function RootLayout ({
           <div className="relative flex min-h-screen flex-col bg-background">
             <div className="flex-1">
               <MainNav />
-              {children}
+              <main className="flex-col flex h-[calc(100vh-57px)] min-w-[1280px] overflow-hidden">
+                {children}
+              </main>
             </div>
             <Toaster />
           </div>

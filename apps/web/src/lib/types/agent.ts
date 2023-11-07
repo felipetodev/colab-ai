@@ -9,6 +9,7 @@ export type Agent = {
   folderId: Tables<'agents'>['folder_id']
   model?: Tables<'agents'>['model']
   temperature?: Tables<'agents'>['temperature']
+  references?: Tables<'agents'>['references']
   maxTokens?: Tables<'agents'>['max_tokens']
   prompt?: Tables<'agents'>['prompt']
   docsId: Tables<'agents'>['docs_id']

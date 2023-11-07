@@ -4,13 +4,12 @@ import type { SliderProps } from '@radix-ui/react-slider'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card'
 import { Slider } from './ui/slider'
 
-interface TemperatureSelectorProps {
+type Props = {
   defaultValue: SliderProps['defaultValue']
-  hoverSide?: 'left' | 'right'
-  onChange?: (value: { key: 'temperature', value: any }) => void
+  onChange?: (value: { key: 'references', value: any }) => void
 }
 
-function TemperatureSelector ({ hoverSide = 'left', defaultValue, onChange }: TemperatureSelectorProps) {
+function ReferencesSelector ({ defaultValue, onChange }: Props) {
   const [value, setValue] = useState(defaultValue)
   return (
     <div className="w-full">
@@ -23,14 +22,14 @@ function TemperatureSelector ({ hoverSide = 'left', defaultValue, onChange }: Te
             <HoverCardContent
               align="start"
               className="w-[260px] text-sm"
-              side={hoverSide}
+              side="right"
             >
-              Controls randomness: lowering results in less random completions. As the temperature approaches zero, the model will become deterministic and repetitive.
+              Number of files to use as references for the completion.
             </HoverCardContent>
           </HoverCard>
           <div className="flex font-semibold space-x-1.5">
             <h2>
-              Temperature:
+              References:
             </h2>
             <span>
               {value}
@@ -38,22 +37,22 @@ function TemperatureSelector ({ hoverSide = 'left', defaultValue, onChange }: Te
           </div>
         </div>
         <Slider
-          name='temperature'
-          aria-label="Temperature"
+          name='references'
+          aria-label="References"
           className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
           defaultValue={value}
-          id="temperature"
-          max={1}
+          id="references"
+          max={10}
           onValueChange={(e) => {
-            const [temperature] = e as [number]
+            const [references] = e as [number]
             setValue(e)
-            onChange && onChange({ key: 'temperature', value: temperature })
+            onChange && onChange({ key: 'references', value: references })
           }}
-          step={0.1}
+          step={1}
         />
       </div>
     </div>
   )
 }
 
-export default TemperatureSelector
+export default ReferencesSelector

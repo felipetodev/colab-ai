@@ -17,12 +17,14 @@ export const newAgent = async (formData: FormData): Promise<ActionResponse> => {
   const avatarUrl = formData.get('avatarUrl')
   const temp = formData.get('temperature')
   const maxT = formData.get('maxTokens')
+  const refs = formData.get('references')
 
   const result = validateNewAgent({
     name: formData.get('agentName'),
     prompt: formData.get('prompt'),
     temperature: typeof temp === 'string' ? Number(temp) : 0.2,
     max_tokens: typeof maxT === 'string' ? Number(maxT) : 4000,
+    references: typeof refs === 'string' ? Number(refs) : 3,
     model: formData.get('llmModel'),
     docs_id: JSON.parse(formData.get('docsId') as string)
   })
@@ -68,12 +70,14 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
   const avatarUrl = formData.get('avatarUrl')
   const temp = formData.get('temperature')
   const maxT = formData.get('maxTokens')
+  const refs = formData.get('references')
 
   const result = validateUpdateAgent({
     name: formData.get('agentName'),
     prompt: formData.get('prompt'),
     temperature: typeof temp === 'string' ? Number(temp) : 0.2,
     max_tokens: typeof maxT === 'string' ? Number(maxT) : 4000,
+    references: typeof refs === 'string' ? Number(refs) : 3,
     model: formData.get('llmModel'),
     docs_id: JSON.parse(formData.get('docsId') as string),
     agentId: formData.get('agentId')
@@ -81,7 +85,7 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
 
   if (!result.success) return { message: 'Error updating agent', status: 'destructive' }
 
-  const { agentId, temperature, max_tokens: maxTokens, ...restData } = result.data
+  const { agentId, temperature, references, max_tokens: maxTokens, ...restData } = result.data
 
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
@@ -105,7 +109,8 @@ export const updateAgent = async (formData: FormData): Promise<ActionResponse> =
       ...restData,
       ...(imgUrl && { avatar_url: createSupabaseUrl(imgUrl) }),
       ...(temperature && { temperature }),
-      ...(maxTokens && { max_tokens: maxTokens })
+      ...(maxTokens && { max_tokens: maxTokens }),
+      ...(references && { references })
     })
     .eq('id', agentId)
 

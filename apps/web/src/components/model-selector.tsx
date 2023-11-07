@@ -135,7 +135,7 @@ function ModelSelector ({ isBeta, value, onChange, ...props }: Props) {
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <input type="hidden" name="llmModel" value={selectedPreset.name?.toLowerCase()} />
+      <input type="hidden" name="llmModel" value={selectedPreset.name === 'GPT-4-turbo' ? 'gpt-4-1106-preview' : selectedPreset.name?.toLowerCase()} />
       <PopoverContent className="w-[620px] p-0">
         <Command>
           <CommandInput placeholder="Search models..." />
