@@ -47,6 +47,13 @@ export const models: Preset[] = [
     </span>,
     name: 'GPT-4',
     active: true
+  },
+  {
+    icon: <span className='grid place-content-center rounded bg-[#ab68ff] h-8 px-1 mr-2'>
+      <IconGPT className='w-6 h-6' />
+    </span>,
+    name: 'GPT-4-turbo',
+    active: false
   }
 ]
 
