@@ -27,7 +27,7 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
   const [chat, setChat] = useState<ChatProps>(selectedChat)
   const [gotMessages, setGotMessages] = useState(false)
 
-  const { messages, input, stop, setInput, append, isLoading } = useChat({
+  const { messages, input, stop, setInput, append, isLoading, setMessages } = useChat({
     api: isBeta
       ? '/api/beta'
       : createApiCompletion({ chat: isNewChat ? chat : selectedChat }),
@@ -72,10 +72,67 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
     }))
   }
 
+  const handleVisionMessage = async (message: Message) => {
+    const newMessage: Message = {
+      id: crypto.randomUUID(),
+      content: input,
+      role: 'user'
+    }
+    setMessages([
+      ...messages,
+      newMessage,
+      {
+        id: crypto.randomUUID(),
+        role: message.role,
+        content: message.content
+      }
+    ])
+  }
+
+  const handleDrop = (e: any) => {
+    e?.preventDefault()
+    if (e.dataTransfer) {
+      const file = e.dataTransfer.files[0] as unknown as File
+      // create obj url
+      const url = URL.createObjectURL(file)
+      // generate preview in markdown
+      const preview = `![${file.name}](${url})`
+      // add preview to messages
+      const newMessage: Message = {
+        id: crypto.randomUUID(),
+        content: preview,
+        role: 'user'
+      }
+      setMessages([
+        ...messages,
+        newMessage
+      ])
+    }
+    e.target.style.background = 'none'
+  }
+
+  const allowDrop = (e: any) => {
+    e.preventDefault()
+  }
+
+  const highlightDrop = (e: any) => {
+    e.target.style.background = '#343541'
+  }
+
+  const removeHighlight = (e: any) => {
+    e.target.style.background = 'none'
+  }
+
   return (
     <div className="relative flex flex-col justify-between bg-zinc-400 dark:bg-zinc-900 w-full h-full">
       <div className="relative min-h-full w-full overflow-y-auto">
-        <div className="relative flex min-h-[calc(100vh-90px-60px)] w-full flex-col pb-8">
+        <div
+          onDrop={(e) => handleDrop(e)}
+          onDragOver={allowDrop}
+          onDragEnter={highlightDrop}
+          onDragLeave={removeHighlight}
+          className="relative flex min-h-[calc(100vh-90px-60px)] w-full flex-col pb-8"
+        >
           {messages?.length === 0
             ? (
               <ChatSettings
@@ -122,6 +179,7 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
           onSubmit={handleSend}
           setInput={setInput}
           stop={stop}
+          handleVisionMessage={handleVisionMessage}
         />
       </div>
     </div>
