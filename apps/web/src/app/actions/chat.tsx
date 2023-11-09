@@ -83,7 +83,7 @@ export const updateChat = async (payload: Partial<ChatProps & { agentId: any }>)
     })
     .eq('id', id)
 
-  revalidatePath(`/chat/${id}`)
+  revalidatePath('/')
 
   return {
     message: status >= 400 ? 'Error updating chat' : 'Chat updated successfully',
@@ -91,15 +91,20 @@ export const updateChat = async (payload: Partial<ChatProps & { agentId: any }>)
   }
 }
 
-export const deleteChat = async (id: ChatProps['id']) => {
+export const deleteChat = async (id: ChatProps['id']): Promise<ActionResponse> => {
   const supabase = createServerActionClient({ cookies })
   const { data: { user } } = await supabase.auth.getUser()
 
   if (user === null) return { error: 'Unauthorized' }
 
-  await supabase.from('chats')
+  const { status } = await supabase.from('chats')
     .delete()
     .eq('id', id)
 
   revalidatePath('/')
+
+  return {
+    message: status >= 400 ? 'Error deleting chat' : 'Chat deleted successfully',
+    status: status >= 400 ? 'destructive' : 'success'
+  }
 }

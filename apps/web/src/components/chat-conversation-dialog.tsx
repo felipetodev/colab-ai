@@ -46,7 +46,7 @@ function ChatConversationDialog (props: Props) {
   const handleDeleteChat = async (e: any) => {
     e.preventDefault()
     startRemoveTransition(async () => {
-      await deleteChat(id)
+      const { status, message } = await deleteChat(id)
       // if (result && 'error' in result) {
       //   do something
       // }
@@ -54,7 +54,7 @@ function ChatConversationDialog (props: Props) {
       setIsOpen(false)
       router.refresh()
       router.push('/')
-      toast({ variant: 'success', description: 'Chat deleted successfully' })
+      toast({ variant: status, description: message })
     })
   }
 
