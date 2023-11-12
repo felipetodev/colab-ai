@@ -28,13 +28,18 @@ export async function POST (req: NextRequest) {
   }
 
   // ✨ Step 3: Add a Message to a Thread
-  await openai.beta.threads.messages.create(
-    threadId,
-    {
-      role: 'user',
-      content: currentMessage
-    }
-  )
+  try {
+    await openai.beta.threads.messages.create(
+      threadId,
+      {
+        role: 'user',
+        content: currentMessage
+      }
+    )
+  } catch (error) {
+    console.log('❌❌❌')
+    // await openai.beta.threads.del(threadID);
+  }
 
   // ✨ Step 4: Run the Assistant
   const run = await openai.beta.threads.runs.create(
@@ -46,22 +51,50 @@ export async function POST (req: NextRequest) {
   )
 
   // ✨ Step 5: Display the Assistant's Response
-  await openai.beta.threads.runs.retrieve(
-    threadId,
-    run.id
-  )
-
   // https://platform.openai.com/docs/assistants/how-it-works/runs-and-run-steps
+  const toolArr: any[] = []
+
   const promise = async (threadId: string, runId: string) => {
     return await new Promise((resolve, reject) => {
       const timeout = setInterval(async () => {
         const run = await openai.beta.threads.runs.retrieve(threadId, runId)
-        console.log(run)
         const state = run.status
         if (state === 'completed') {
           console.log('success ✨✨✨')
           clearInterval(timeout)
-          resolve(run)
+          resolve(state)
+        } else if (state === 'requires_action') {
+          if (run.required_action?.submit_tool_outputs.tool_calls) {
+            clearInterval(timeout)
+            const toolCalls = run.required_action.submit_tool_outputs.tool_calls
+            const updateMapToolCall = toolCalls.find((tc: any) => tc.function.name === 'update_map')
+
+            if (updateMapToolCall) {
+              const toolResult = JSON.parse(updateMapToolCall.function.arguments)
+              toolArr.push({ updateMap: toolResult })
+            }
+
+            const markerToolCalls = toolCalls.filter((tc: any) => tc.function.name === 'add_marker')
+            const markers = markerToolCalls.map((tc: any) => {
+              return JSON.parse(tc.function.arguments)
+            })
+            toolArr.push({ addMarker: markers })
+
+            if (toolCalls.length > 0) {
+              await openai.beta.threads.runs.submitToolOutputs(threadId, runId, {
+                tool_outputs: toolCalls.map((tc: any) => ({
+                  output: 'true',
+                  tool_call_id: tc.id
+                }))
+              })
+
+              resolve(state)
+            } else {
+              reject(
+                new Error(`Error processing thread: ${state}, Thread ID: ${threadId}, Run ID: ${runId}. submit_tool_outputs.tool_calls are empty`)
+              )
+            }
+          }
         } else if (state === 'cancelled' || state === 'expired' || state === 'failed') {
           clearInterval(timeout)
           reject(new Error(`Error processing thread: ${state}, Thread ID: ${threadId}, Run ID: ${runId}`))
@@ -70,7 +103,11 @@ export async function POST (req: NextRequest) {
     })
   }
 
-  await promise(threadId, run.id)
+  let state = await promise(threadId, run.id)
+
+  while (state === 'requires_action') {
+    state = await promise(threadId, run.id)
+  }
 
   const response = await openai.beta.threads.messages.list(threadId)
   const messageData = response.data ?? []
@@ -78,5 +115,9 @@ export async function POST (req: NextRequest) {
   // @ts-expect-error 😉😉😉 lol
   const message = messageData?.[0].content[0]?.text?.value ?? 'no message found lol'
 
-  return new StreamingTextResponse(message)
+  return new StreamingTextResponse(message, {
+    headers: {
+      'x-function-data': JSON.stringify(toolArr)
+    }
+  })
 }

@@ -10,14 +10,17 @@ export default async function Labs () {
   })
 
   const threadId = cookies().get('threads')?.value
-  console.log({ threadId })
+  console.log({ threadId: !!threadId })
+
   if (!threadId) return <Chat /> // return without previous messages
 
-  const messages = await openai.beta.threads.messages.list(threadId)
+  const messages = await openai.beta.threads.messages.list(threadId, {
+    order: 'asc'
+  })
 
   const parsedMessages = (messages: ThreadMessagesPage): Message[] => {
     if (!messages.data) return []
-    return messages.data.sort((a, b) => a.created_at - b.created_at).map(message => {
+    return messages.data.map(message => {
       return {
         id: message.id,
         // @ts-expect-error 😉😉😉 lol
@@ -27,7 +30,7 @@ export default async function Labs () {
     })
   }
 
-  console.log(messages)
+  // console.log(messages)
 
   return <Chat initialMessages={parsedMessages(messages)} />
 }

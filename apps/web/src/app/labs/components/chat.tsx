@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useChat } from 'ai/react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -8,8 +9,9 @@ import { CodeBlock } from '@/components/codeblock'
 import { MemoizedReactMarkdown } from '@/components/markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
+import { GoogleMap, useJsApiLoader, MarkerF } from '@react-google-maps/api'
 import { type Message } from 'ai'
+import ChatScrollAnchor from '@/components/chat-scroll-anchor'
 
 const containerStyle = {
   width: '100%',
@@ -17,9 +19,35 @@ const containerStyle = {
 }
 
 function Chat ({ initialMessages }: { initialMessages?: Message[] }) {
+  const [mapCenter, setMapCenter] = useState({ lat: -33.4372, lng: -70.6506 })
+  const [zoom, setZoom] = useState(8)
+  const [markerPlaces, setMarkerPlaces] = useState<Array<{ lat: number, lng: number, label: string }>>([])
   const { messages, input, setInput, append, stop, isLoading } = useChat({
     api: '/api/completions/assistant',
-    initialMessages
+    initialMessages,
+    onResponse: (res) => {
+      const headers = res?.headers
+      const funcResponse = headers.get('x-function-data')
+      if (funcResponse) {
+        const parseFunc = JSON.parse(funcResponse)
+        if (parseFunc?.[0]?.updateMap) {
+          const { updateMap } = parseFunc?.[0]
+          setMapCenter({ lat: updateMap.lat, lng: updateMap.lng })
+
+          setTimeout(() => {
+            setZoom(updateMap?.zoom ?? 8)
+          }, 300)
+        }
+
+        if (parseFunc?.[0]?.addMarker) {
+          const { addMarker } = parseFunc?.[0]
+          setMarkerPlaces(addMarker)
+          setTimeout(() => {
+            setZoom(11)
+          }, 300)
+        }
+      }
+    }
   })
 
   const handleSend = async (value: string) => {
@@ -54,15 +82,14 @@ function Chat ({ initialMessages }: { initialMessages?: Message[] }) {
                 Where would you like to go?
               </Label>
               <Input
+                autoComplete='off'
                 id='entry'
                 type="text"
                 value={input}
                 onChange={e => setInput(e.target.value)}
+                className='mt-4'
                 placeholder='Start typing or upload a file...'
               />
-              <button>
-                Send
-              </button>
             </form>
           </div>
         )}
@@ -127,6 +154,7 @@ function Chat ({ initialMessages }: { initialMessages?: Message[] }) {
               setInput={setInput}
               stop={stop}
             />
+            <ChatScrollAnchor trackVisibility={isLoading} />
           </div>
         )}
       </div>
@@ -134,9 +162,17 @@ function Chat ({ initialMessages }: { initialMessages?: Message[] }) {
         {isLoaded && (
           <GoogleMap
             mapContainerStyle={containerStyle}
-            center={{ lat: -33.4372, lng: -70.6506 }}
-            zoom={8}
-          />
+            center={mapCenter}
+            zoom={zoom}
+          >
+            {markerPlaces?.map((place, i) => (
+              <MarkerF
+                key={i}
+                // label={place?.label ?? undefined}
+                position={place}
+              />
+            ))}
+          </GoogleMap>
         )}
       </div>
     </div>
