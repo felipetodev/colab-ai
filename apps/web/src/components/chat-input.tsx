@@ -3,10 +3,11 @@ import { StopCircle } from 'lucide-react'
 import Textarea from 'react-textarea-autosize'
 import { useEnterSubmit } from '../hooks/use-enter-submit'
 import { Button } from './ui/button'
-import type { UseChatHelpers } from 'ai/react'
+import { type UseChatHelpers, type Message } from 'ai/react'
 import { IconEnter, Spinner } from './ui/icons'
 import { createTranscription } from 'src/app/actions/loaders'
 import dynamic from 'next/dynamic'
+import VisionInput from './vision-input'
 
 const VoiceInput = dynamic(async () => await import('./voice-input'))
 
@@ -14,6 +15,7 @@ interface Props
   extends Pick<UseChatHelpers, 'stop' | 'input' | 'setInput'> {
   onSubmit: (value: string) => Promise<void>
   isLoading: boolean
+  handleVisionMessage?: (messages: Message) => void
 }
 
 function ChatInput ({
@@ -21,10 +23,12 @@ function ChatInput ({
   stop,
   setInput,
   onSubmit,
-  isLoading
+  isLoading,
+  handleVisionMessage
 }: Props) {
   const [isRecording, setIsRecording] = useState(false)
   const { formRef, onKeyDown } = useEnterSubmit()
+  const [file, setFile] = useState<File | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -46,6 +50,7 @@ function ChatInput ({
     setInput(transcription)
     setIsRecording(false)
   }
+
   return (
     <div className="sticky bg-transparent bottom-6 w-full z-40 pt-8">
       {isLoading
@@ -60,6 +65,29 @@ function ChatInput ({
           className="relative flex"
           onSubmit={async (e) => {
             e.preventDefault()
+
+            if (file) {
+              setIsRecording(true)
+              try {
+                const formData = new FormData()
+                formData.append('file', file)
+                formData.append('message', input)
+
+                const res = await fetch('/api/vision', {
+                  method: 'POST',
+                  body: formData
+                })
+                const { response } = await res.json()
+                const message = response.message as Message
+                return handleVisionMessage ? handleVisionMessage(message) : null
+              } catch { } finally {
+                setFile(null)
+                setIsRecording(false)
+                setInput('')
+              }
+              return
+            }
+
             if (!input?.trim()) {
               return
             }
@@ -69,10 +97,10 @@ function ChatInput ({
           ref={formRef}
         >
           <Textarea
-            className="border min-h-[20px] max-h-[280px] w-full rounded-lg resize-none bg-transparent py-2.5 focus-within:outline-none text-sm px-12"
+            className="border min-h-[20px] max-h-[280px] w-full rounded-lg resize-none bg-transparent py-2.5 focus-within:outline-none text-sm pl-20 pr-12"
             onChange={e => setInput(e.target.value)}
             onKeyDown={onKeyDown}
-            placeholder="Ask ColabAI..."
+            placeholder={isRecording ? 'Loading...' : 'Ask ColabAI...'}
             ref={inputRef}
             rows={1}
             spellCheck={false}
@@ -83,6 +111,10 @@ function ChatInput ({
             isLoading={isLoading}
             onRecording={setIsRecording}
             onRecordingComplete={onRecordingComplete}
+          />
+          <VisionInput
+            file={file}
+            handleFile={setFile}
           />
           <Button
             className="absolute right-2 bottom-0 w-7 h-7 mb-2"
