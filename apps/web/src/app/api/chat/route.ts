@@ -1,4 +1,4 @@
-import type { NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import type { Message as VercelChatMessage } from 'ai'
 import { StreamingTextResponse } from 'ai'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
@@ -59,11 +59,15 @@ export async function POST (req: NextRequest) {
     prompt: promptText
   } = chat ?? {} as ChatProps
 
+  if (!secrets?.openaiKey) {
+    return NextResponse.json({ error: 'Please add your OpenAI API key to your user profile' }, { status: 403 })
+  }
+
   const prompt = PromptTemplate.fromTemplate(TEMPLATE)
 
   const llm = new ChatOpenAI({
     modelName: model ?? body?.model ?? 'gpt-3.5-turbo',
-    openAIApiKey: secrets?.openaiKey ?? process.env.OPENAI_API_KEY,
+    openAIApiKey: secrets.openaiKey,
     temperature: temperature ?? body?.temperature ?? 0.2,
     maxTokens: -1
   }, {

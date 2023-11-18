@@ -2,12 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { useChat } from 'ai/react'
+import Link from 'next/link'
 import ChatInput from './chat-input'
 import ChatMessages from './chat-messages'
 import ChatSettings from './chat-settings'
 import ChatScrollAnchor from './chat-scroll-anchor'
 import ChatSettingsDialog from './chat-settings-dialog'
 import { Badge } from './ui/badge'
+import { useToast } from './ui/use-toast'
+import { ToastAction } from './ui/toast'
 import { createChat, updateChat } from 'src/app/actions/chat'
 import { createApiCompletion, createBodyCompletion } from '@/lib/utils'
 import { type Message } from 'ai/react'
@@ -26,6 +29,7 @@ type Props = {
 function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
   const [chat, setChat] = useState<ChatProps>(selectedChat)
   const [gotMessages, setGotMessages] = useState(false)
+  const { toast } = useToast()
 
   const { messages, input, stop, setInput, append, isLoading } = useChat({
     api: isBeta
@@ -33,7 +37,27 @@ function Chat ({ user, selectedChat, agents, isBeta, isNewChat }: Props) {
       : createApiCompletion({ chat: isNewChat ? chat : selectedChat }),
     body: createBodyCompletion({ chat: isNewChat ? chat : selectedChat }),
     onFinish: () => { setGotMessages(true) },
-    initialMessages: selectedChat.messages
+    initialMessages: selectedChat.messages,
+    onError (e) {
+      const { error } = JSON.parse(e.message)
+
+      const isApiMissing = error?.toString().includes('Please add your OpenAI API')
+
+      // refactor this
+      toast({
+        variant: 'destructive',
+        description: error?.toString(),
+        action: isApiMissing
+          ? (
+          <ToastAction altText='ToastAction'>
+            <Link href='/settings/project'>
+              API Key
+            </Link>
+          </ToastAction>
+            )
+          : undefined
+      })
+    }
   })
 
   const handleSend = async (value: string) => {
